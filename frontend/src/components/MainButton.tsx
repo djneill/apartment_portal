@@ -24,10 +24,10 @@ const MainButton = ({
 }: MainButtonProps) => {
     return (
         <button
-            className={`rounded transition-all duration-200 flex items-center justify-center mx-auto
+            className={`rounded transition-all duration-200 flex items-center justify-center mx-auto cursor-pointer
             ${variant === 'primary' ? 'bg-primary hover:bg-primary/80 text-white' : ''}
             ${variant === 'secondary' ? 'bg-secondary hover:bg-secondary/80 text-primary' : ''}
-            ${variant === 'accent' ? 'bg-[#C4AEF1] hover:bg-[#C4AEF1]/80 text-white' : ''}
+            ${variant === 'accent' ? 'bg-accent hover:bg-accent/80 text-primary' : ''}
             ${variant === 'background' ? 'bg-background hover:bg-background/80 text-white ' : ''}
             ${variant === 'content-background' ? 'bg-content-background hover:bg-content-background/80 text-white ' : ''}
             ${variant === 'icon' ? 'bg-accent hover:bg-accent/80 text-white rounded-full p-2' : ''}

@@ -7,7 +7,9 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
-  // const [countFive, setCountFive] = useState(0)
+  const handleReportIssue = () => {
+    console.log('Star Command, we have an issue!')
+  }
 
   return (
     <>
@@ -25,15 +27,22 @@ function App() {
       </Card>
       <div className="card">
         <MainButton onClick={() => setCount((count) => count + 1)}
-          variant='accent'
+          variant='secondary'
           size='lg'
           fullWidth={false}
         >
           <p>count is {count}</p>
         </MainButton>
-        {/* <button onClick={() => setCountFive((countFive) => countFive + 5)}>
-          count is {countFive}
-        </button> */}
+        <MainButton
+          className='my-2'
+          variant="accent"
+          size='md'
+          fullWidth
+          icon={<p className="text-accent">⚠️</p>} // icon={<FaExclamationTriangle className="text-accent" />}
+          onClick={handleReportIssue}
+        >
+          Report An Issue
+        </MainButton>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
