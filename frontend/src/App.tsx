@@ -2,10 +2,12 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import Card from './components/Card';
+import MainButton from './components/MainButton';
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  // const [countFive, setCountFive] = useState(0)
 
   return (
     <>
@@ -19,12 +21,19 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <Card title="Fancy Card" icon="🧑‍💻">
-        Hello, Friends!
+        <p>Hello, Friends!</p>
       </Card>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+        <MainButton onClick={() => setCount((count) => count + 1)}
+          variant='accent'
+          size='lg'
+          fullWidth={false}
+        >
+          <p>count is {count}</p>
+        </MainButton>
+        {/* <button onClick={() => setCountFive((countFive) => countFive + 5)}>
+          count is {countFive}
+        </button> */}
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
