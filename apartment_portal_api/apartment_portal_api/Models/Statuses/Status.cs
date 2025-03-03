@@ -14,4 +14,9 @@ public sealed class Status : Entity
     }
 
     public string Name { get; set; }
+
+    public static List<Status> Statuses = [
+        new Status(1,"Active"),
+        new Status(2, "Inactive")
+    ];
 }

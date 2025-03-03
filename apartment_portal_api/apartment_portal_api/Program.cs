@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using apartment_portal_api.Data;
 using apartment_portal_api.Entities;
 
-namespace apartment_portal_api
+namespace apartment_portal_api;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -50,7 +50,6 @@ namespace apartment_portal_api
 
             app.MapControllers();
 
-            app.Run();
-        }
+        app.Run();
     }
 }
