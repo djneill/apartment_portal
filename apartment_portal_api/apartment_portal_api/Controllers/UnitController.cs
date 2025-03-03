@@ -1,4 +1,6 @@
-﻿using apartment_portal_api.Models.Units;
+﻿using apartment_portal_api.Models.Statuses;
+using apartment_portal_api.Models.Units;
+using apartment_portal_api.Models.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
@@ -7,35 +9,43 @@ namespace apartment_portal_api.Controllers;
 [Route("[controller]")]
 public class UnitController : ControllerBase
 {
-    private List<Unit> _units = [
-        new Unit(1, 103, 2500, 1, 1), 
-        new Unit(2, 592, 3000, 1, 1), 
-        new Unit(3, 953, 3250, 2, 2)
-    ];
-
-
     [HttpGet("{id:int}")]
-    public ActionResult<Unit> GetUnitById(int id)
+    public ActionResult<UnitResponse> GetById(int id)
     {
-        var unit = _units.FirstOrDefault(x => x.Id == id);
+        var unit = Unit.Units.FirstOrDefault(x => x.Id == id);
+        if (unit is null) return BadRequest();
 
-        if (unit is not null) return Ok(unit);
+        var status = Status.Statuses.FirstOrDefault(s => s.Id == unit.StatusId);
+        if (status is null) return BadRequest();
 
-        return NotFound();
+        List<UserResponse> users = [];
+
+        foreach (User u in Models.User.User.Users)
+        {
+            var stat = Status.Statuses.FirstOrDefault(s => s.Id == u.StatusId);
+            if (stat is null || stat.Id == 2) continue;
+
+            users.Add(new UserResponse(u.Id, u.FirstName, u.LastName, u.DateOfBirth, stat));
+        }
+
+        UnitResponse res = new(unit.Id, unit.Number, unit.Price, users, status);
+
+
+        return Ok(res);
     }
 
     [HttpGet("/Units")]
-    public ActionResult<ICollection<Unit>> GetUnits()
+    public ActionResult<ICollection<Unit>> Get()
     {
-        return Ok(_units);
+        return Ok(Unit.Units);
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult EditUnit(int id, Unit unit)
+    public ActionResult Update(int id, Unit unit)
     {
         if (id != unit.Id) return BadRequest();
 
-        var dbUnit = _units.FirstOrDefault(x => x.Id == id);
+        var dbUnit = Unit.Units.FirstOrDefault(x => x.Id == id);
         if (dbUnit is null) return BadRequest();
 
         dbUnit.Number = unit.Number;
@@ -46,37 +56,37 @@ public class UnitController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult PostUnit(UnitPostRequest postData)
+    public ActionResult Create(UnitPostRequest postData)
     {
         Unit newUnit = new Unit(4, postData.Number, postData.Price, postData.StatusId, 1);
-        _units.Add(newUnit);
+        Unit.Units.Add(newUnit);
         // Save();
 
         return CreatedAtAction(
-            nameof(GetUnitById),
-            new {id = newUnit.Id},
+            nameof(GetById),
+            new { id = newUnit.Id },
             newUnit
             );
     }
 
     [HttpDelete("{id:int}")]
-    public ActionResult DeleteUnit(int id)
+    public ActionResult Delete(int id)
     {
-        var unitToDelete = _units.FirstOrDefault(unit => unit.Id == id);
+        var unitToDelete = Unit.Units.FirstOrDefault(unit => unit.Id == id);
         if (unitToDelete is null) return BadRequest();
 
-        _units.Remove(unitToDelete);
-        
+        Unit.Units.Remove(unitToDelete);
+
         // Save();
         return Ok();
     }
 
     [HttpPatch("{id:int}")]
-    public ActionResult PatchUnit(int id, UnitPatchRequest patchData)
+    public ActionResult Patch(int id, UnitPatchRequest patchData)
     {
         if (id != patchData.Id) return BadRequest();
 
-        var unitToPatch = _units.FirstOrDefault(unit => unit.Id == id);
+        var unitToPatch = Unit.Units.FirstOrDefault(unit => unit.Id == id);
         if (unitToPatch is null) return BadRequest();
 
         unitToPatch.Number = patchData.Number ?? unitToPatch.Number;
