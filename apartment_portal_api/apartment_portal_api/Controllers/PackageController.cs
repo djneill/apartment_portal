@@ -1,4 +1,4 @@
-﻿using apartment_portal_api.Entities;
+﻿using apartment_portal_api.Models.Packages;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
@@ -6,21 +6,15 @@ namespace apartment_portal_api.Controllers;
 [Route("[controller]")]
 public class PackageController : ControllerBase
 {
+    private List<Package> _packages = [new Package(1, 1, 12, 827294, 1), new Package(2, 1, 12, 827294, 1), new Package(2, 1, 12, 827294, 2)];
+
+
     [HttpGet("{id:int}")]
     public ActionResult<Package> GetPackageById(int id)
     {
-        Random random = new();
+        var package = _packages.FirstOrDefault(x => x.Id == id);
 
-        if (id == 1)
-        {
-            return Ok(new Package
-            {
-                Id = 1,
-                UnitUsersId = random.Next(),
-                LockerNumber = random.Next(1,101),
-                Code = random.Next(100000,1000000)
-            });
-        }
+        if (package is not null) return Ok(package);
 
         return NotFound();
     }
@@ -28,74 +22,6 @@ public class PackageController : ControllerBase
     [HttpGet("/Packages")]
     public ActionResult<ICollection<Package>> GetPackages()
     {
-        Random random = new();
-
-        Package package1 = new()
-        {
-            Id = 1,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package2 = new()
-        {
-            Id = 2,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package3 = new()
-        {
-            Id = 3,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package4 = new()
-        {
-            Id = 4,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package5 = new()
-        {
-            Id = 5,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package6 = new()
-        {
-            Id = 6,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package7 = new()
-        {
-            Id = 7,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package package8 = new()
-        {
-            Id = 8,
-            UnitUsersId = random.Next(),
-            LockerNumber = random.Next(1,101),
-            Code = random.Next(100000,1000000)
-        };
-
-        Package[] res = [package1, package2, package3, package4, package5, package6, package7, package8];
-
-        return Ok(res);
+        return Ok(_packages);
     }
 }
