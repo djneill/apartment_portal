@@ -1,6 +1,0 @@
-@apartment_portal_api_HostAddress = http://localhost:5003
-
-GET {{apartment_portal_api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

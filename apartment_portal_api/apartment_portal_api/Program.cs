@@ -1,14 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using apartment_portal_api.Data;
-using apartment_portal_api.Entities;
+using apartment_portal_api.Models.Users;
 
-namespace apartment_portal_api
+namespace apartment_portal_api;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -25,18 +25,18 @@ namespace apartment_portal_api
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                if (!context.Users.Any()) // Seed data if db is empty
+                if (!context.User.Any()) // Seed data if db is empty
                 {
-                    context.Users.AddRange(new List<Users>
+                    context.User.AddRange(new List<User>
                     {
-                        new Users { Id = 1, FirstName = "John", LastName = "Doe", DateOfBirth = new DateOnly(1990, 1, 1), StatusId = 1, CreatedOn = DateTime.UtcNow, CreatedBy = 1, ModifiedOn = DateTime.UtcNow, ModifiedBy = 1 },
-                        new Users { Id = 2, FirstName = "Jane", LastName = "Doe", DateOfBirth = new DateOnly(1990, 2, 2), StatusId = 1, CreatedOn = DateTime.UtcNow, CreatedBy = 1, ModifiedOn = DateTime.UtcNow, ModifiedBy = 1 }
+                        new(1, "John", "Doe", new DateTime(1990, 1, 1), 1, DateTime.UtcNow, 1, DateTime.UtcNow, 1),
+                        new(2, "Jane", "Doe",new DateTime(1990, 2, 2), 1, DateTime.UtcNow, 1, DateTime.UtcNow, 1)
                     });
                     context.SaveChanges();
                 }
             }
 
-            // Configure the HTTP request pipeline.
+        // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -50,7 +50,6 @@ namespace apartment_portal_api
 
             app.MapControllers();
 
-            app.Run();
-        }
+        app.Run();
     }
 }
