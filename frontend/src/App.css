@@ -6,6 +6,7 @@
   --color-accent: #C4AEF1;
   --color-background: #EFEFEF;
   --color-content-background: #FFFFFF;
+  --color-primary-700: oklch(0.35 0.02 140); 
 }
 
 #root {
