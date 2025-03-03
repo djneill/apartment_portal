@@ -1,5 +1,5 @@
 ﻿using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.User;
+using apartment_portal_api.Models.Users;
 
 namespace apartment_portal_api.Models.Units;
 

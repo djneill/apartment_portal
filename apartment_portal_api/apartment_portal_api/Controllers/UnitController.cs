@@ -1,6 +1,6 @@
 ﻿using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.Units;
-using apartment_portal_api.Models.User;
+using apartment_portal_api.Models.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
@@ -20,7 +20,7 @@ public class UnitController : ControllerBase
 
         List<UserResponse> users = [];
 
-        foreach (User u in Models.User.User.Users)
+        foreach (User u in Models.Users.User.Users)
         {
             var stat = Status.Statuses.FirstOrDefault(s => s.Id == u.StatusId);
             if (stat is null || stat.Id == 2) continue;

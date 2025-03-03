@@ -18,7 +18,7 @@ namespace apartment_portal_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetIssues()
         {
-            var issues = await _context.Issues.ToListAsync();
+            var issues = await _context.Issue.ToListAsync();
             return Ok(issues);
         }
     }

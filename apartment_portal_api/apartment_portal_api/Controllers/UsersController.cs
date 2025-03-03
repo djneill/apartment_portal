@@ -1,5 +1,4 @@
 using apartment_portal_api.Data;
-using apartment_portal_api.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,14 +18,14 @@ namespace apartment_portal_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _context.Users.ToListAsync();
+            var users = await _context.User.ToListAsync();
             return Ok(users);
         }
 
         [HttpGet("{id}")] // /users/12
         public async Task<IActionResult> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.User.FindAsync(id);
 
             if (user == null)
             {
