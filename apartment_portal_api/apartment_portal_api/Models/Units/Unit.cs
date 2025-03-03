@@ -1,33 +1,25 @@
-﻿using apartment_portal_api.Abstractions;
+﻿using apartment_portal_api.Models.Packages;
+using apartment_portal_api.Models.Statuses;
+using apartment_portal_api.Models.UnitUsers;
+using System;
+using System.Collections.Generic;
 
-namespace apartment_portal_api.Models.Units;
+namespace apartment_portal_api.Models;
 
-public sealed class Unit : Entity
+public partial class Unit
 {
-    public Unit(
-        int id,
-        int number,
-        int price,
-        int statusId,
-        int unitUserId)
-        : base(id)
-    {
-        Id = id;
-        Number = number;
-        Price = price;
-        StatusId = statusId;
-        UnitUserId = unitUserId;
-    }
+    public int Id { get; set; }
 
     public int Number { get; set; }
+
     public int Price { get; set; }
+
     public int StatusId { get; set; }
-    public int UnitUserId { get; set; }
 
+    // Linking properties for EF Core
+    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
 
-    public static List<Unit> Units = [
-        new Unit(1, 103, 2500, 1, 1),
-        new Unit(2, 592, 3000, 1, 1),
-        new Unit(3, 953, 3250, 2, 2)
-    ];
+    public virtual Status Status { get; set; } = null!;
+
+    public virtual ICollection<UnitUser> UnitUsers { get; set; } = new List<UnitUser>();
 }

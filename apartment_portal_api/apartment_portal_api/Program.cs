@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using apartment_portal_api.Data;
 using apartment_portal_api.Models.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace apartment_portal_api;
 
@@ -11,30 +12,30 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseInMemoryDatabase("TestDb"));
-
+            
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<PostgresContext>(
+                options =>
+                    options.UseNpgsql(connectionString));
+
+            builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddRoles<IdentityRole<int>>()
+                .AddEntityFrameworkStores<PostgresContext>();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = false;
+                options.User.RequireUniqueEmail = true;
+            });
+
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                if (!context.User.Any()) // Seed data if db is empty
-                {
-                    context.User.AddRange(new List<User>
-                    {
-                        new(1, "John", "Doe", new DateTime(1990, 1, 1), 1, DateTime.UtcNow, 1, DateTime.UtcNow, 1),
-                        new(2, "Jane", "Doe",new DateTime(1990, 2, 2), 1, DateTime.UtcNow, 1, DateTime.UtcNow, 1)
-                    });
-                    context.SaveChanges();
-                }
-            }
 
         // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -43,8 +44,16 @@ public class Program
                 app.UseSwaggerUI();
             }
 
+            app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
+                {
+                    await signInManager.SignOutAsync();
+                    return Results.Ok();
+                })
+                .RequireAuthorization();
+
             app.UseHttpsRedirection();
 
+            app.MapIdentityApi<ApplicationUser>();
             app.UseAuthorization();
 
 

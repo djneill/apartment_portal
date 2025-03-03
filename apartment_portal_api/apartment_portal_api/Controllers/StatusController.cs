@@ -1,47 +1,59 @@
-﻿using apartment_portal_api.Models.Statuses;
+﻿using apartment_portal_api.Data;
+using apartment_portal_api.Models.Statuses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Controllers;
 
 
-[Route("api/[controller]")]
-[ApiController]
+[Route("[controller]"), ApiController, Authorize]
 public class StatusController : ControllerBase
 {
-    [HttpGet("{id:int}")]
-    public ActionResult<Status> GetById(int id)
+    private PostgresContext _context;
+
+    public StatusController(PostgresContext context)
     {
-        var status = Status.Statuses.FirstOrDefault(x => x.Id == id);
+        _context = context;
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Status>> GetById(int id)
+    {
+        var status = await _context.Statuses.FirstOrDefaultAsync(x => x.Id == id);
         if (status is null) return NotFound(status);
 
         return Ok(status);
     }
 
     [HttpGet("/Statuses")]
-    public ActionResult<ICollection<Status>> Get()
+    public async Task<ActionResult<ICollection<Status>>> Get()
     {
-        return Ok(Status.Statuses);
+        return Ok(await _context.Statuses.ToListAsync());
     }
 
     [HttpPut("{id:int}")]
-    public ActionResult Update(int id, Status status)
+    public async Task<ActionResult> Update(int id, Status status)
     {
         if (id != status.Id) return BadRequest();
 
-        var dbStatus = Status.Statuses.FirstOrDefault(x => x.Id == id);
+        var dbStatus = await _context.Statuses.FirstOrDefaultAsync(x => x.Id == id);
         if (dbStatus is null) return BadRequest();
 
         dbStatus.Name = status.Name;
-        // Save();
+
+        await _context.SaveChangesAsync();
+
         return Ok();
     }
 
     [HttpPost]
-    public ActionResult Create(StatusPostRequest postData)
+    public async Task<ActionResult> Create(StatusPostRequest postData)
     {
-        Status newUnit = new Status(4, postData.Name);
-        Status.Statuses.Add(newUnit);
-        // Save();
+        Status newUnit = new Status{Name = postData.Name};
+        await _context.Statuses.AddAsync(newUnit);
+
+        await _context.SaveChangesAsync();
 
         return CreatedAtAction(
             nameof(GetById),
@@ -51,27 +63,29 @@ public class StatusController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
+    public async Task<ActionResult> Delete(int id)
     {
-        var statusToDelete = Status.Statuses.FirstOrDefault(unit => unit.Id == id);
+        var statusToDelete = await _context.Statuses.FirstOrDefaultAsync(unit => unit.Id == id);
         if (statusToDelete is null) return BadRequest();
 
-        Status.Statuses.Remove(statusToDelete);
+        _context.Statuses.Remove(statusToDelete);
 
-        // Save();
+        await _context.SaveChangesAsync();
+
         return Ok();
     }
 
     [HttpPatch("{id:int}")]
-    public ActionResult Patch(int id, StatusPatchRequest patchData)
+    public async Task<ActionResult> Patch(int id, StatusPatchRequest patchData)
     {
         if (id != patchData.Id) return BadRequest();
 
-        var statusToPatch = Status.Statuses.FirstOrDefault(status => status.Id == id);
+        var statusToPatch = await _context.Statuses.FirstOrDefaultAsync(status => status.Id == id);
         if (statusToPatch is null) return BadRequest();
 
         statusToPatch.Name = patchData.Name ?? statusToPatch.Name;
-        // Save()
+
+        await _context.SaveChangesAsync();
 
         return Ok();
     }

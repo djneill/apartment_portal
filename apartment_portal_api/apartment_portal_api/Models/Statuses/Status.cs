@@ -1,22 +1,20 @@
-﻿using apartment_portal_api.Abstractions;
+﻿using apartment_portal_api.Models.Packages;
+using apartment_portal_api.Models.Users;
+using System;
+using System.Collections.Generic;
 
 namespace apartment_portal_api.Models.Statuses;
 
-public sealed class Status : Entity
+public partial class Status
 {
-    public Status(
-        int id,
-        string name)
-        : base(id)
-    {
-        Id = id;
-        Name = name;
-    }
+    public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
-    public static List<Status> Statuses = [
-        new Status(1,"Active"),
-        new Status(2, "Inactive")
-    ];
+    // Linking properties for EF Core
+    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
+
+    public virtual ICollection<Unit> Units { get; set; } = new List<Unit>();
+
+    public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
 }

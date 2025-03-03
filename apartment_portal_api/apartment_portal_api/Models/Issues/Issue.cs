@@ -1,19 +1,22 @@
-﻿using apartment_portal_api.Abstractions;
+﻿using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.Users;
+using System;
+using System.Collections.Generic;
 
 namespace apartment_portal_api.Models.Issues;
 
-public class Issue : Entity
+public partial class Issue
 {
-    public Issue(
-        int id,
-        int unitUsersId,
-        int issueTypeId)
-    : base(id)
-    {
-        UnitUsersId = unitUsersId;
-        IssueTypeId = issueTypeId;
-    }
+    public int UserId { get; set; }
 
-    public int UnitUsersId { get; set; }
     public int IssueTypeId { get; set; }
+
+    public DateTime CreatedOn { get; set; }
+
+    public string Description { get; set; } = null!;
+
+    // Linking properties for EF Core
+    public virtual IssueType IssueType { get; set; } = null!;
+
+    public virtual ApplicationUser ApplicationUser { get; set; } = null!;
 }

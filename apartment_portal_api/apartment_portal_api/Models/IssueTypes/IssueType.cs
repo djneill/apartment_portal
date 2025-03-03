@@ -1,14 +1,15 @@
-﻿using apartment_portal_api.Abstractions;
+﻿using apartment_portal_api.Models.Issues;
+using System;
+using System.Collections.Generic;
 
 namespace apartment_portal_api.Models.IssueTypes;
 
-public class IssueType : Entity
+public partial class IssueType
 {
-    public IssueType(int id, string name) : base(id)
-    {
-        Id = id;
-        Name = name;
-    }
+    public int Id { get; set; }
 
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
+
+    // Linking properties for EF Core
+    public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
 }
