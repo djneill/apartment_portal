@@ -8,9 +8,9 @@ namespace apartment_portal_api.Controllers
     [ApiController]
     public class IssuesController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly PostgresContext _context;
 
-        public IssuesController(AppDbContext context)
+        public IssuesController(PostgresContext context)
         {
             _context = context;
         }
@@ -18,7 +18,7 @@ namespace apartment_portal_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetIssues()
         {
-            var issues = await _context.Issue.ToListAsync();
+            var issues = await _context.Issues.ToListAsync();
             return Ok(issues);
         }
     }
