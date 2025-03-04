@@ -1,5 +1,5 @@
 ﻿using apartment_portal_api.Data;
-using apartment_portal_api.Models.Packages;
+using apartment_portal_api.Models. Packages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
