@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using apartment_portal_api.Models;
+﻿using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Packages;
-using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.ParkingPermits;
+using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Data;
 
