@@ -1,4 +1,4 @@
-using apartment_portal_api.Entities;
+using apartment_portal_api.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
@@ -6,7 +6,11 @@ namespace apartment_portal_api.Controllers;
 [Route("[controller]")]
 public class GuestController : ControllerBase
 {
-    
+    private readonly IUnitOfWork _unitOfWork;
+    public GuestController(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
     // Random random = new();
     // private List<Guest> _guests = new();
 
@@ -25,7 +29,7 @@ public class GuestController : ControllerBase
     //         CreatedOn = DateTime.UtcNow 
     //     })
     // }
-    
+
     // [HttpGet("{id:int}")]
     // public ActionResult<Guest> GetGuestById(int id)
     // {
@@ -39,9 +43,9 @@ public class GuestController : ControllerBase
     // [HttpGet("/Guests")]
     // public ActionResult<ICollection<Guest>> GetGuests()
     // {
-        
+
     //     return Ok(_guests)
-            
+
     // }
-    
+
 }

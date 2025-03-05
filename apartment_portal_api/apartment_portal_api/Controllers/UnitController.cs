@@ -1,11 +1,7 @@
-﻿using apartment_portal_api.Data;
+﻿using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models;
-using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.Units;
-using apartment_portal_api.Models.UnitUsers;
-using apartment_portal_api.Models.Users;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Controllers;
 
@@ -13,18 +9,18 @@ namespace apartment_portal_api.Controllers;
 [Route("[controller]")]
 public class UnitController : ControllerBase
 {
-    private PostgresContext _context;
-    public UnitController(PostgresContext context)
+    private IUnitOfWork _unitOfWork;
+    public UnitController(IUnitOfWork unitOfWork)
     {
-        _context = context;
+        _unitOfWork = unitOfWork;
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<UnitResponse>> GetById(int id)
     {
-        var unit = await _context.Units.FirstOrDefaultAsync(x => x.Id == id);
+        var unit = await _unitOfWork.UnitRepository.GetAsync(id);
         if (unit is null) return BadRequest();
-        
+
 
         return Ok(unit);
     }
@@ -32,7 +28,7 @@ public class UnitController : ControllerBase
     [HttpGet("/Units")]
     public async Task<ActionResult<ICollection<Unit>>> Get()
     {
-        return Ok(await _context.Units.ToListAsync());
+        return Ok(await _unitOfWork.UnitRepository.GetAsync());
     }
 
     [HttpPut("{id:int}")]
@@ -40,13 +36,13 @@ public class UnitController : ControllerBase
     {
         if (id != unit.Id) return BadRequest();
 
-        var dbUnit = await _context.Units.FirstOrDefaultAsync(x => x.Id == id);
+        var dbUnit = await _unitOfWork.UnitRepository.GetAsync(id);
         if (dbUnit is null) return BadRequest();
 
         dbUnit.Number = unit.Number;
         dbUnit.Price = unit.Price;
         dbUnit.StatusId = unit.StatusId;
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveAsync();
         return Ok();
     }
 
@@ -55,10 +51,12 @@ public class UnitController : ControllerBase
     {
         Unit newUnit = new Unit
         {
-            Number = postData.Number, Price = postData.Price, StatusId = postData.StatusId
+            Number = postData.Number,
+            Price = postData.Price,
+            StatusId = postData.StatusId
         };
-        await _context.Units.AddAsync(newUnit);
-        await _context.SaveChangesAsync();
+        await _unitOfWork.UnitRepository.AddAsync(newUnit);
+        await _unitOfWork.SaveAsync();
 
         return CreatedAtAction(
             nameof(GetById),
@@ -70,12 +68,12 @@ public class UnitController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var unitToDelete = _context.Units.FirstOrDefault(unit => unit.Id == id);
+        var unitToDelete = await _unitOfWork.UnitRepository.GetAsync(id);
         if (unitToDelete is null) return BadRequest();
 
-        _context.Units.Remove(unitToDelete);
+        _unitOfWork.UnitRepository.Delete(unitToDelete);
 
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveAsync();
         return Ok();
     }
 
@@ -84,13 +82,13 @@ public class UnitController : ControllerBase
     {
         if (id != patchData.Id) return BadRequest();
 
-        var unitToPatch = _context.Units.FirstOrDefault(unit => unit.Id == id);
+        var unitToPatch = await _unitOfWork.UnitRepository.GetAsync(id);
         if (unitToPatch is null) return BadRequest();
 
         unitToPatch.Number = patchData.Number ?? unitToPatch.Number;
         unitToPatch.Price = patchData.Price ?? unitToPatch.Price;
         unitToPatch.StatusId = patchData.StatusId ?? unitToPatch.StatusId;
-        await _context.SaveChangesAsync();
+        await _unitOfWork.SaveAsync();
 
         return Ok();
     }

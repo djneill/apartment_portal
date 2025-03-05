@@ -1,5 +1,4 @@
-﻿using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.Users;
+﻿using apartment_portal_api.Models.Users;
 
 namespace apartment_portal_api.Models.Packages;
 

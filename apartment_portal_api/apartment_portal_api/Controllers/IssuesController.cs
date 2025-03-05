@@ -1,25 +1,23 @@
-using apartment_portal_api.Data;
+using apartment_portal_api.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace apartment_portal_api.Controllers
+namespace apartment_portal_api.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class IssuesController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class IssuesController : ControllerBase
+    private readonly IUnitOfWork _unitOfWork;
+
+    public IssuesController(IUnitOfWork unitOfWork)
     {
-        private readonly PostgresContext _context;
+        _unitOfWork = unitOfWork;
+    }
 
-        public IssuesController(PostgresContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetIssues()
-        {
-            var issues = await _context.Issues.ToListAsync();
-            return Ok(issues);
-        }
+    [HttpGet]
+    public async Task<IActionResult> GetIssues()
+    {
+        var issues = await _unitOfWork.IssueRepository.GetAsync();
+        return Ok(issues);
     }
 }

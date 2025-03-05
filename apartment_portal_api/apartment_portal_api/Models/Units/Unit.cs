@@ -1,8 +1,6 @@
 ﻿using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.UnitUsers;
-using System;
-using System.Collections.Generic;
 
 namespace apartment_portal_api.Models;
 

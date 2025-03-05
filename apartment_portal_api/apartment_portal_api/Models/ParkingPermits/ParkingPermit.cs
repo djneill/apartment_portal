@@ -1,6 +1,4 @@
 ﻿using apartment_portal_api.Models.Guests;
-using System;
-using System.Collections.Generic;
 
 namespace apartment_portal_api.Models.ParkingPermits;
 
