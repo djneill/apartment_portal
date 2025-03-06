@@ -2,6 +2,7 @@ using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.DTOs;
+using apartment_portal_api.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
@@ -23,12 +24,14 @@ public class GuestController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<GuestDTO>> GetGuestById(int id)
     {
-        var guests = await _unitOfWork.GuestRepository.GetAsync();
-        var guest = guests.FirstOrDefault(g => g.Id == id);
+        // Fetch the guest by id
+        var guest = await _unitOfWork.GuestRepository.GetAsync(id);
 
-        if (guest is null)
+        // If the guest is not found, return NotFound
+        if (guest == null)
             return NotFound();
 
+        // Map the Guest entity to GuestDTO for the response
         var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
@@ -36,12 +39,32 @@ public class GuestController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests()
     {
+        // Fetch all guests
         var guests = await _unitOfWork.GuestRepository.GetAsync();
+
+        // Map the list of guests to a list of GuestDTOs
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
         return Ok(guestDTOs);
     }
-}
 
+    [HttpPost("register_guest")]
+    public async Task<ActionResult<GuestDTO>> Create(GuestCreateDTO request)
+    {
+        // Map the incoming GuestCreateDTO to a Guest entity
+        var newGuest = _mapper.Map<Guest>(request);
+        newGuest.CreatedOn = DateTime.UtcNow;
+
+        // Add the new guest entity to the repository
+        await _unitOfWork.GuestRepository.AddAsync(newGuest);
+        await _unitOfWork.SaveAsync();
+
+        // Map the newly created Guest entity to GuestDTO for the response
+        var guestDTO = _mapper.Map<GuestDTO>(newGuest);
+
+        // Return the created guest's DTO along with a CreatedAtAction response
+        return CreatedAtAction(nameof(GetGuestById), new { id = newGuest.Id }, guestDTO);
+    }
+}
     // Random random = new();
     // private List<Guest> _guests = new();
 
