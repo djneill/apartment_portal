@@ -6,6 +6,7 @@ namespace apartment_portal_api.DTOs
     using apartment_portal_api.Models.Guests;
     using apartment_portal_api.Models.Users;
     using apartment_portal_api.Models.Packages;
+    using apartment_portal_api.Models.Statuses;
 
     public class MappingProfile : Profile
     {
@@ -13,10 +14,12 @@ namespace apartment_portal_api.DTOs
         {
             // Define mappings here
             CreateMap<ApplicationUser, UserDTO>();
+            CreateMap<RegistrationRequestDTO, ApplicationUser>();
             CreateMap<Unit, UnitDTO>();
             CreateMap<Guest, GuestDTO>();
             CreateMap<Issue, IssueDTO>();
             CreateMap<Package, PackageDTO>();
+            CreateMap<Status, StatusDTO>();
         }
     }
 }

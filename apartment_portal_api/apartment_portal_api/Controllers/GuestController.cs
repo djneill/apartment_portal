@@ -1,16 +1,47 @@
 using apartment_portal_api.Abstractions;
+using apartment_portal_api.Models;
+using apartment_portal_api.Models.Users;
+using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class GuestController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
-    public GuestController(IUnitOfWork unitOfWork)
+    private readonly IMapper _mapper;
+
+    public GuestController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<GuestDTO>> GetGuestById(int id)
+    {
+        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        var guest = guests.FirstOrDefault(g => g.Id == id);
+
+        if (guest is null)
+            return NotFound();
+
+        var guestDTO = _mapper.Map<GuestDTO>(guest);
+        return Ok(guestDTO);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests()
+    {
+        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
+        return Ok(guestDTOs);
+    }
+}
+
     // Random random = new();
     // private List<Guest> _guests = new();
 
@@ -48,4 +79,3 @@ public class GuestController : ControllerBase
 
     // }
 
-}
