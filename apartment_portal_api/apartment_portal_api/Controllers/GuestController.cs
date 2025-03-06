@@ -1,51 +1,52 @@
 using apartment_portal_api.Abstractions;
+using apartment_portal_api.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class GuestController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
+
     public GuestController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
-    // Random random = new();
-    // private List<Guest> _guests = new();
 
-    //     for (int i = 1; i <= 8; i++)
-    // {
-    //     guests.Add(new Guest
-    //     {
-    //         Id = i,
-    //         UserId = random.Next(1000, 9999),
-    //         FirstName = $"Guest{i}",
-    //         LastName = "Smith",
-    //         Email = $"guest{i}@example.com",
-    //         PhoneNumber = $"+1-555-{random.Next(1000, 9999)}",
-    //         AccessCode = random.Next(100000, 999999).ToString(),
-    //         Expiration = DateTime.UtcNow.AddHours(5), 
-    //         CreatedOn = DateTime.UtcNow 
-    //     })
-    // }
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Guest>> GetGuestById(int id)
+    {
+        var guest = await _unitOfWork.GuestRepository.GetAsync(id);
+        if (guest is not null) return Ok(guest);
+        return NotFound();
+    }
 
-    // [HttpGet("{id:int}")]
-    // public ActionResult<Guest> GetGuestById(int id)
-    // {
-    //     var guest = _guests.FirstOrDefault(x => x.Id == id);
+    [HttpGet]
+    public async Task<ActionResult<ICollection<Guest>>> GetGuests()
+    {
+        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        return Ok(guests);
+    }
 
-    //     if (guest is not null) return Ok(guest);
+    [HttpPost("register_guest")]
+    public async Task<ActionResult> Create(GuestPostRequest request)
+    {
+        Guest newGuest = new()
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            AccessCode = request.AccessCode,
+            Expiration = request.Expiration,
+            CreatedOn = DateTime.UtcNow
+        };
 
-    //     return NotFound();
-    // }
+        await _unitOfWork.GuestRepository.AddAsync(newGuest);
+        await _unitOfWork.SaveAsync();
 
-    // [HttpGet("/Guests")]
-    // public ActionResult<ICollection<Guest>> GetGuests()
-    // {
-
-    //     return Ok(_guests)
-
-    // }
-
+        return CreatedAtAction(nameof(GetGuestById), new { id = newGuest.Id }, newGuest);
+    }
 }
