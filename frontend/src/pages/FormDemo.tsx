@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import Card from '../components/Card';
-import { FormSelect, } from '../components/form';
+import {
+    FormInput,
+    FormSelect,
+    FormPhoneInput,
+} from '../components/form';
 
 const FormDemo = () => {
     const [formData, setFormData] = useState({
@@ -24,6 +28,19 @@ const FormDemo = () => {
 
                 <Card className="p-8">
                     <h2 className="text-2xl font-semibold mb-6">Basic Form Fields</h2>
+
+                    <FormInput
+                        label="Name"
+                        placeholder="Enter your name"
+                        value={formData.name}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                    />
+
+                    <FormPhoneInput
+                        label="Phone"
+                        value={formData.phone}
+                        onChange={(value) => handleChange('phone', value)}
+                    />
 
                     <FormSelect
                         label="Select Service"
