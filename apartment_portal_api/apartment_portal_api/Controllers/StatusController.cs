@@ -1,33 +1,39 @@
 ﻿using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Statuses;
+using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
-
 
 [Route("[controller]"), ApiController]
 public class StatusController : ControllerBase
 {
-    private IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
 
-    public StatusController(IUnitOfWork unitOfWork)
+    public StatusController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Status>> GetById(int id)
+    public async Task<ActionResult<StatusDTO>> GetById(int id)
     {
         var status = await _unitOfWork.StatusRepository.GetAsync(id);
         if (status is null) return NotFound(status);
 
-        return Ok(status);
+        var statusDTO = _mapper.Map<StatusDTO>(status);
+        return Ok(statusDTO);
     }
 
     [HttpGet("/Statuses")]
-    public async Task<ActionResult<ICollection<Status>>> Get()
+    public async Task<ActionResult<ICollection<StatusDTO>>> Get()
     {
-        return Ok(await _unitOfWork.StatusRepository.GetAsync());
+        var statuses = await _unitOfWork.StatusRepository.GetAsync();
+        var statusDTOs = _mapper.Map<ICollection<StatusDTO>>(statuses);
+        return Ok(statusDTOs);
     }
 
     [HttpPut("{id:int}")]
@@ -48,7 +54,7 @@ public class StatusController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create(StatusPostRequest postData)
     {
-        Status newStatus = new Status { Name = postData.Name };
+        Status newStatus = _mapper.Map<Status>(postData);
         await _unitOfWork.StatusRepository.AddAsync(newStatus);
 
         await _unitOfWork.SaveAsync();

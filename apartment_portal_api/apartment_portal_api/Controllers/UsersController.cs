@@ -1,7 +1,9 @@
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Users;
+using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
 
@@ -11,20 +13,24 @@ public class UsersController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IMapper _mapper;
 
     public UsersController(
         IUnitOfWork unitOfWork,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _unitOfWork.UserRepository.GetAsync();
-        return Ok(users);
+        var userDTOs = _mapper.Map<IEnumerable<UserDTO>>(users);
+        return Ok(userDTOs);
     }
 
     [HttpGet("{id}")] // /users/12
@@ -34,32 +40,22 @@ public class UsersController : ControllerBase
 
         if (user == null)
         {
-            return NotFound(new { message = $"ApplicationUser with ID {id} not found" });
+            return NotFound(new { message = $"User with ID {id} not found" });
         }
 
-        return Ok(user);
+        var userDTO = _mapper.Map<UserDTO>(user);
+        return Ok(userDTO);
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Create(RegistrationRequest request)
+    public async Task<IActionResult> Create(RegistrationRequestDTO request)
     {
-        ApplicationUser newUser = new ApplicationUser();
-        {
-            newUser.UserName = request.Email;
-            newUser.Email = request.Email;
-            newUser.FirstName = request.FirstName;
-            newUser.LastName = request.LastName;
-            newUser.PhoneNumber = request.PhoneNumber;
-            newUser.DateOfBirth = request.DateOfBirth;
-            newUser.StatusId = request.StatusId;
-            newUser.CreatedBy = request.CreatedBy;
-            newUser.ModifiedBy = request.ModifiedBy;
-        };
+        var newUser = _mapper.Map<ApplicationUser>(request);
 
         var result = await _userManager.CreateAsync(newUser, request.Password);
 
-        if (!result.Succeeded) return BadRequest();
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
-        return Ok(result);
+        return Ok(_mapper.Map<UserDTO>(newUser));
     }
 }
