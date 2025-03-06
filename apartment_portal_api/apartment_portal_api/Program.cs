@@ -1,6 +1,8 @@
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Data;
 using apartment_portal_api.Models.Users;
+using apartment_portal_api.DTOs;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,8 +15,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
         builder.Services.AddControllers();
+
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
 
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -40,7 +43,6 @@ public class Program
 
         var app = builder.Build();
 
-
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -59,7 +61,6 @@ public class Program
 
         app.MapIdentityApi<ApplicationUser>();
         app.UseAuthorization();
-
 
         app.MapControllers();
 

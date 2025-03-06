@@ -1,18 +1,23 @@
 ﻿using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Packages;
+using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
+
 [ApiController]
 [Route("[controller]")]
 public class PackageController : ControllerBase
 {
-    private IUnitOfWork _unitOfWork;
-    public PackageController(IUnitOfWork unitOfWork)
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+
+    public PackageController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
+        _mapper = mapper;
     }
-
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PackageGetByIdResponse>> GetById(int id)
@@ -20,14 +25,16 @@ public class PackageController : ControllerBase
         var package = await _unitOfWork.PackageRepository.GetAsync(id);
         if (package is null) return NotFound(package);
 
-        return Ok(package);
+        var packageDto = _mapper.Map<PackageGetByIdResponse>(package);
+        return Ok(packageDto);
     }
 
     [HttpGet("/Packages")]
     public async Task<ActionResult<ICollection<PackageGetResponse>>> Get()
     {
-
-        return Ok(await _unitOfWork.PackageRepository.GetAsync());
+        var packages = await _unitOfWork.PackageRepository.GetAsync();
+        var packageDtos = _mapper.Map<ICollection<PackageGetResponse>>(packages);
+        return Ok(packageDtos);
     }
 
     [HttpPut("{id:int}")]
@@ -49,11 +56,9 @@ public class PackageController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create(PackagePostRequest postData)
     {
-        Package newPackage = new Package
-        { UnitId = postData.UnitUsersId, LockerNumber = postData.LockerNumber, Code = postData.Code, StatusId = postData.StatusId };
+        var newPackage = _mapper.Map<Package>(postData);
 
         await _unitOfWork.PackageRepository.AddAsync(newPackage);
-
         await _unitOfWork.SaveAsync();
 
         return CreatedAtAction(
@@ -70,7 +75,6 @@ public class PackageController : ControllerBase
         if (packageToDelete is null) return BadRequest();
 
         _unitOfWork.PackageRepository.Delete(packageToDelete);
-
         await _unitOfWork.SaveAsync();
         return Ok();
     }
@@ -89,7 +93,6 @@ public class PackageController : ControllerBase
         packageToPatch.UnitId = patchData.UnitUsersId ?? packageToPatch.UnitId;
 
         await _unitOfWork.SaveAsync();
-
         return Ok();
     }
 }
