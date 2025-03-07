@@ -3,7 +3,7 @@ import { useState } from "react";
 import InputField from "../InputField";
 import SignInButton from "../SignInButton";
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
-import './Login.css'; 
+import './Login.css';
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -16,9 +16,9 @@ function Login() {
   };
 
   return (
-    <main className="loginContainer">
+    <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
-        <h1 className="self-center">
+        <h1 className="self-center login-h1">
           Hello Again!
         </h1>
 
