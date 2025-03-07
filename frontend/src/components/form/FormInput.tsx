@@ -18,7 +18,7 @@ const FormInput = ({
     return (
         <div className="mb-4">
             {label && (
-                <label htmlFor={inputId} className="block text-black mb-2">
+                <label htmlFor={inputId} className="block text-black text-left mb-2">
                     {label}
                 </label>
             )}

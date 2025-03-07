@@ -22,7 +22,7 @@ const FormSelect = ({
     return (
         <div className="mb-4">
             {label && (
-                <label htmlFor={selectId} className="block text-black mb-2">
+                <label htmlFor={selectId} className="block text-black mb-2 text-left">
                     {label}
                 </label>
             )}
@@ -33,7 +33,7 @@ const FormSelect = ({
                         px-0 
                         py-2 
                         bg-transparent 
-                        text-black border-b 
+                        text-secondary border-b 
                         border-content-background 
                         focus:border-primary
                         focus:outline-none appearance-none 
