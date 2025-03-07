@@ -4,6 +4,7 @@ import Home from './components/Home/Home';
 import UserProfile from './components/UserProfile';
 import './App.css'
 import FormDemo from './pages/FormDemo';
+import TenantDashboard from './tenantDashboard/TenantDashboard';
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/formdemo" element={<FormDemo />} />
+        <Route path="/tenantdashboard" element={<TenantDashboard />} />
       </Routes>
     </BrowserRouter>
   )
