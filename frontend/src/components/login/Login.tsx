@@ -3,16 +3,27 @@ import { useState } from "react";
 import InputField from "../InputField";
 import SignInButton from "../SignInButton";
 import { User, Lock, Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../services/auth';
 import './Login.css'; 
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("enviar:", { username, password });
+
+    try {
+      await login(username, password);
+      // Redirect to the home page
+      navigate('/home');
+    } catch (error) {
+      console.error('Login failed:', error);
+      //mostrar mensaje
+    }
   };
 
   return (
