@@ -2,10 +2,10 @@ import * as React from "react";
 import { useState } from "react";
 import InputField from "../InputField";
 import SignInButton from "../SignInButton";
-import { User, Lock, Eye, EyeOff } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../services/auth';
-import './Login.css'; 
+import { User, Lock, Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/auth";
+import "./Login.css";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -19,19 +19,17 @@ function Login() {
     try {
       await login(username, password);
       // Redirect to the home page
-      navigate('/home');
+      navigate("/home");
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
       //mostrar mensaje
     }
   };
 
   return (
-    <main className="loginContainer">
+    <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
-        <h1 className="self-center">
-          Hello Again!
-        </h1>
+        <h1 className="self-center login-h1">Hello Again!</h1>
 
         <InputField
           type="text"
@@ -53,10 +51,7 @@ function Login() {
           className="mt-8"
         />
 
-        <button
-          type="button"
-          className="self-end mt-2 text-xs font-medium"
-        >
+        <button type="button" className="self-end mt-2 text-xs font-medium">
           Forgot Password ?
         </button>
 

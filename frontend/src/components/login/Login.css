@@ -1,3 +1,7 @@
+.login-body {
+    display: flex;
+}
+
 .loginContainer {
     display: flex;
     overflow: hidden;
@@ -8,4 +12,7 @@
     flex-direction: column;
 }
 
-
+.login-h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+}
