@@ -1,3 +1,5 @@
-﻿namespace apartment_portal_api.Models.Packages;
+﻿using apartment_portal_api.Models.Statuses;
 
-public record PackageGetResponse(int Id, int LockerNumber, int Code, Models.Statuses.Status Status);
+namespace apartment_portal_api.Models.Packages;
+
+public record PackageGetResponse(int Id, int LockerNumber, int Code, StatusResponse Status);

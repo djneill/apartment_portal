@@ -1,6 +1,6 @@
 ﻿using apartment_portal_api.Abstractions;
-using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.DTOs;
+using apartment_portal_api.Models.Statuses;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
