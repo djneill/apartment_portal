@@ -1,13 +1,13 @@
-import Login from './components/login/Login';
+import Login from "./components/login/Login";
 import { BrowserRouter, Routes, Route } from "react-router";
-import Home from './components/Home/Home';
-import UserProfile from './components/UserProfile';
-import './App.css'
-import FormDemo from './pages/FormDemo';
-import TenantDashboard from './tenantDashboard/TenantDashboard';
+import Home from "./components/Home/Home";
+import UserProfile from "./components/UserProfile";
+import "./App.css";
+import FormDemo from "./pages/FormDemo";
+import TenantDashboard from "./tenantDashboard/TenantDashboard";
+import ManageGuests from "./pages/ManageGuests";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -15,10 +15,11 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/formdemo" element={<FormDemo />} />
+        <Route path="/guests" element={<ManageGuests />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
