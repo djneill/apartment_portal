@@ -13,20 +13,31 @@ const FormSelect = ({
     error,
     options,
     className = '',
-    required,
+    id,
     ...props
 }: FormSelectProps) => {
+    const selectId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
+
+
     return (
         <div className="mb-4">
             {label && (
-                <label className="block text-black mb-2">
+                <label htmlFor={selectId} className="block text-black mb-2 text-left">
                     {label}
                 </label>
             )}
             <div className="relative">
                 <select
-                    className={`w-full px-0 py-2 bg-transparent text-black border-b border-content-background focus:border-content-background/20 focus:outline-none appearance-none ${className}`}
-                    required={required}
+                    className={`
+                        w-full 
+                        px-0 
+                        py-2 
+                        bg-transparent 
+                        text-secondary border-b 
+                        border-content-background 
+                        focus:border-primary
+                        focus:outline-none appearance-none 
+                        ${className}`}
                     {...props}>
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>
