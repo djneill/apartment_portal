@@ -33,14 +33,19 @@ public class GuestController : ControllerBase
        var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
-
+    
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests()
+    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests([FromQuery] int? userId, [FromQuery] bool? active)
     {
-        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
+            (!userId.HasValue || g.UserId == userId) &&
+            (!active.HasValue || (active.Value && g.Expiration > DateTime.UtcNow))
+        );
         
+        if (!guests.Any()) return NotFound(new { message = "No guests found." });
+
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
-        return Ok(guestDTOs);
+        return Ok(new { success = true, data = guestDTOs });
     }
 
     [HttpPost("register-guest")]
