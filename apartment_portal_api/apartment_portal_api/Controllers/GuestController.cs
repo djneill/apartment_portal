@@ -4,6 +4,7 @@ using apartment_portal_api.Models.Users;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
@@ -33,14 +34,35 @@ public class GuestController : ControllerBase
        var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
-
+    
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests()
+    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests([FromQuery] int? userId, [FromQuery] bool? active)
     {
-        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
+        if (loggedInUserId == null)
+        {
+            return Unauthorized(); 
+        }
+        
+        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        var isAdmin = User.IsInRole("Admin");
+        
+        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        {
+            return Forbid(); 
+        }
+        
+        var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
+            (isAdmin || g.UserId == loggedInUserIdInt) &&
+            (!userId.HasValue || g.UserId == userId) &&
+            (!active.HasValue || (active.Value && g.Expiration > DateTime.UtcNow) || (!active.Value && g.Expiration <= DateTime.UtcNow))
+        );
+        
+        if (!guests.Any()) return NotFound(new { message = "No guests found." });
+
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
-        return Ok(guestDTOs);
+        return Ok(new { success = true, data = guestDTOs });
     }
 
     [HttpPost("register-guest")]
