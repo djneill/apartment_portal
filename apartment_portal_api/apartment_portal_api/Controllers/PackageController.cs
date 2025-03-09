@@ -31,9 +31,9 @@ public class PackageController : ControllerBase
     [HttpGet("/Packages")]
     public async Task<ActionResult<ICollection<PackageGetResponse>>> Get(int userId, int statusId = 0)
     {
-        var loggedInUserRoleClaim = User.Claims.FirstOrDefault(claim => claim.Value == "Admin");
-        var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == userId.ToString());
-        if (loggedInUserRoleClaim is null && loggedInUserIdClaim is null) return Unauthorized();
+        //var loggedInUserRoleClaim = User.Claims.FirstOrDefault(claim => claim.Value == "Admin");
+        //var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == userId.ToString());
+        //if (loggedInUserRoleClaim is null && loggedInUserIdClaim is null) return Unauthorized();
 
         var packages = await _unitOfWork.PackageRepository.GetByUserId(userId, statusId);
 
