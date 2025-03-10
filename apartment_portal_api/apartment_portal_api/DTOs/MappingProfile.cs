@@ -18,8 +18,8 @@ namespace apartment_portal_api.DTOs
             CreateMap<Unit, UnitDTO>();
             CreateMap<Guest, GuestDTO>();
             CreateMap<Issue, IssueDTO>();
-            CreateMap<Package, PackageDTO>();
-            CreateMap<Status, StatusDTO>();
+            CreateMap<Package, PackageGetResponse>();
+            CreateMap<Status, StatusResponse>();
         }
     }
 }

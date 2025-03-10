@@ -5,6 +5,7 @@ using apartment_portal_api.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace apartment_portal_api;
 
@@ -15,7 +16,10 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
 
         builder.Services.AddAutoMapper(typeof(MappingProfile));
 
