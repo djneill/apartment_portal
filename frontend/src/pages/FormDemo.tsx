@@ -24,9 +24,9 @@ const FormDemo = () => {
     return (
         <div className="min-h-screen bg-background p-8">
             <div className="w-full mx-auto space-y-8">
-                <h1 className="text-xl font-bold text-primary mb-8">Form Components</h1>
+                <h1 className="text-2xl text-center font-bold mb-8">Form Components</h1>
 
-                <Card className="p-8">
+                <Card className="p-8 bg-content-background">
                     <h2 className="text-2xl font-semibold mb-6">Basic Form Fields</h2>
 
                     <FormInput

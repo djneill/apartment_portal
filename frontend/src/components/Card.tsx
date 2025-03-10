@@ -11,7 +11,7 @@ interface CardProps {
 
 const Card = ({ children, title, icon, className = "", headerClassName = "", bodyClassName = "" }: CardProps) => {
     return (
-        <div className={`bg-gray-400/20 rounded-lg p-4 ${className}`}>
+        <div className={`bg-content-background rounded-lg p-4 ${className}`}>
             {(title || icon) && (
                 <div className={`flex justify-between items-center mb-4 ${headerClassName}`}>
                     {title && <h2 className="text-xl font-semibold">{title}</h2>}
