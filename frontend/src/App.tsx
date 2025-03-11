@@ -7,7 +7,7 @@ import {
   FormDemo,
   TenantDashboard,
 } from "./pages";
-// import ManageGuests from "./pages/ManageGuests";
+import ManageGuests from "./pages/ManageGuests";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/formdemo" element={<FormDemo />} />
-        {/* <Route path="/guests" element={<ManageGuests />} /> */}
+        <Route path="/guests" element={<ManageGuests />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
       </Routes>
     </BrowserRouter>
