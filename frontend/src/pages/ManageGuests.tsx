@@ -1,9 +1,11 @@
 import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import GuestForm from "../components/guests/GuestForm";
+import PreviousGuests from "../components/guests/PreviousGuests";
 
 export default function ManageGuests() {
   //TODO:
   //  - connect api for submit and pull current guest list
+  //  - send info to components
   //  - desktop version
 
   function handleSubmit(data: {
@@ -23,6 +25,7 @@ export default function ManageGuests() {
         <div className="w-full space-y-10">
           <GuestForm onSubmit={handleSubmit} />
           <CurrentGuestTable />
+          <PreviousGuests />
         </div>
       </div>
     </div>
