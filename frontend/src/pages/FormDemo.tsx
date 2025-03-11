@@ -4,6 +4,7 @@ import {
     FormInput,
     FormSelect,
     FormPhoneInput,
+    FormDateInput,
 } from '../components/form';
 
 const FormDemo = () => {
@@ -40,6 +41,12 @@ const FormDemo = () => {
                         label="Phone"
                         value={formData.phone}
                         onChange={(value) => handleChange('phone', value)}
+                    />
+
+                    <FormDateInput
+                        label="Date"
+                        value={formData.date}
+                        onChange={(value) => handleChange('date', value)}
                     />
 
                     <FormSelect
