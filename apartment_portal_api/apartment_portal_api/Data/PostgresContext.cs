@@ -133,7 +133,6 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
             entity.ToTable("packages");
 
-            entity.HasIndex(e => e.LockerNumber, "packages_lockerNumber_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Code).HasColumnName("code");
