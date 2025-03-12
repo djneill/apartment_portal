@@ -16,7 +16,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var allowedOrigins = "AllowedOrigins";
-
+ 
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: allowedOrigins,
@@ -36,10 +36,8 @@ public class Program
         });
 
         builder.Services.AddAutoMapper(typeof(MappingProfile));
-
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -61,6 +59,8 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseCors(allowedOrigins);
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -77,7 +77,10 @@ public class Program
             })
             .RequireAuthorization();
 
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsDevelopment()) 
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.MapIdentityApi<ApplicationUser>();
         app.UseAuthorization();
