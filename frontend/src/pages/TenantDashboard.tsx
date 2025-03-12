@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import HeroCard from "../tenantDashboard/components/HeroCard";
+import {
+  HeroCard,
+  QuickIconButton,
+} from "../tenantDashboard/components";
 import { getData } from "../services/api";
-
+import { TriangleAlert, UserRoundPlus, Lock, FilePen } from 'lucide-react'
 type Notifications = {
   date: string;
   message: string;
@@ -18,6 +21,12 @@ const TenantDashboard = () => {
     })();
   }, []);
 
+  const quickActions = [
+    { icon: <TriangleAlert size={24} />, label: 'Report Issues', to: '/issues' },
+    { icon: <UserRoundPlus size={24} />, label: 'Manage Guests', to: 'guests' },
+    { icon: <Lock size={24} />, label: 'Control Locks', to: '/lock' },
+    { icon: <FilePen size={24} />, label: 'Manage Lease', to: 'lease' },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -44,6 +53,18 @@ const TenantDashboard = () => {
           onActionClick={(index) => console.log("Clicked notification", index)}
           onViewAllClick={() => console.log("View all clicked")}
         />
+
+        <div className="grid grid-cols-4 gap-4">
+          {quickActions.map((action, index) => (
+            <QuickIconButton
+              key={index}
+              icon={action.icon}
+              label={action.label}
+              to={action.to}
+              variant="primary"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
