@@ -1,3 +1,5 @@
+using apartment_portal_api.Models.ParkingPermits;
+
 namespace apartment_portal_api.DTOs
 {
     using AutoMapper;
@@ -17,6 +19,11 @@ namespace apartment_portal_api.DTOs
             CreateMap<RegistrationRequestDTO, ApplicationUser>();
             CreateMap<Unit, UnitDTO>();
             CreateMap<Guest, GuestDTO>();
+            CreateMap<GuestPostRequest, Guest>()
+                .ForMember(
+                    dest => dest.Expiration,
+                    opt => opt.MapFrom(b => DateTime.UtcNow.AddHours(b.DurationInHours)));
+            CreateMap<ParkingPermitPostRequest, ParkingPermit>();
             CreateMap<Issue, IssueDTO>();
             CreateMap<Package, PackageGetResponse>();
             CreateMap<Status, StatusResponse>();
