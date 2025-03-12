@@ -44,7 +44,7 @@ const HeroCard = ({
             </div>
 
             {/* Notification Card */}
-            <div className="bg-secondary/90 rounded-4xl -mt-28 mx-4 overflow-hidden">
+            <div className="bg-secondary rounded-4xl -mt-28 mx-4 overflow-hidden">
                 {notifications.map((notification, index) => (
                     <div
                         key={index}
