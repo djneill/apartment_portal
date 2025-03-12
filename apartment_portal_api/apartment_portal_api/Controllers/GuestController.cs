@@ -68,7 +68,7 @@ public class GuestController : ControllerBase
         return Ok(new { success = true, data = guestDTOs });
     }
 
-    [HttpPost("register-guests")]
+    [HttpPost("register-guest")]
     public async Task<ActionResult<GuestDTO>> CreateGuest(GuestPostRequest request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
