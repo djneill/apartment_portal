@@ -22,10 +22,10 @@ const TenantDashboard = () => {
   }, []);
 
   const quickActions = [
-    { icon: <TriangleAlert size={24} />, label: 'Report Issues', to: '/issues' },
-    { icon: <UserRoundPlus size={24} />, label: 'Manage Guests', to: 'guests' },
-    { icon: <Lock size={24} />, label: 'Control Locks', to: '/lock' },
-    { icon: <FilePen size={24} />, label: 'Manage Lease', to: 'lease' },
+    { icon: <TriangleAlert size={24} />, label: 'Report Issues', to: '/' },
+    { icon: <UserRoundPlus size={24} />, label: 'Manage Guests', to: '/' },
+    { icon: <Lock size={24} />, label: 'Control Locks', to: '/' },
+    { icon: <FilePen size={24} />, label: 'Manage Lease', to: '/' },
   ];
 
   return (
