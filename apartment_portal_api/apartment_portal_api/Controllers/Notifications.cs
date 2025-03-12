@@ -8,7 +8,7 @@ using apartment_portal_api.Models.Packages;
 using System.Security.Claims;
 using AutoMapper;
 
-namespace apartment_portal_api.Services;
+namespace apartment_portal_api.Controllers;
 
 [ApiController]
 [Route("api/notifications")]
@@ -24,7 +24,7 @@ public class Notifications : ControllerBase
     }
     
     [HttpGet("latest")]
-    public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId)
+    public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId, [FromQuery] int? limit)
     {
         var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -110,7 +110,7 @@ public class Notifications : ControllerBase
             .Concat(issues)
             .Concat(leaseNotification)
             .OrderByDescending(n => n.Date)
-            .Take(10) 
+            .Take(limit.GetValueOrDefault(10)) 
             .ToList();
 
         return Ok(notifications);
