@@ -93,10 +93,11 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
         modelBuilder.Entity<Issue>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.IssueTypeId }).HasName("issues_pkey");
+            entity.HasKey(e => e.Id).HasName("issues_pkey");
 
             entity.ToTable("issues");
 
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.UserId).HasColumnName("userId");
             entity.Property(e => e.IssueTypeId).HasColumnName("issueTypeId");
             entity.Property(e => e.CreatedOn)
