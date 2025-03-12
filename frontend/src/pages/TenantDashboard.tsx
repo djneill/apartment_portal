@@ -18,6 +18,7 @@ const TenantDashboard = () => {
     })();
   }, []);
 
+
   return (
     <div className="min-h-screen bg-background">
       {/* TODO: Create header component */}
