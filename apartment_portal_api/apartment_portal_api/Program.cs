@@ -16,7 +16,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         var allowedOrigins = "AllowedOrigins";
-        
+ 
         builder.Services.AddCors(options =>
         {
             options.AddPolicy(name: allowedOrigins,
@@ -67,6 +67,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseCors(allowedOrigins);
 
         app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
