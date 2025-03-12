@@ -23,7 +23,6 @@ public class Notifications : ControllerBase
         _mapper = mapper;
     }
     
-    [Authorize]
     [HttpGet("latest")]
     public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId)
     {
