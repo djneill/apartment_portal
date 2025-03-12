@@ -1,3 +1,5 @@
+using apartment_portal_api.Models.ParkingPermits;
+
 namespace apartment_portal_api.Models.Guests;
 
  public record GuestPostRequest(
@@ -6,6 +8,6 @@ namespace apartment_portal_api.Models.Guests;
      string LastName,
      string Email,
      string PhoneNumber,
-     int AccessCode,
-     DateTime Expiration,
-     DateTime CreatedOn);
+     int DurationInHours,
+     ParkingPermitPostRequest? ParkingPermit
+     );
