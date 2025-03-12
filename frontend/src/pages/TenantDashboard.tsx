@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import {
   HeroCard,
   QuickIconButton,
+  CurrentGuest,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from 'lucide-react'
@@ -27,6 +28,14 @@ const TenantDashboard = () => {
     { icon: <Lock size={24} />, label: 'Control Locks', to: '/' },
     { icon: <FilePen size={24} />, label: 'Manage Lease', to: '/' },
   ];
+
+  const guests = ['Dennis G.', 'David O.', 'Felipe A.'];
+  const handleAddGuest = () => {
+    console.log('Add new guest');
+  };
+  const handleViewAllGuests = () => {
+    console.log('View all guests');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,6 +74,12 @@ const TenantDashboard = () => {
             />
           ))}
         </div>
+
+        <CurrentGuest
+          guests={guests}
+          onAddGuest={handleAddGuest}
+          onViewAll={handleViewAllGuests}
+        />
       </div>
     </div>
   );
