@@ -20,5 +20,5 @@ public partial class Status
 
     public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
 
-    public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
+    // public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
 }

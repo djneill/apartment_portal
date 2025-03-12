@@ -4,6 +4,7 @@ using apartment_portal_api.DTOs;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.Issues;
+using apartment_portal_api.Models.Packages;
 using System.Security.Claims;
 using AutoMapper;
 
@@ -11,12 +12,12 @@ namespace apartment_portal_api.Services;
 
 [ApiController]
 [Route("api/notifications")]
-public class TenantNotifications : ControllerBase
+public class Notifications : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public TenantNotifications(IUnitOfWork unitOfWork, IMapper mapper)
+    public Notifications(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -53,14 +54,15 @@ public class TenantNotifications : ControllerBase
 
         var packageLists = await _unitOfWork.PackageRepository.GetAsync(p =>
         (isAdmin || userUnitIds.Contains(p.UnitId)) &&
-        (!userId.HasValue || (userUnitIds.Contains(p.UnitId) && p.Status.Name == "Arrived"))
+        (!userId.HasValue || (userUnitIds.Contains(p.UnitId) && p.Status.Name == "Arrived")),
+            includeProperties: nameof(Package.Status)
         );
         var packageList = packageLists.ToList();
 
         var packages = packageList.Select(p => new NotificationDTO
             {
                 Type = "Package",
-                Message = "You have a new package at the front desk.",
+                Message = $"You have a new package at the front desk. Status: {(p.Status != null ? p.Status.Name : "Unknown")}",
                 Date = DateTime.UtcNow
             })
             .ToList();
@@ -68,7 +70,7 @@ public class TenantNotifications : ControllerBase
 
         var issueLists = await _unitOfWork.IssueRepository.GetAsync(i =>
         (isAdmin || i.UserId == loggedInUserIdInt) &&
-        (!userId.HasValue || (i.UserId == userId && i.Status.Name != "Resolved")),
+        (!userId.HasValue || (i.UserId == userId && i.Status.Name != "Inactive")),
         includeProperties: nameof(Issue.Status)
         );
 
@@ -78,7 +80,7 @@ public class TenantNotifications : ControllerBase
             .Select(i => new NotificationDTO
             {
                 Type = "Issue",
-                Message = $"Issue: {i.Description}",
+                Message = $"Issue: {i.Description}. Status: {(i.Status != null ? i.Status.Name : "Unknown")}",
                 Date = i.CreatedOn
             })
             .ToList();
