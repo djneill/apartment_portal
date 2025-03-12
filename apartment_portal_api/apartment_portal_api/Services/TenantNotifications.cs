@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Statuses;
+using apartment_portal_api.Models.Issues;
+using System.Security.Claims;
 using AutoMapper;
 
 namespace apartment_portal_api.Services;
@@ -21,16 +23,40 @@ public class TenantNotifications : ControllerBase
     }
     
     [Authorize]
-    [HttpGet("latest/{userId}")]
-    public async Task<ActionResult> GetLatestNotifications(int userId)
+    [HttpGet("latest")]
+    public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId)
     {
-        var userUnits = await _unitOfWork.UnitUserRepository.GetAsync(uu => uu.UserId == userId);
-        var userUnit = userUnits.FirstOrDefault();
-        if (userUnit is null) return NotFound("User is not associated with any units.");
-        
+        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if(loggedInUserId == null)
+        {
+            return Unauthorized();
+        }
+
+        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        var isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        {
+            return Forbid();
+        }
+
+
+        var userUnits = await _unitOfWork.UnitUserRepository.GetAsync(uu => 
+        (isAdmin || uu.UserId == loggedInUserIdInt) &&
+        (!userId.HasValue || uu.UserId == userId)
+        );
+        var userUnitIds = userUnits.Select(uu => uu.UnitId).ToList();
+        if (!userUnitIds.Any()) return NotFound("User is not associated with any units.");
+
         // int userUnitId = userUnit.First().UnitId;
-            
-        var packageList = await _unitOfWork.PackageRepository.GetAsync(p => p.UnitId == userUnit.UnitId && p.Status.Name == "Arrived");
+
+        var packageLists = await _unitOfWork.PackageRepository.GetAsync(p =>
+        (isAdmin || userUnitIds.Contains(p.UnitId)) &&
+        (!userId.HasValue || (userUnitIds.Contains(p.UnitId) && p.Status.Name == "Arrived"))
+        );
+        var packageList = packageLists.ToList();
+
         var packages = packageList.Select(p => new NotificationDTO
             {
                 Type = "Package",
@@ -39,7 +65,14 @@ public class TenantNotifications : ControllerBase
             })
             .ToList();
 
-        var issueList = await _unitOfWork.IssueRepository.GetAsync(i => i.UserId == userId && i.Status.Name != "Resolved");
+
+        var issueLists = await _unitOfWork.IssueRepository.GetAsync(i =>
+        (isAdmin || i.UserId == loggedInUserIdInt) &&
+        (!userId.HasValue || (i.UserId == userId && i.Status.Name != "Resolved")),
+        includeProperties: nameof(Issue.Status)
+        );
+
+        var issueList = issueLists.ToList();
         var issues = issueList
             .OrderByDescending(i => i.CreatedOn)
             .Select(i => new NotificationDTO
@@ -49,8 +82,11 @@ public class TenantNotifications : ControllerBase
                 Date = i.CreatedOn
             })
             .ToList();
-        
-        var users = await _unitOfWork.UserRepository.GetAsync(u => u.Id == userId);
+
+        var users = await _unitOfWork.UserRepository.GetAsync(u =>
+        (isAdmin || u.Id == loggedInUserIdInt) && 
+        (!userId.HasValue || u.Id == userId)
+        );
         var user = users.FirstOrDefault();
 
         var leaseNotification = new List<NotificationDTO>();
