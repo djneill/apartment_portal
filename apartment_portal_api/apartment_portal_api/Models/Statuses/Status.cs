@@ -1,7 +1,6 @@
 ﻿using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.Users;
-using apartment_portal_api.Models.Issues;
 
 
 namespace apartment_portal_api.Models.Statuses;
