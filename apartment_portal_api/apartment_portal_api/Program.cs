@@ -15,6 +15,20 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        var allowedOrigins = "AllowedOrigins";
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: allowedOrigins,
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+        });
+
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(options =>
         {
@@ -53,6 +67,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseCors(allowedOrigins);
 
         app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
