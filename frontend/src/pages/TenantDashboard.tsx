@@ -3,6 +3,7 @@ import {
   HeroCard,
   QuickIconButton,
   CurrentGuest,
+  PackageCard,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from 'lucide-react'
@@ -80,6 +81,10 @@ const TenantDashboard = () => {
           onAddGuest={handleAddGuest}
           onViewAll={handleViewAllGuests}
         />
+
+        <div className="grid grid-cols-2 gap-4">
+          <PackageCard />
+        </div>
       </div>
     </div>
   );
