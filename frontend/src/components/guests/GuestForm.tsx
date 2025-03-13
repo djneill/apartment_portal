@@ -118,7 +118,7 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="w-full p-5 bg-white rounded-2xl ">
+    <form onSubmit={handleSubmit} className="w-full p-5 bg-white rounded-2xl flex flex-col ">
       <FormInput
         label="Full Name"
         value={formData.fullName}
@@ -153,7 +153,7 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
 
       {parkingFields}
 
-      <div className="mt-6">
+      <div className="md:mt-10 md:my-5">
         <button
           type="submit"
           className="w-full bg-primary text-white py-2 px-4 rounded-full hover:bg-primary/90 transition-colors"
