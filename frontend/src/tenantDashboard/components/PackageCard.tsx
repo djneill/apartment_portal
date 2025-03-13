@@ -58,7 +58,7 @@ const PackageCard = () => {
                     onClick={hideSbPackage}
                 >
                     <img
-                        src="frontend/src/tenantDashboard/components/dashAssets/asset/__dash__.png"
+                        src="src/tenantDashboard/components/dashAssets/asset/__dash__.png"
                         alt="You Found The Hidden Surprise"
                         className="max-w-md w-full rounded-lg shadow-lg p-8 bg-white"
                         onClick={(e) => e.stopPropagation()}

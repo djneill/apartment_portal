@@ -4,6 +4,7 @@ import {
   QuickIconButton,
   CurrentGuest,
   PackageCard,
+  ThermostatCard,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from 'lucide-react'
@@ -84,6 +85,7 @@ const TenantDashboard = () => {
 
         <div className="grid grid-cols-2 gap-4">
           <PackageCard />
+          <ThermostatCard />
         </div>
       </div>
     </div>
