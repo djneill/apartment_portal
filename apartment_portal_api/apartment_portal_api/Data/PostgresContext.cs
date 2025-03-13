@@ -93,10 +93,11 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
         modelBuilder.Entity<Issue>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.IssueTypeId }).HasName("issues_pkey");
+            entity.HasKey(e => e.Id).HasName("issues_pkey");
 
             entity.ToTable("issues");
 
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.UserId).HasColumnName("userId");
             entity.Property(e => e.IssueTypeId).HasColumnName("issueTypeId");
             entity.Property(e => e.CreatedOn)
@@ -211,12 +212,13 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
         modelBuilder.Entity<UnitUser>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.UnitId }).HasName("unitUsers_pkey");
+            entity.HasKey(e => e.Id).HasName("unitUsers_pkey");
 
             entity.ToTable("unitUsers");
 
+            entity.Property(e => e.Id).HasColumnName("id")
+                .ValueGeneratedOnAdd();
             entity.Property(e => e.UserId)
-                .ValueGeneratedOnAdd()
                 .HasColumnName("userId");
             entity.Property(e => e.UnitId).HasColumnName("unitId");
             entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
@@ -225,6 +227,7 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
                 .HasColumnName("createdOn");
             entity.Property(e => e.IsPrimary).HasColumnName("isPrimary");
             entity.Property(e => e.LeaseAgreement).HasColumnName("leaseAgreement");
+            entity.Property(e => e.LeaseExpiration).HasColumnName("leaseExpiration");
             entity.Property(e => e.ModifiedBy).HasColumnName("modifiedBy");
             entity.Property(e => e.ModifiedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")

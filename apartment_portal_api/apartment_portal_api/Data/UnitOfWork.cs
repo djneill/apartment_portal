@@ -16,7 +16,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly PostgresContext _context;
     private IRepository<Guest>? _guestRepository;
     private IRepository<ParkingPermit>? _parkingPermitRepository;
-    private IRepository<Issue>? _issueRepository;
+    private IssueRepository? _issueRepository;
     private PackageRepository? _packageRepository;
     private IRepository<Status>? _statusRepository;
     private IRepository<Unit>? _unitRepository;
@@ -45,11 +45,11 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IRepository<Issue> IssueRepository
+    public IssueRepository IssueRepository
     {
         get
         {
-            _issueRepository ??= new Repository<Issue>(_context);
+            _issueRepository ??= new IssueRepository(_context);
             return _issueRepository;
         }
     }

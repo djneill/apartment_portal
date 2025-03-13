@@ -1,18 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace apartment_portal_api.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class removeUniqueLockerNumber : Migration
+    public partial class unitUserLeaseExpiration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.DropIndex(
-            //    name: "packages_lockerNumber_key",
-            //    table: "packages");
+            migrationBuilder.AddColumn<DateTime>(
+                name: "leaseExpiration",
+                table: "unitUsers",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AlterColumn<int>(
                 name: "accessCode",
@@ -28,6 +32,10 @@ namespace apartment_portal_api.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "leaseExpiration",
+                table: "unitUsers");
+
             migrationBuilder.AlterColumn<string>(
                 name: "accessCode",
                 table: "guests",
@@ -35,12 +43,6 @@ namespace apartment_portal_api.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "integer");
-
-            //migrationBuilder.CreateIndex(
-            //    name: "packages_lockerNumber_key",
-            //    table: "packages",
-            //    column: "lockerNumber",
-            //    unique: true);
         }
     }
 }
