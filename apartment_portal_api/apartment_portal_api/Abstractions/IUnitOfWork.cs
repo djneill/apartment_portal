@@ -14,7 +14,7 @@ public interface IUnitOfWork
 {
     public IRepository<Guest> GuestRepository { get; }
     public IRepository<ParkingPermit> ParkingPermitRepository { get; }
-    public IRepository<Issue> IssueRepository { get; }
+    public IssueRepository IssueRepository { get; }
     public PackageRepository PackageRepository { get; }
     public IRepository<Status> StatusRepository { get; }
     public IRepository<Unit> UnitRepository { get; }
