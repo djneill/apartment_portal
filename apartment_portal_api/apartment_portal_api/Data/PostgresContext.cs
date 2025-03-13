@@ -225,6 +225,7 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
                 .HasColumnName("createdOn");
             entity.Property(e => e.IsPrimary).HasColumnName("isPrimary");
             entity.Property(e => e.LeaseAgreement).HasColumnName("leaseAgreement");
+            entity.Property(e => e.LeaseExpiration).HasColumnName("leaseExpiration");
             entity.Property(e => e.ModifiedBy).HasColumnName("modifiedBy");
             entity.Property(e => e.ModifiedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")

@@ -12,6 +12,8 @@ public partial class UnitUser
 
     public string LeaseAgreement { get; set; } = null!;
 
+    public DateTime LeaseExpiration { get; set; }
+
     public DateTime CreatedOn { get; set; }
 
     public int CreatedBy { get; set; }
