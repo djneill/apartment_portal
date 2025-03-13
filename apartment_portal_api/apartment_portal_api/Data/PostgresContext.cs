@@ -212,12 +212,13 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
         modelBuilder.Entity<UnitUser>(entity =>
         {
-            entity.HasKey(e => new { e.UserId, e.UnitId }).HasName("unitUsers_pkey");
+            entity.HasKey(e => e.Id).HasName("unitUsers_pkey");
 
             entity.ToTable("unitUsers");
 
+            entity.Property(e => e.Id).HasColumnName("id")
+                .ValueGeneratedOnAdd();
             entity.Property(e => e.UserId)
-                .ValueGeneratedOnAdd()
                 .HasColumnName("userId");
             entity.Property(e => e.UnitId).HasColumnName("unitId");
             entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
