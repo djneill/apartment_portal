@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apartment_portal_api.Data;
@@ -11,9 +12,11 @@ using apartment_portal_api.Data;
 namespace apartment_portal_api.Data.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20250313021213_unitUserIdColumn")]
+    partial class unitUserIdColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -485,7 +488,8 @@ namespace apartment_portal_api.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "unitUsers_userId_key")
+                        .IsUnique();
 
                     b.ToTable("unitUsers", (string)null);
                 });

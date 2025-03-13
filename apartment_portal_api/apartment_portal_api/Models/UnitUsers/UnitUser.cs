@@ -4,6 +4,7 @@ namespace apartment_portal_api.Models.UnitUsers;
 
 public partial class UnitUser
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
 
     public int UnitId { get; set; }
