@@ -6,6 +6,7 @@ namespace apartment_portal_api.Models.Issues;
 
 public partial class Issue
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
 
     public int IssueTypeId { get; set; }

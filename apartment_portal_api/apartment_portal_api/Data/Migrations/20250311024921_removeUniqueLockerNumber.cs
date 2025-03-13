@@ -10,9 +10,9 @@ namespace apartment_portal_api.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "packages_lockerNumber_key",
-                table: "packages");
+            //migrationBuilder.DropIndex(
+            //    name: "packages_lockerNumber_key",
+            //    table: "packages");
 
             migrationBuilder.AlterColumn<int>(
                 name: "accessCode",
@@ -36,11 +36,11 @@ namespace apartment_portal_api.Data.Migrations
                 oldClrType: typeof(int),
                 oldType: "integer");
 
-            migrationBuilder.CreateIndex(
-                name: "packages_lockerNumber_key",
-                table: "packages",
-                column: "lockerNumber",
-                unique: true);
+            //migrationBuilder.CreateIndex(
+            //    name: "packages_lockerNumber_key",
+            //    table: "packages",
+            //    column: "lockerNumber",
+            //    unique: true);
         }
     }
 }
