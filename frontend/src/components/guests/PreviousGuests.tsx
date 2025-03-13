@@ -1,11 +1,19 @@
+import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
 import { Plus } from 'lucide-react';
 
 export const PreviousGuests = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const previousGuests = [
     { name: "Dennis Garcia", timeRemaining: "3h 56m" },
     { name: "Dennis Garcia", timeRemaining: "3h 56m" },
     { name: "Alex Smith", timeRemaining: "2h 30m" },
+    { name: "Jane Doe", timeRemaining: "1h 15m" },
+    { name: "Jane Doe", timeRemaining: "1h 15m" },
+    { name: "Jane Doe", timeRemaining: "1h 15m" },
+    { name: "Jane Doe", timeRemaining: "1h 15m" },
+    { name: "Jane Doe", timeRemaining: "1h 15m" },
     { name: "Jane Doe", timeRemaining: "1h 15m" },
     { name: "Alex Smith", timeRemaining: "2h 30m" },
     { name: "Alex Smith", timeRemaining: "2h 30m" },
@@ -22,7 +30,9 @@ export const PreviousGuests = () => {
     );
   }
 
-  const mapPreviousGuests = previousGuests.map((guest, index) => {
+  const displayPrevGuests = isExpanded ? previousGuests : previousGuests.slice(0, 8)
+
+  const mapPreviousGuests = displayPrevGuests.map((guest, index) => {
     return (
       <div key={index} className="flex flex-col items-center space-y-2 ">
         <div className="relative inline-block cursor-pointer">
@@ -43,7 +53,9 @@ export const PreviousGuests = () => {
     <>
       <div className="flex justify-between mb-4">
         <h2 className="font-bold text-[#686868]">Previous Guests</h2>
-        <p className="font-bold cursor-pointer"> View all</p>
+        <p className="font-bold cursor-pointer" onClick={() => setIsExpanded(prev => !prev)}>
+          {isExpanded ? "View less" : "View all"}
+        </p>
       </div>
 
       <div className="bg-white rounded-2xl min-h-40 p-3">
