@@ -4,6 +4,7 @@ using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using apartment_portal_api.Models.UnitUsers;
 
 namespace apartment_portal_api.Controllers;
 
@@ -36,15 +37,44 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
-        var user = await _unitOfWork.UserRepository.GetAsync(id);
+        // Eagerly load Unit along with UnitUserUsers
+        var user = await _unitOfWork.UserRepository.GetAsync(
+            u => u.Id == id,
+            $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
+        );
 
         if (user == null)
         {
             return NotFound(new { message = $"User with ID {id} not found" });
         }
 
-        var userDTO = _mapper.Map<UserDTO>(user);
-        return Ok(userDTO);
+        var userObj = user.FirstOrDefault();
+
+        var unitUser = userObj?.UnitUserUsers?.FirstOrDefault(); // Assuming each user has only one unit association
+        if (unitUser == null)
+        {
+            return NotFound(new { message = "No unit association found for the given user." });
+        }
+
+        var unitRes = new UnitDTO()
+        {
+            Id = unitUser.Unit.Id,
+            UnitNumber = unitUser.Unit.Number,
+            Price = unitUser.Unit.Price
+        };
+
+        return Ok(new
+        {
+            User = new UserDTO()
+            {
+                Id = userObj.Id,
+                FirstName = userObj.FirstName,
+                LastName = userObj.LastName,
+                DateOfBirth = userObj.DateOfBirth,
+                StatusId = userObj.StatusId
+            },
+            Unit = unitRes // Returning a single unit since each user has only one
+        });
     }
 
     [HttpPost("register")]
