@@ -4,6 +4,7 @@ using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Issues;
+using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.Users;
@@ -17,6 +18,7 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<Guest>? _guestRepository;
     private IRepository<ParkingPermit>? _parkingPermitRepository;
     private IssueRepository? _issueRepository;
+    private IRepository<IssueType>? _issueTypeRepository;
     private PackageRepository? _packageRepository;
     private IRepository<Status>? _statusRepository;
     private IRepository<Unit>? _unitRepository;
@@ -51,6 +53,15 @@ public class UnitOfWork : IUnitOfWork
         {
             _issueRepository ??= new IssueRepository(_context);
             return _issueRepository;
+        }
+    }
+    
+    public IRepository<IssueType> IssueTypeRepository
+    {
+        get
+        {
+            _issueTypeRepository ??= new Repository<IssueType>(_context);
+            return _issueTypeRepository;
         }
     }
 
