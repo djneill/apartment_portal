@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apartment_portal_api.Data;
@@ -11,9 +12,11 @@ using apartment_portal_api.Data;
 namespace apartment_portal_api.Data.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20250313021213_unitUserIdColumn")]
+    partial class unitUserIdColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -229,42 +232,6 @@ namespace apartment_portal_api.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("guests", (string)null);
-                });
-
-            modelBuilder.Entity("apartment_portal_api.Models.Insights.Insight", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdOn")
-                        .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
-
-                    b.Property<string>("Suggestion")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("suggestion");
-
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("summary");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.HasKey("Id")
-                        .HasName("insights_pkey");
-
-                    b.ToTable("insights", (string)null);
                 });
 
             modelBuilder.Entity("apartment_portal_api.Models.IssueTypes.IssueType", b =>
@@ -521,7 +488,8 @@ namespace apartment_portal_api.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "unitUsers_userId_key")
+                        .IsUnique();
 
                     b.ToTable("unitUsers", (string)null);
                 });

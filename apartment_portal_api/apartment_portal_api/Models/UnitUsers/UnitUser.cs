@@ -4,6 +4,7 @@ namespace apartment_portal_api.Models.UnitUsers;
 
 public partial class UnitUser
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
 
     public int UnitId { get; set; }
@@ -11,6 +12,8 @@ public partial class UnitUser
     public bool IsPrimary { get; set; }
 
     public string LeaseAgreement { get; set; } = null!;
+
+    public DateTime LeaseExpiration { get; set; }
 
     public DateTime CreatedOn { get; set; }
 

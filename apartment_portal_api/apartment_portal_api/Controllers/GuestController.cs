@@ -33,32 +33,40 @@ public class GuestController : ControllerBase
         var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
-    
+
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests([FromQuery] int? userId, [FromQuery] bool? active)
+    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests(
+        [FromQuery] int? userId,
+        [FromQuery] bool? active
+    )
     {
         var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
+
         if (loggedInUserId == null)
         {
-            return Unauthorized(); 
+            return Unauthorized();
         }
-        
+
         int.TryParse(loggedInUserId, out int loggedInUserIdInt);
         var isAdmin = User.IsInRole("Admin");
-        
+
         if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
         {
-            return Forbid(); 
+            return Forbid();
         }
-        
+
         var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
-            (isAdmin || g.UserId == loggedInUserIdInt) &&
-            (!userId.HasValue || g.UserId == userId) &&
-            (!active.HasValue || (active.Value && g.Expiration > DateTime.UtcNow) || (!active.Value && g.Expiration <= DateTime.UtcNow))
+            (isAdmin || g.UserId == loggedInUserIdInt)
+            && (!userId.HasValue || g.UserId == userId)
+            && (
+                !active.HasValue
+                || (active.Value && g.Expiration > DateTime.UtcNow)
+                || (!active.Value && g.Expiration <= DateTime.UtcNow)
+            )
         );
-        
-        if (!guests.Any()) return NotFound(new { message = "No guests found." });
+
+        if (!guests.Any())
+            return NotFound(new { message = "No guests found." });
 
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
         return Ok(new { success = true, data = guestDTOs });

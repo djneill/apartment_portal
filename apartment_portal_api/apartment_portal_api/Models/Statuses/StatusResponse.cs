@@ -1,3 +1,7 @@
 ﻿namespace apartment_portal_api.Models.Statuses;
 
-public record StatusResponse(int Id, string Name);
+public class StatusResponse
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}

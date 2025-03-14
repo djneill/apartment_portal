@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apartment_portal_api.Data;
@@ -11,9 +12,11 @@ using apartment_portal_api.Data;
 namespace apartment_portal_api.Data.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20250312171117_unitUserLeaseExpiration")]
+    partial class unitUserLeaseExpiration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,42 +234,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.ToTable("guests", (string)null);
                 });
 
-            modelBuilder.Entity("apartment_portal_api.Models.Insights.Insight", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("createdOn")
-                        .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
-
-                    b.Property<string>("Suggestion")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("suggestion");
-
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("summary");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.HasKey("Id")
-                        .HasName("insights_pkey");
-
-                    b.ToTable("insights", (string)null);
-                });
-
             modelBuilder.Entity("apartment_portal_api.Models.IssueTypes.IssueType", b =>
                 {
                     b.Property<int>("Id")
@@ -289,12 +256,13 @@ namespace apartment_portal_api.Data.Migrations
 
             modelBuilder.Entity("apartment_portal_api.Models.Issues.Issue", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("userId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("IssueTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("issueTypeId");
 
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -307,26 +275,16 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.Property<int>("IssueTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("issueTypeId");
-
                     b.Property<int>("StatusId")
                         .HasColumnType("integer")
                         .HasColumnName("statusId");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("userId");
-
-                    b.HasKey("Id")
+                    b.HasKey("UserId", "IssueTypeId")
                         .HasName("issues_pkey");
 
                     b.HasIndex("IssueTypeId");
 
                     b.HasIndex("StatusId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("issues", (string)null);
                 });
@@ -464,12 +422,14 @@ namespace apartment_portal_api.Data.Migrations
 
             modelBuilder.Entity("apartment_portal_api.Models.UnitUsers.UnitUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id");
+                        .HasColumnName("userId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unitId");
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer")
@@ -504,15 +464,7 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnName("modifiedOn")
                         .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
 
-                    b.Property<int>("UnitId")
-                        .HasColumnType("integer")
-                        .HasColumnName("unitId");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("userId");
-
-                    b.HasKey("Id")
+                    b.HasKey("UserId", "UnitId")
                         .HasName("unitUsers_pkey");
 
                     b.HasIndex("CreatedBy");
@@ -520,8 +472,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.HasIndex("ModifiedBy");
 
                     b.HasIndex("UnitId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("unitUsers", (string)null);
                 });

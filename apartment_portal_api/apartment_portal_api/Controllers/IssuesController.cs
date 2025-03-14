@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Issues;
@@ -20,11 +21,26 @@ namespace apartment_portal_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetIssues()
+        public async Task<ActionResult<ICollection<IssueResponse>>> GetIssues(int userId = 0, int recordRetrievalCount = 10, int statusId = 0, bool orderByDesc = true)
         {
-            var issues = await _unitOfWork.IssueRepository.GetAsync();
-            var issueDTOs = _mapper.Map<IEnumerable<IssueDTO>>(issues);
-            return Ok(issueDTOs);
+            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userClaim is null)
+            {
+                return Unauthorized();
+            }
+        
+            bool isAdmin = User.IsInRole("Admin");
+            string reqUserId = userId.ToString();
+            if (!isAdmin && userClaim.Value != reqUserId)
+            {
+                return Forbid();
+            }
+
+            ICollection<Issue> issues = await _unitOfWork.IssueRepository.GetIssues(userId, recordRetrievalCount, statusId, orderByDesc);
+
+            var response = _mapper.Map<ICollection<IssueResponse>>(issues);
+
+            return Ok(response);
         }
     }
 }
