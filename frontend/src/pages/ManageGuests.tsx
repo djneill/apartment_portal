@@ -9,14 +9,16 @@ export default function ManageGuests() {
   //  - desktop version
 
   function handleSubmit(data: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
     duration: string;
-    carMakeModel?: string;
+    carMake?: string;
+    carModel?: string;
     carColor?: string;
     licensePlate?: string;
   }) {
-    console.log(data)
+    //TODO: Implement api stuff
   }
   return (
     <div className="w-screen min-h-screen p-4">

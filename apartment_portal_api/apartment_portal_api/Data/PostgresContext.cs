@@ -1,5 +1,6 @@
 ﻿using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
+using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Packages;
@@ -39,6 +40,8 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
     public virtual DbSet<Unit> Units { get; set; }
 
     public virtual DbSet<UnitUser> UnitUsers { get; set; }
+
+    public virtual DbSet<Insight> Insights { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -132,6 +135,23 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
             entity.Property(e => e.Name)
                 .HasColumnType("character varying")
                 .HasColumnName("name");
+        });
+
+        modelBuilder.Entity<Insight>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("insights_pkey");
+
+            entity.ToTable("insights");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+            entity.Property(e => e.Title).HasColumnName("title");
+            entity.Property(e => e.Summary).HasColumnName("summary");
+            entity.Property(e => e.Suggestion).HasColumnName("suggestion");
+            entity.Property(e => e.CreatedOn)
+                .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
+                .HasColumnName("createdOn");
         });
 
         modelBuilder.Entity<Package>(entity =>
