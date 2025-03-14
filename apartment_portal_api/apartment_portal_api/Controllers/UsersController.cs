@@ -50,10 +50,10 @@ public class UsersController : ControllerBase
 
         var userObj = user.FirstOrDefault();
 
-        var unitUser = userObj?.UnitUserUsers?.FirstOrDefault(); // Assuming each user has only one unit association
+        var unitUser = userObj?.UnitUserUsers?.FirstOrDefault();
         if (unitUser == null)
         {
-            return NotFound(new { message = "No unit association found for the given user." });
+            return NotFound(new { message = "No unit found for the given user." });
         }
 
         var unitRes = new UnitDTO()
