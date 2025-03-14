@@ -15,16 +15,16 @@ const ThermostatCard = () => {
     return (
         <div>
             <h3 className="text-lg font-medium text-black mb-2">Thermostat</h3>
-            <Card className="bg-white rounded-xl p-6 relative">
-                <div className="absolute top-6 right-6">
+            <Card className="bg-white rounded-xl p-4 relative">
+                <div className="absolute top-2 right-2">
                     <span className="bg-[#89CFF0] text-black px-3 py-1 rounded-lg text-md font-bold">
                         F
                     </span>
                 </div>
 
                 <div className="flex items-center">
-                    <span className="text-4xl font-bold mr-4">{temperature}°</span>
-                    <div className="flex flex-col gap-2">
+                    <span className="text-4xl font-bold mr-1">{temperature}°</span>
+                    <div className="flex flex-col gap-0">
                         <button
                             onClick={increaseTemp}
                             className="hover:bg-gray-100 p-2 rounded transition-colors"

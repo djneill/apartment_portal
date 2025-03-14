@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import Card from '../../components/Card';
 
@@ -35,15 +35,15 @@ const PackageCard = () => {
 
     return (
         <div>
-            <h3 className="text-lg font-medium text-black mb-2">Packages</h3>
-            <Card className="bg-white rounded-[20px] p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <span className="text-xl font-bold">Locker #A12</span>
-                    <div className="bg-primary rounded-full p-3">
-                        <ArrowRight className="text-white" />
+            <h3 className="font-medium text-black mb-2">Packages</h3>
+            <Card className="bg-white rounded-xl p-4">
+                <div className="flex justify-between items-center mb-2 mr-2">
+                    <span className="text-md font-bold">Locker #A12</span>
+                    <div className="bg-primary rounded-full p-[4px]">
+                        <ArrowUpRight className="text-white" />
                     </div>
                 </div>
-                <div className="text-black">
+                <div className="text-black text-xs py-3">
                     <span
                         onClick={() => setClicks(prev => prev + 1)}
                         className='cursor-default select-none'
