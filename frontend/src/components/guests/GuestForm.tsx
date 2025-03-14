@@ -4,32 +4,34 @@ import { FormInput, FormPhoneInput, FormSelect } from '../form';
 
 interface GuestFormProps {
   onSubmit: (data: {
-    fullName: string;
+    firstName: string,
+    lastName: string,
     phoneNumber: string;
     duration: string;
-    carMakeModel?: string;
-    carColor?: string;
+    carMake?: string;
+    carModel?: string;
     licensePlate?: string;
   }) => void;
 }
 
 export default function GuestForm({ onSubmit }: GuestFormProps) {
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     phoneNumber: '',
     duration: '4',
-    carMakeModel: '',
-    carColor: '',
+    carMake: '',
+    carModel: '',
     licensePlate: ''
-
   });
 
   const [errors, setErrors] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     phoneNumber: '',
     duration: '',
-    carMakeModel: '',
-    carColor: '',
+    carMake: '',
+    carModel: '',
     licensePlate: ''
   });
 
@@ -44,19 +46,19 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
   const parkingFields = showParkingFields && (
     <>
       <FormInput
-        label="Car Make and Model"
-        value={formData.carMakeModel || ''}
-        onChange={(e) => handleChange('carMakeModel', e.target.value)}
-        error={errors.carMakeModel}
-        placeholder="Enter car make and model"
+        label="Car Make"
+        value={formData.carMake || ''}
+        onChange={(e) => handleChange('carMake', e.target.value)}
+        error={errors.carMake}
+        placeholder="Enter car make"
         className='border-b-gray-300'
       />
       <FormInput
-        label="Car Color"
-        value={formData.carColor || ''}
-        onChange={(e) => handleChange('carColor', e.target.value)}
-        error={errors.carColor}
-        placeholder="Enter car color"
+        label="Car Model"
+        value={formData.carModel || ''}
+        onChange={(e) => handleChange('carModel', e.target.value)}
+        error={errors.carModel}
+        placeholder="Enter car model"
         className='border-b-gray-300'
       />
       <FormInput
@@ -89,17 +91,19 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
     e.preventDefault();
 
     const newErrors = {
-      fullName: !formData.fullName ? 'Full name is required' : '',
+      firstName: !formData.firstName ? 'First name is required' : '',
+      lastName: !formData.lastName ? 'Last name is required' : '',
       phoneNumber: !formData.phoneNumber ? 'Phone number is required' : '',
       duration: !formData.duration ? 'Duration is required' : '',
-      carMakeModel: '',
+      carMake: '',
+      carModel: '',
       carColor: '',
       licensePlate: ''
     };
 
     if (showParkingFields) {
-      newErrors.carMakeModel = !formData.carMakeModel ? 'Car make and model is required' : '';
-      newErrors.carColor = !formData.carColor ? 'Car color is required' : '';
+      newErrors.carMake = !formData.carMake ? 'Car make is required' : '';
+      newErrors.carModel = !formData.carModel ? 'Car model is required' : '';
       newErrors.licensePlate = !formData.licensePlate ? 'License plate is required' : '';
     }
 
@@ -108,6 +112,15 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
     //if no errors in array, call onSubmit function
     if (!Object.values(newErrors).some(error => error)) {
       onSubmit(formData);
+      setFormData({
+        firstName: '',
+        lastName: '',
+        phoneNumber: '',
+        duration: '4',
+        carMake: '',
+        carModel: '',
+        licensePlate: ''
+      })
     }
   };
 
@@ -120,11 +133,21 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
   return (
     <form onSubmit={handleSubmit} className="w-full p-5 bg-white rounded-2xl flex flex-col ">
       <FormInput
-        label="Full Name"
-        value={formData.fullName}
-        onChange={(e) => handleChange('fullName', e.target.value)}
-        error={errors.fullName}
-        placeholder="Enter guest's full name"
+        label="First Name"
+        value={formData.firstName}
+        onChange={(e) => handleChange('firstName', e.target.value)}
+        error={errors.firstName}
+        placeholder="Enter guest's first name"
+        required
+        className='border-b-gray-300'
+      />
+
+      <FormInput
+        label="Last Name"
+        value={formData.lastName}
+        onChange={(e) => handleChange('lastName', e.target.value)}
+        error={errors.lastName}
+        placeholder="Enter guest's last name"
         required
         className='border-b-gray-300'
       />
