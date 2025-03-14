@@ -1,9 +1,13 @@
+using System.Net.Mail;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Guests;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using apartment_portal_api.Models.ParkingPermits;
+using apartment_portal_api.Services;
 using AutoMapper;
 
 namespace apartment_portal_api.Controllers;
@@ -33,31 +37,71 @@ public class GuestController : ControllerBase
        var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
-
+    
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests()
+    public async Task<ActionResult<IEnumerable<GuestDTO>>> GetGuests([FromQuery] int? userId, [FromQuery] bool? active)
     {
-        var guests = await _unitOfWork.GuestRepository.GetAsync();
+        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
+        if (loggedInUserId == null)
+        {
+            return Unauthorized(); 
+        }
+        
+        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        var isAdmin = User.IsInRole("Admin");
+        
+        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        {
+            return Forbid(); 
+        }
+        
+        var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
+            (isAdmin || g.UserId == loggedInUserIdInt) &&
+            (!userId.HasValue || g.UserId == userId) &&
+            (!active.HasValue || (active.Value && g.Expiration > DateTime.UtcNow) || (!active.Value && g.Expiration <= DateTime.UtcNow))
+        );
+        
+        if (!guests.Any()) return NotFound(new { message = "No guests found." });
+
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
-        return Ok(guestDTOs);
+        return Ok(new { success = true, data = guestDTOs });
     }
 
     [HttpPost("register-guest")]
-    public async Task<ActionResult<GuestDTO>> CreateGuest(GuestCreateDTO request)
+    public async Task<ActionResult<GuestDTO>> CreateGuest(GuestPostRequest request)
     {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
         
-        var newGuest = _mapper.Map<Guest>(request);
-        newGuest.CreatedOn = DateTime.UtcNow;
+        bool isAdmin = User.IsInRole("Admin");
+        bool emailIsValid = EmailValidator.ValidateEmail(request.Email);
+        if (!emailIsValid)
+        {
+            return BadRequest();
+        }
 
-        
+        string reqUserId = request.UserId.ToString();
+        if (!isAdmin && userClaim.Value != reqUserId)
+        {
+            return Forbid();
+        }
+
+        Guest newGuest = _mapper.Map<Guest>(request);
+        newGuest.AccessCode = AccessCodeGenerator.GenerateAccessCode();
+
+        if (request.ParkingPermit is not null)
+        {
+            ParkingPermit permit = _mapper.Map<ParkingPermit>(request.ParkingPermit);
+            newGuest.ParkingPermits.Add(permit);
+        }
+
         await _unitOfWork.GuestRepository.AddAsync(newGuest);
         await _unitOfWork.SaveAsync();
-
-        
-        var guestDTO = _mapper.Map<GuestDTO>(newGuest);
-        
-        return CreatedAtAction(nameof(GetGuestById), new { id = newGuest.Id }, guestDTO);
+        return Created();
     }
 
     [HttpPatch("{id:int}")]

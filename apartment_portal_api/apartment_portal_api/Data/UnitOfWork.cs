@@ -1,4 +1,5 @@
 ﻿using apartment_portal_api.Abstractions;
+using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
@@ -15,8 +16,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly PostgresContext _context;
     private IRepository<Guest>? _guestRepository;
     private IRepository<ParkingPermit>? _parkingPermitRepository;
-    private IRepository<Issue>? _issueRepository;
-    private IRepository<Package>? _packageRepository;
+    private IssueRepository? _issueRepository;
+    private PackageRepository? _packageRepository;
     private IRepository<Status>? _statusRepository;
     private IRepository<Unit>? _unitRepository;
     private IRepository<ApplicationUser>? _userRepository;
@@ -44,20 +45,20 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IRepository<Issue> IssueRepository
+    public IssueRepository IssueRepository
     {
         get
         {
-            _issueRepository ??= new Repository<Issue>(_context);
+            _issueRepository ??= new IssueRepository(_context);
             return _issueRepository;
         }
     }
 
-    public IRepository<Package> PackageRepository
+    public PackageRepository PackageRepository
     {
         get
         {
-            _packageRepository ??= new Repository<Package>(_context);
+            _packageRepository ??= new PackageRepository(_context);
             return _packageRepository;
         }
     }

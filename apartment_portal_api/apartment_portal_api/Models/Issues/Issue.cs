@@ -6,6 +6,7 @@ namespace apartment_portal_api.Models.Issues;
 
 public partial class Issue
 {
+    public int Id { get; set; }
     public int UserId { get; set; }
 
     public int IssueTypeId { get; set; }
@@ -13,6 +14,8 @@ public partial class Issue
     public DateTime CreatedOn { get; set; }
 
     public string Description { get; set; } = null!;
+
+    public int StatusId { get; set; }
 
     // Linking properties for EF Core
     public virtual IssueType IssueType { get; set; } = null!;

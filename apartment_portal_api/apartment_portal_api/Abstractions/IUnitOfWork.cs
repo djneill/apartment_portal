@@ -1,4 +1,5 @@
-﻿using apartment_portal_api.Models;
+﻿using apartment_portal_api.Data.Repositories;
+using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Issues;
@@ -13,8 +14,8 @@ public interface IUnitOfWork
 {
     public IRepository<Guest> GuestRepository { get; }
     public IRepository<ParkingPermit> ParkingPermitRepository { get; }
-    public IRepository<Issue> IssueRepository { get; }
-    public IRepository<Package> PackageRepository { get; }
+    public IssueRepository IssueRepository { get; }
+    public PackageRepository PackageRepository { get; }
     public IRepository<Status> StatusRepository { get; }
     public IRepository<Unit> UnitRepository { get; }
     public IRepository<ApplicationUser> UserRepository { get; }

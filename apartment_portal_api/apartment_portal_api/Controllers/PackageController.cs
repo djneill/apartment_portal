@@ -1,6 +1,5 @@
 ﻿using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Packages;
-using apartment_portal_api.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 
@@ -30,10 +29,16 @@ public class PackageController : ControllerBase
     }
 
     [HttpGet("/Packages")]
-    public async Task<ActionResult<ICollection<PackageGetResponse>>> Get()
+    public async Task<ActionResult<ICollection<PackageGetResponse>>> Get(int userId, int statusId = 0)
     {
-        var packages = await _unitOfWork.PackageRepository.GetAsync();
+        //var loggedInUserRoleClaim = User.Claims.FirstOrDefault(claim => claim.Value == "Admin");
+        //var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == userId.ToString());
+        //if (loggedInUserRoleClaim is null && loggedInUserIdClaim is null) return Unauthorized();
+
+        var packages = await _unitOfWork.PackageRepository.GetByUserId(userId, statusId);
+
         var packageDtos = _mapper.Map<ICollection<PackageGetResponse>>(packages);
+
         return Ok(packageDtos);
     }
 

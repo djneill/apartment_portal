@@ -5,6 +5,7 @@ using apartment_portal_api.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace apartment_portal_api;
 
@@ -14,14 +15,29 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        var allowedOrigins = "AllowedOrigins";
+ 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: allowedOrigins,
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+        });
+
         // Add services to the container.
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
 
         builder.Services.AddAutoMapper(typeof(MappingProfile));
-
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -43,12 +59,16 @@ public class Program
 
         var app = builder.Build();
 
+        app.UseCors(allowedOrigins);
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseCors(allowedOrigins);
 
         app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
@@ -57,7 +77,10 @@ public class Program
             })
             .RequireAuthorization();
 
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsDevelopment()) 
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.MapIdentityApi<ApplicationUser>();
         app.UseAuthorization();

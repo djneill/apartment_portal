@@ -231,6 +231,42 @@ namespace apartment_portal_api.Data.Migrations
                     b.ToTable("guests", (string)null);
                 });
 
+            modelBuilder.Entity("apartment_portal_api.Models.Insights.Insight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdOn")
+                        .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
+
+                    b.Property<string>("Suggestion")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("suggestion");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("summary");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("insights_pkey");
+
+                    b.ToTable("insights", (string)null);
+                });
+
             modelBuilder.Entity("apartment_portal_api.Models.IssueTypes.IssueType", b =>
                 {
                     b.Property<int>("Id")
@@ -253,13 +289,12 @@ namespace apartment_portal_api.Data.Migrations
 
             modelBuilder.Entity("apartment_portal_api.Models.Issues.Issue", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("userId");
+                        .HasColumnName("id");
 
-                    b.Property<int>("IssueTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("issueTypeId");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .ValueGeneratedOnAdd()
@@ -272,10 +307,26 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.HasKey("UserId", "IssueTypeId")
+                    b.Property<int>("IssueTypeId")
+                        .HasColumnType("integer")
+                        .HasColumnName("issueTypeId");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("statusId");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
                         .HasName("issues_pkey");
 
                     b.HasIndex("IssueTypeId");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("issues", (string)null);
                 });
@@ -311,9 +362,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.HasIndex("StatusId");
 
                     b.HasIndex("UnitId");
-
-                    b.HasIndex(new[] { "LockerNumber" }, "packages_lockerNumber_key")
-                        .IsUnique();
 
                     b.ToTable("packages", (string)null);
                 });
@@ -416,14 +464,12 @@ namespace apartment_portal_api.Data.Migrations
 
             modelBuilder.Entity("apartment_portal_api.Models.UnitUsers.UnitUser", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("userId");
+                        .HasColumnName("id");
 
-                    b.Property<int>("UnitId")
-                        .HasColumnType("integer")
-                        .HasColumnName("unitId");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("integer")
@@ -444,6 +490,10 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("leaseAgreement");
 
+                    b.Property<DateTime>("LeaseExpiration")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("leaseExpiration");
+
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer")
                         .HasColumnName("modifiedBy");
@@ -454,7 +504,15 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnName("modifiedOn")
                         .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
 
-                    b.HasKey("UserId", "UnitId")
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unitId");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id")
                         .HasName("unitUsers_pkey");
 
                     b.HasIndex("CreatedBy");
@@ -462,6 +520,8 @@ namespace apartment_portal_api.Data.Migrations
                     b.HasIndex("ModifiedBy");
 
                     b.HasIndex("UnitId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("unitUsers", (string)null);
                 });
@@ -650,6 +710,13 @@ namespace apartment_portal_api.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("issues_issueTypeId_fkey");
 
+                    b.HasOne("apartment_portal_api.Models.Statuses.Status", "Status")
+                        .WithMany("Issues")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("issues_statusId_fkey");
+
                     b.HasOne("apartment_portal_api.Models.Users.ApplicationUser", "ApplicationUser")
                         .WithMany("Issues")
                         .HasForeignKey("UserId")
@@ -660,6 +727,8 @@ namespace apartment_portal_api.Data.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("IssueType");
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("apartment_portal_api.Models.Packages.Package", b =>
@@ -782,6 +851,8 @@ namespace apartment_portal_api.Data.Migrations
 
             modelBuilder.Entity("apartment_portal_api.Models.Statuses.Status", b =>
                 {
+                    b.Navigation("Issues");
+
                     b.Navigation("Packages");
 
                     b.Navigation("Units");
