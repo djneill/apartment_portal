@@ -1,16 +1,17 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom'; 
-import Navbar from './navbar/Narvbar'; 
+import SideNavbar from './navbar/SideNavbar';
+import { Outlet } from 'react-router-dom';
 
-const Layout: React.FC = () => {
+const MainLayout = () => {
   return (
-    <div>
-      <Navbar />
-      <main>
-        <Outlet /> 
+    <div className="flex">
+      <aside className="w-64 bg-gray-800 text-white">
+        <SideNavbar />
+      </aside>
+      <main className="flex-1 p-4 overflow-y-auto">
+        <Outlet />
       </main>
     </div>
   );
 };
 
-export default Layout;
+export default MainLayout;
