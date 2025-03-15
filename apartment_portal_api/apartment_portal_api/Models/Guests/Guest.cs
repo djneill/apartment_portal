@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.ParkingPermits;
-using System;
-using System.Collections.Generic;
 
 namespace apartment_portal_api.Models.Guests;
 
@@ -13,7 +11,6 @@ public class Guest
 
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
-    public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
     
     public int AccessCode { get; set; }
