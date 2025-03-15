@@ -40,16 +40,44 @@ public class UsersController : ControllerBase
 
     [HttpGet("{id}")] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
-    {
-        var user = await _unitOfWork.UserRepository.GetAsync(id);
+    { 
+        var user = await _unitOfWork.UserRepository.GetAsync(
+            u => u.Id == id,
+            $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
+        );
 
         if (user == null)
         {
             return NotFound(new { message = $"User with ID {id} not found" });
         }
 
-        var userDTO = _mapper.Map<UserDTO>(user);
-        return Ok(userDTO);
+        var userObj = user.FirstOrDefault();
+
+        var unitUser = userObj?.UnitUserUsers?.FirstOrDefault();
+        if (unitUser == null)
+        {
+            return NotFound(new { message = "No unit found for the given user." });
+        }
+
+        var unitRes = new UnitDTO()
+        {
+            Id = unitUser.Unit.Id,
+            UnitNumber = unitUser.Unit.Number,
+            Price = unitUser.Unit.Price
+        };
+
+        return Ok(new
+        {
+            User = new UserDTO()
+            {
+                Id = userObj.Id,
+                FirstName = userObj.FirstName,
+                LastName = userObj.LastName,
+                DateOfBirth = userObj.DateOfBirth,
+                StatusId = userObj.StatusId
+            },
+            Unit = unitRes
+        });
     }
 
     [HttpPost("register")]
