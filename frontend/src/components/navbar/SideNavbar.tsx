@@ -101,7 +101,7 @@ const NavItem: React.FC<NavItemProps & { isActive?: boolean }> = ({
           <span>{label}</span>
         </div>
         {count !== undefined && (
-          <div className="px-3 py-1 text-base text-black rounded-xl bg-zinc-100">
+          <div className="px-3 py-1 text-base text-black rounded-xl ">
             {count}
           </div>
         )}
