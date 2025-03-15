@@ -24,9 +24,9 @@ const HeroCard = ({
 
     <div className={`relative ${className}`}>
       {/* Header Card */}
-      <div className="bg-primary text-white h-32 rounded-3xl p-4 mb-10 font-heading">
+      <div className="bg-primary text-white h-32 rounded-3xl p-4 mb-10">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2  font-heading">
             <h2 className="text-xl font-medium">{title}</h2>
             {count != undefined && (
               <span className="bg-white text-primary px-3 py-1 rounded-2xl text-sm font-medium">
@@ -62,7 +62,7 @@ const HeroCard = ({
           ))
         ) : (
           <div className="px-6 py-8 text-center h-40">
-            <p className="text-white text-xl">No new notifications, have a great day! 🎉</p>
+            <p className="text-white text-xl font-body">No new notifications, have a great day! 🎉</p>
           </div>
         )}
       </div>
