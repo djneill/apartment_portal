@@ -23,7 +23,8 @@ namespace apartment_portal_api.DTOs
             CreateMap<RegistrationRequestDTO, ApplicationUser>();
             CreateMap<RegistrationForm, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
-            CreateMap<Unit, UnitDTO>();
+            CreateMap<Unit, UnitDTO>()
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));;
             CreateMap<UnitUserDTO, UnitUser>();
             CreateMap<Guest, GuestDTO>();
             CreateMap<GuestPostRequest, Guest>()
@@ -31,8 +32,11 @@ namespace apartment_portal_api.DTOs
                     dest => dest.Expiration,
                     opt => opt.MapFrom(b => DateTime.UtcNow.AddHours(b.DurationInHours)));
             CreateMap<ParkingPermitPostRequest, ParkingPermit>();
+            CreateMap<ParkingPermit, ParkingPermitDTO>();
+            CreateMap<Package, PackageGetByIdResponse>();
             CreateMap<Package, PackageGetResponse>();
             CreateMap<Status, StatusResponse>();
+            CreateMap<Status, StatusDTO>();
             CreateMap<Issue, IssueResponse>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
             CreateMap<IssueType, IssueTypeResponse>();
