@@ -72,8 +72,6 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
 
             entity.ToTable("guests");
 
-            entity.HasIndex(e => e.Email, "guests_email_key").IsUnique();
-
             entity.HasIndex(e => e.PhoneNumber, "guests_phoneNumber_key").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -81,7 +79,6 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
                 .HasColumnName("createdOn");
-            entity.Property(e => e.Email).HasColumnName("email");
             entity.Property(e => e.Expiration).HasColumnName("expiration");
             entity.Property(e => e.FirstName).HasColumnName("firstName");
             entity.Property(e => e.LastName).HasColumnName("lastName");
