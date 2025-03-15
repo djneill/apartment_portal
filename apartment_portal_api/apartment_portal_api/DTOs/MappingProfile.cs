@@ -1,3 +1,4 @@
+using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.ParkingPermits;
 
@@ -35,6 +36,7 @@ namespace apartment_portal_api.DTOs
             CreateMap<Issue, IssueResponse>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
             CreateMap<IssueType, IssueTypeResponse>();
+            CreateMap<Insight, InsightResponse>();
         }
     }
 }
