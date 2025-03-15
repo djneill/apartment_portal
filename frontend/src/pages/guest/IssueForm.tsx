@@ -10,7 +10,6 @@ const IssueReportForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
     console.log({ issueType, description, images });
   };
 
@@ -26,7 +25,7 @@ const IssueReportForm: React.FC = () => {
       onSubmit={handleSubmit}
       className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-white rounded-2xl"
     >
-      <section className="flex flex-col self-stretch pb-2.5 my-auto min-w-60 w-[315px]">
+      <section className="flex flex-col self-stretch pb-2 my-auto min-w-60 w-[315px]">
         <div>
           <FormDropdown
             label="Type of Issue"

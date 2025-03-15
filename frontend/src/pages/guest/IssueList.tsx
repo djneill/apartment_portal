@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
-import { getData } from "../../services/api"; 
+import issuesData from "../../data/issues.json"; 
 
 interface Issue {
   id: number;
@@ -16,18 +16,13 @@ const IssuesList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchIssues = async () => {
-      try {
-        const data = await getData<Issue[]>("/issues.json"); 
-        setIssues(data);
-      } catch (err) {
-        setError("Failed to fetch issues");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchIssues();
+    try {
+      setIssues(issuesData);
+    } catch (err) {
+      setError("Failed to load issues");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleViewAll = () => {

@@ -34,12 +34,13 @@ const SideNavbar = () => {
   ];
 
   const settingsItems = [
+    { icon: <Moon size={20} />, label: 'Dark Mode', to: '/darkmode' }, 
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
     { icon: <LogOut size={20} />, label: 'Log Out', to: '/logout' },
   ];
 
   return (
-    <nav className="flex flex-col items-start pt-14 pr-6 pb-28 mx-auto w-full font-medium bg-neutral-700 max-w-[480px] h-full">
+    <nav className="flex flex-col items-start pt-14 pr-6 pb-28 mx-auto w-full font-medium bg-primary max-w-[480px] h-full">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img
@@ -65,13 +66,8 @@ const SideNavbar = () => {
         ))}
       </section>
 
-      {/* Dark Mode and Settings */}
-      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white w-[153px]">
-        <div className="flex gap-4 items-center px-4 py-2 w-full rounded-3xl bg-gray-800">
-          <Moon size={20} />
-          <span>Dark Mode</span>
-        </div>
-
+      {/* Settings and Dark Mode */}
+      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white w-full">
         {settingsItems.map((item, index) => (
           <NavItem
             key={index}
@@ -96,11 +92,11 @@ const NavItem: React.FC<NavItemProps & { isActive?: boolean }> = ({
   return (
     <Link to={to}>
       <div
-        className={`flex justify-between items-center px-4 py-3 mt-3 w-full text-xl ${
-          isActive ? 'text-black bg-gray-400' : 'text-white'
+        className={`flex justify-between items-center px-6 py-3 mt-3 w-full text-xl ${
+          isActive ? 'text-black bg-secondary' : 'text-white'
         } rounded-3xl`}
       >
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center whitespace-nowrap">
           {icon}
           <span>{label}</span>
         </div>
