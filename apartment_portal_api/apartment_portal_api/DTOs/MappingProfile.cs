@@ -8,6 +8,7 @@ namespace apartment_portal_api.DTOs
     using apartment_portal_api.Models.Issues;
     using apartment_portal_api.Models.Guests;
     using apartment_portal_api.Models.Users;
+    using apartment_portal_api.Models.UnitUsers;
     using apartment_portal_api.Models.Packages;
     using apartment_portal_api.Models.Statuses;
 
@@ -19,7 +20,10 @@ namespace apartment_portal_api.DTOs
             CreateMap<ApplicationUser, UserDTO>();
             CreateMap<ApplicationUser, UserResponse>();
             CreateMap<RegistrationRequestDTO, ApplicationUser>();
+            CreateMap<RegistrationForm, ApplicationUser>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
             CreateMap<Unit, UnitDTO>();
+            CreateMap<UnitUserDTO, UnitUser>();
             CreateMap<Guest, GuestDTO>();
             CreateMap<GuestPostRequest, Guest>()
                 .ForMember(
