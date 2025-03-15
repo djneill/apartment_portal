@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
-import issuesData from "../../data/issues.json"; 
+import issuesData from "../../data/issues.json";
 
 interface Issue {
   id: number;
@@ -26,7 +26,7 @@ const IssuesList: React.FC = () => {
   }, []);
 
   const handleViewAll = () => {
-    console.log("navigate to all issues page");
+    console.log("Navigate to all issues page");
   };
 
   const handleIssueClick = (issueId: number) => {
@@ -53,17 +53,20 @@ const IssuesList: React.FC = () => {
         </button>
       </div>
 
-      <div className="flex overflow-x-auto gap-5 max-sm:flex-col">
-        {issues.map((issue) => (
-          <IssueCard
-            key={issue.id}
-            date={issue.date}
-            title={issue.title}
-            isNew={issue.isNew}
-            disabled={issue.disabled}
-            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
-          />
-        ))}
+      {/* Carousel Container */}
+      <div className="overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
+        <div className="inline-flex gap-5">
+          {issues.map((issue) => (
+            <IssueCard
+              key={issue.id}
+              date={issue.date}
+              title={issue.title}
+              isNew={issue.isNew}
+              disabled={issue.disabled}
+              onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

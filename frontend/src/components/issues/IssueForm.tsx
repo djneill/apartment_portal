@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import FormDropdown from "../form/FormDropdown";
 import FormInput from "../form/FormInput";
 import MainButton from "../MainButton";
+import FormSelect from "../form/FormSelect";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
@@ -19,20 +19,23 @@ const IssueReportForm: React.FC = () => {
       setImages((prevImages) => [...prevImages, ...fileArray]);
     }
   };
-
+  const dropdownOptions = [
+          { value: "bug", label: "Bug" },
+          { value: "feature", label: "Feature Request" },
+          { value: "support", label: "Support Request" },
+          { value: "other", label: "Other" },
+        ];
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-white rounded-2xl"
+      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-background rounded-2xl"
     >
       <section className="flex flex-col self-stretch pb-2 my-auto min-w-60 w-[315px]">
         <div>
-          <FormDropdown
+          <FormSelect
             label="Type of Issue"
             value={issueType}
-            onChange={setIssueType}
-            placeholder="Select an Issue Type"
-          />
+            onChange={(e) => setIssueType(e.target.value)} options={dropdownOptions}          />
 
           <FormInput
             label="Description of Issue"

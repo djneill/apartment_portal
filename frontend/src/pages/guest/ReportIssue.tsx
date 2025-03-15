@@ -5,10 +5,6 @@ import IssueForm from "../../components/issues/IssueForm";
 const ReportIssuesPage: React.FC = () => {
   return (
     <>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
       <main className="px-5 pt-14 pb-16 min-h-screen ">
         <header className="mb-10">
           <h1 className="text-3xl font-medium text-black">Report Issues</h1>
