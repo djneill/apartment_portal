@@ -23,7 +23,7 @@ const InputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <div
-      className={`flex gap-3 items-center px-2.5 py-3.5 whitespace-nowrap rounded-xl bg-zinc-300 ${className}`}
+      className={`flex gap-3 items-center px-2.5 py-3.5 whitespace-nowrap rounded-xl  ${className}`}
     >
       <div className="w-4 h-4">{icon}</div> 
 
