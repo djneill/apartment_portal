@@ -1,10 +1,13 @@
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Users;
+using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Models.Units;
 using apartment_portal_api.DTOs;
+using apartment_portal_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using apartment_portal_api.Models.UnitUsers;
+using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
@@ -36,8 +39,7 @@ public class UsersController : ControllerBase
 
     [HttpGet("{id}")] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
-    {
-        // Eagerly load Unit along with UnitUserUsers
+    { 
         var user = await _unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
@@ -73,19 +75,74 @@ public class UsersController : ControllerBase
                 DateOfBirth = userObj.DateOfBirth,
                 StatusId = userObj.StatusId
             },
-            Unit = unitRes // Returning a single unit since each user has only one
+            Unit = unitRes
         });
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Create(RegistrationRequestDTO request)
+    public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+        
+        bool isAdmin = User.IsInRole("Admin");
+        if (!isAdmin)
+        {
+            return Forbid();
+        }
+        
+        int adminId = int.Parse(userClaim.Value);
+        
+        if (!EmailValidator.ValidateEmail(request.Email))
+        {
+            return BadRequest(new { message = "Invalid email format." });
+        }
+        
+        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        if (existingUser != null)
+        {
+            return BadRequest(new { message = "A user with this email already exists." });
+        }
+        
+        var unit = (await _unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
+        if (unit is null)
+        {
+            return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
+        }
+        
+        int unitId = unit.Id; 
+        
         var newUser = _mapper.Map<ApplicationUser>(request);
-
+        newUser.UserName = request.Email;
+        newUser.CreatedOn = DateTime.UtcNow;
+        newUser.CreatedBy = adminId;
+        newUser.ModifiedOn = DateTime.UtcNow;
+        newUser.ModifiedBy = adminId;
+        newUser.StatusId = 1;
+        
         var result = await _userManager.CreateAsync(newUser, request.Password);
+    
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var unitUserDto = new UnitUserDTO
+        {
+            UserId = newUser.Id,
+            UnitId = unit.Id,
+            CreatedBy = adminId,
+            ModifiedBy = adminId
+        };
 
-        if (!result.Succeeded) return BadRequest(result.Errors);
-
-        return Ok(_mapper.Map<UserDTO>(newUser));
+        var unitUser = _mapper.Map<UnitUser>(unitUserDto);
+        await _unitOfWork.UnitUserRepository.AddAsync(unitUser);
+        await _unitOfWork.SaveAsync();
+            
+        return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 }

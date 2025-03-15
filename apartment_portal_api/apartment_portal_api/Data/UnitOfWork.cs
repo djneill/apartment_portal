@@ -2,6 +2,7 @@
 using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
+using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
@@ -24,6 +25,7 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<Unit>? _unitRepository;
     private IRepository<ApplicationUser>? _userRepository;
     private IRepository<UnitUser>? _unitUserRepository;
+    private IRepository<Insight>? _insightRepository;
 
     public UnitOfWork(PostgresContext context)
     {
@@ -109,6 +111,14 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
+    public IRepository<Insight> InsightRepository
+    {
+        get
+        {
+            _insightRepository ??= new Repository<Insight>(_context);
+            return _insightRepository;
+        }
+    }    
     public async Task SaveAsync()
     {
         await _context.SaveChangesAsync();
