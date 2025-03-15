@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import FormDropdown from "../../components/form/FormDropdown";
-import FormInput from "../../components/form/FormInput";
-import MainButton from "../../components/MainButton";
+import FormDropdown from "../form/FormDropdown";
+import FormInput from "../form/FormInput";
+import MainButton from "../MainButton";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
