@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import {  useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
+  Home,
   Users,
   AlertCircle,
   Brain,
@@ -9,13 +9,8 @@ import {
   Settings,
   LogOut,
 } from 'lucide-react';
+import NavItem from './NavItem';
 
-interface NavItemProps {
-  icon: React.ReactNode;
-  label: string;
-  to: string;
-  count?: number;
-}
 
 const SideNavbar = () => {
   const location = useLocation();
@@ -24,22 +19,24 @@ const SideNavbar = () => {
     avatarSrc:
       'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
     userName: 'Jane Doe',
+    apartment: 'Unit 205',
   };
 
   const navItems = [
-    { icon: <LayoutDashboard size={20} />, label: 'Dashboard', to: '/home' },
+    { icon: <Home size={20} />, label: 'Dashboard', to: '/home' },
     { icon: <Users size={20} />, label: 'Manage Tenants', to: '/users/1' },
     { icon: <AlertCircle size={20} />, label: 'Manage Issues', to: '/reportissue' },
     { icon: <Brain size={20} />, label: 'AI Insights', to: '/formdemo' },
   ];
 
   const settingsItems = [
+    { icon: <Moon size={20} />, label: 'Dark Mode', to: '/darkmode' }, 
     { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
     { icon: <LogOut size={20} />, label: 'Log Out', to: '/logout' },
   ];
 
   return (
-    <nav className="flex flex-col items-start pt-14 pr-6 pb-28 mx-auto w-full font-medium bg-neutral-700 max-w-[480px] h-full">
+    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] h-full">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img
@@ -47,13 +44,19 @@ const SideNavbar = () => {
           alt={`${user.userName}'s avatar`}
           className="object-contain shrink-0 self-stretch my-auto aspect-square rounded-full w-[75px]"
         />
-        <h2 className="self-stretch my-auto rounded-none w-[95px]">
+       <div>
+       <h2 className="self-stretch my-auto rounded-none w-[95px]">
           {user.userName}
         </h2>
+        <p className="text-sm">
+          {user.apartment}
+        </p>
+       </div>
+
       </div>
 
       {/* Navigation Items */}
-      <section className="mt-16 w-full">
+      <section className="flex flex-col items-start mt-10 ml-4 max-w-full text-xl text-white ">
         {navItems.map((item, index) => (
           <NavItem
             key={index}
@@ -65,13 +68,8 @@ const SideNavbar = () => {
         ))}
       </section>
 
-      {/* Dark Mode and Settings */}
-      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white w-[153px]">
-        <div className="flex gap-4 items-center px-4 py-2 w-full rounded-3xl bg-gray-800">
-          <Moon size={20} />
-          <span>Dark Mode</span>
-        </div>
-
+      {/* Settings and Dark Mode */}
+      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white ">
         {settingsItems.map((item, index) => (
           <NavItem
             key={index}
@@ -83,34 +81,6 @@ const SideNavbar = () => {
         ))}
       </section>
     </nav>
-  );
-};
-
-const NavItem: React.FC<NavItemProps & { isActive?: boolean }> = ({
-  icon,
-  label,
-  to,
-  count,
-  isActive = false,
-}) => {
-  return (
-    <Link to={to}>
-      <div
-        className={`flex justify-between items-center px-4 py-3 mt-3 w-full text-xl ${
-          isActive ? 'text-black bg-gray-400' : 'text-white'
-        } rounded-3xl`}
-      >
-        <div className="flex gap-4 items-center">
-          {icon}
-          <span>{label}</span>
-        </div>
-        {count !== undefined && (
-          <div className="px-3 py-1 text-base text-black rounded-xl bg-zinc-100">
-            {count}
-          </div>
-        )}
-      </div>
-    </Link>
   );
 };
 
