@@ -14,7 +14,7 @@ const ThermostatCard = () => {
 
     return (
         <div>
-            <h3 className="text-lg font-medium text-black mb-2">Thermostat</h3>
+            <h3 className="font-medium text-black mb-2">Thermostat</h3>
             <Card className="bg-white rounded-xl p-4 relative">
                 <div className="absolute top-2 right-2">
                     <span className="bg-[#89CFF0] text-black px-3 py-1 rounded-lg text-md font-bold">
