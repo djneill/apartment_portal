@@ -26,24 +26,24 @@ public class Notifications : ControllerBase
     [HttpGet("latest")]
     public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId, [FromQuery] int? limit)
     {
-        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if(loggedInUserId == null)
-        {
-            return Unauthorized();
-        }
+        //if(loggedInUserId == null)
+        //{
+        //    return Unauthorized();
+        //}
 
-        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
-        var isAdmin = User.IsInRole("Admin");
+        //int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        //var isAdmin = User.IsInRole("Admin");
 
-        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
-        {
-            return Forbid();
-        }
+        //if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        //{
+        //    return Forbid();
+        //}
 
 
         var userUnits = await _unitOfWork.UnitUserRepository.GetAsync(uu => 
-        (isAdmin || uu.UserId == loggedInUserIdInt) &&
+        //(isAdmin || uu.UserId == loggedInUserIdInt) &&
         (!userId.HasValue || uu.UserId == userId)
         );
         var userUnitIds = userUnits.Select(uu => uu.UnitId).ToList();
@@ -52,7 +52,8 @@ public class Notifications : ControllerBase
         // int userUnitId = userUnit.First().UnitId;
 
         var packageLists = await _unitOfWork.PackageRepository.GetAsync(p =>
-        (isAdmin || userUnitIds.Contains(p.UnitId)) &&
+        (//isAdmin || 
+         userUnitIds.Contains(p.UnitId)) &&
         (!userId.HasValue || (userUnitIds.Contains(p.UnitId) && p.Status.Name == "Arrived")),
             includeProperties: nameof(Package.Status)
         );
@@ -68,7 +69,7 @@ public class Notifications : ControllerBase
 
 
         var issueLists = await _unitOfWork.IssueRepository.GetAsync(i =>
-        (isAdmin || i.UserId == loggedInUserIdInt) &&
+        // (isAdmin || i.UserId == loggedInUserIdInt) &&
         (!userId.HasValue || (i.UserId == userId && i.Status.Name != "Inactive")),
         includeProperties: nameof(Issue.Status)
         );
@@ -85,7 +86,7 @@ public class Notifications : ControllerBase
             .ToList();
 
         var users = await _unitOfWork.UserRepository.GetAsync(u =>
-        (isAdmin || u.Id == loggedInUserIdInt) && 
+        //(isAdmin || u.Id == loggedInUserIdInt) && 
         (!userId.HasValue || u.Id == userId)
         );
         var user = users.FirstOrDefault();

@@ -83,21 +83,21 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
-        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        if (userClaim is null)
-        {
-            return Unauthorized();
-        }
-        
-        bool isAdmin = User.IsInRole("Admin");
-        if (!isAdmin)
-        {
-            return Forbid();
-        }
-        
-        int adminId = int.Parse(userClaim.Value);
-        
+        //if (userClaim is null)
+        //{
+        //    return Unauthorized();
+        //}
+
+        //bool isAdmin = User.IsInRole("Admin");
+        //if (!isAdmin)
+        //{
+        //    return Forbid();
+        //}
+
+        //int adminId = int.Parse(userClaim.Value);
+
         if (!EmailValidator.ValidateEmail(request.Email))
         {
             return BadRequest(new { message = "Invalid email format." });
@@ -120,9 +120,9 @@ public class UsersController : ControllerBase
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
         newUser.CreatedOn = DateTime.UtcNow;
-        newUser.CreatedBy = adminId;
+        newUser.CreatedBy = 4;  // fix when uncommenting auth
         newUser.ModifiedOn = DateTime.UtcNow;
-        newUser.ModifiedBy = adminId;
+        newUser.ModifiedBy = 4;  // fix when uncommenting auth
         newUser.StatusId = 1;
         
         var result = await _userManager.CreateAsync(newUser, request.Password);
@@ -136,8 +136,8 @@ public class UsersController : ControllerBase
         {
             UserId = newUser.Id,
             UnitId = unit.Id,
-            CreatedBy = adminId,
-            ModifiedBy = adminId
+            CreatedBy = 4,      //fix when uncommenting auth
+            ModifiedBy = 4      // fix when uncommenting auth
         };
 
         var unitUser = _mapper.Map<UnitUser>(unitUserDto);
@@ -150,9 +150,9 @@ public class UsersController : ControllerBase
     [HttpPost("{id:int}/expirationCountdown")]
     public async Task<ActionResult> GetLeaseExpiration(int id)
     {
-        bool isAdmin = User.IsInRole("Admin");
-        var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == id.ToString());
-        if (!isAdmin && loggedInUserIdClaim is null) return Unauthorized();
+        //bool isAdmin = User.IsInRole("Admin");
+        //var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == id.ToString());
+        //if (!isAdmin && loggedInUserIdClaim is null) return Unauthorized();
 
         var userRes =
             await _unitOfWork.UserRepository
