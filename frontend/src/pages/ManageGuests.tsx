@@ -18,7 +18,7 @@ export default function ManageGuests() {
     carColor?: string;
     licensePlate?: string;
   }) {
-    console.log(data)
+    //TODO: Implement api stuff
   }
   return (
     <div className="w-screen min-h-screen p-4">

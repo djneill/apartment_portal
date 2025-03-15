@@ -26,7 +26,6 @@ public class GuestController : ControllerBase
     public async Task<ActionResult<GuestDTO>> GetGuestById(int id)
     {
         var guest = await _unitOfWork.GuestRepository.GetAsync(id);
-
         if (guest == null)
             return NotFound();
 

@@ -8,6 +8,7 @@ import {
   TenantDashboard,
 } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
+// import ModalExample from "./components/ModalExample";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/formdemo" element={<FormDemo />} />
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
+        {/* <Route path="/modal-example" element={<ModalExample />} /> */}
       </Routes>
     </BrowserRouter>
   );
