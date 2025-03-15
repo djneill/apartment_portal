@@ -39,7 +39,7 @@ const PackageCard = () => {
             <Card className="bg-white rounded-xl p-4">
                 <div className="flex justify-between items-center mb-2 mr-2">
                     <span className="text-md font-bold">Locker #A12</span>
-                    <div className="bg-primary rounded-full p-[4px]">
+                    <div className="bg-primary rounded-full p-[4px] cursor-pointer">
                         <ArrowUpRight className="text-white" />
                     </div>
                 </div>
