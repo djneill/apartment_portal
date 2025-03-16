@@ -56,6 +56,9 @@ namespace apartment_portal_api.DTOs
 
             // Insight
             CreateMap<Insight, InsightResponse>();
+            CreateMap<InsightPostRequest, Insight>();
+
+            CreateMap<Issue, IssueAIPostRequest>();
         }
     }
 }
