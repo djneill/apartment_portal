@@ -29,7 +29,7 @@ public class InsightsController : ControllerBase
         var issues = await _unitOfWork.InsightRepository.GenerateInsights();
 
         var aIPostReq = _mapper.Map<ICollection<IssueAIPostRequest>>(issues);
-        var insightResponse = _aiService.GenerateInsights(aIPostReq);
+        var insightResponse = await _aiService.GenerateInsights(aIPostReq);
 
         return Ok(insightResponse);
     }
