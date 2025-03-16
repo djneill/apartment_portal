@@ -6,7 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-using apartment_portal_api.Services;
+using apartment_portal_api.Services.AIService;
 
 namespace apartment_portal_api;
 

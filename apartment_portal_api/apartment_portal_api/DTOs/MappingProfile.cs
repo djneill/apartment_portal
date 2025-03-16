@@ -41,6 +41,7 @@ namespace apartment_portal_api.DTOs
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
             CreateMap<IssueType, IssueTypeResponse>();
             CreateMap<Insight, InsightResponse>();
+            CreateMap<InsightPostRequest, Insight>();
 
             CreateMap<Issue, IssueAIPostRequest>();
         }

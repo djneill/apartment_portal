@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Insights;
-using apartment_portal_api.Services;
+using apartment_portal_api.Services.AIService;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,25 +23,28 @@ public class InsightsController : ControllerBase
         _aiService = aiService;
     }
 
-    [HttpGet("/currentInsights")]
-    public async Task<ActionResult<ICollection<InsightResponse>>> GetCurrentInsights()
+    [HttpGet]
+    public async Task<ActionResult<ICollection<InsightResponse>>> GetInsights()
     {
-        var issues = await _unitOfWork.InsightRepository.GenerateInsights();
+        var issues = await _unitOfWork.IssueRepository.GetCommonIssues();
 
         var aIPostReq = _mapper.Map<ICollection<IssueAIPostRequest>>(issues);
         var insightResponse = await _aiService.GenerateInsights(aIPostReq);
 
-        return Ok(insightResponse);
-    }
+        var pastInsights = await _unitOfWork.InsightRepository.GetPastInsights();
+        var pastInsightsResponse = _mapper.Map<ICollection<InsightResponse>>(pastInsights);
 
-    [HttpGet("/previousInsights")]
-    public async Task<ActionResult<ICollection<InsightResponse>>> GetPreviousInsights()
-    {
-        var insights = await _unitOfWork.InsightRepository.GetAsync();
+        var newInsights = _mapper.Map<ICollection<Insight>>(insightResponse);
 
-        var response = _mapper.Map<IEnumerable<InsightResponse>>(insights);
+        foreach (var newInsight in newInsights)
+        {
+            await _unitOfWork.InsightRepository.AddAsync(newInsight);
+        }
 
+        await _unitOfWork.SaveAsync();
 
-        return Ok(response);
+        var currentInsightsResponse = _mapper.Map<ICollection<InsightResponse>>(newInsights);
+
+        return Ok(new{currentInsights=currentInsightsResponse,previousInsights=pastInsightsResponse});
     }
 }

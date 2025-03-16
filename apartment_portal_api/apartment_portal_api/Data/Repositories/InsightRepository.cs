@@ -1,7 +1,4 @@
 ﻿using apartment_portal_api.Models.Insights;
-using apartment_portal_api.Models.Issues;
-using apartment_portal_api.Models.Packages;
-using apartment_portal_api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Data.Repositories;
@@ -17,13 +14,10 @@ public class InsightRepository: Repository<Insight>
         _dbSet = context.Set<Insight>();
     }
 
-    public async Task<ICollection<Issue>> GenerateInsights()
+    public async Task<ICollection<Insight>> GetPastInsights()
     {
-        var query = _context.Issues
-            .FromSql($"SELECT * FROM \"issues\" WHERE \"issueTypeId\" IN (SELECT \"issueTypeId\" FROM \"issues\" WHERE age(\"createdOn\") < make_interval(days => 1) GROUP BY \"issueTypeId\" ORDER BY COUNT(\"issueTypeId\") DESC LIMIT 3) AND age(\"createdOn\") < make_interval(days => 1) AND \"statusId\" = 1;");
+        IQueryable<Insight> query = _dbSet.OrderByDescending(insight => insight.CreatedOn).Take(5);
 
-        var res = await query.ToListAsync();
-
-        return res;
+        return await query.ToListAsync();
     }
 }
