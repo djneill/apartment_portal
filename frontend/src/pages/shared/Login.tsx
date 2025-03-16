@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
-import InputField from "../InputField";
-import SignInButton from "../SignInButton";
+import InputField from "../../components/InputField";
+import SignInButton from "../../components/SignInButton";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
@@ -15,22 +15,22 @@ function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     try {
       await login(username, password);
       const roles = await getUserRoles();
       console.log("Roles:", roles);
       if (roles.includes("Admin")) {
-          navigate("/admindashboard");
+        navigate("/admindashboard");
       } else if (roles.includes("Tenant")) {
-          navigate("/tenantdashboard");
+        navigate("/tenantdashboard");
       } else {
-          navigate("/home"); 
+        navigate("/home");
       }
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
-  };  
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
     <main className="loginContainer flex items-center justify-center h-screen">
