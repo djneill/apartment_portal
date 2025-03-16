@@ -24,9 +24,9 @@ export const login = async (email: string, password: string): Promise<{ token: s
   export const getUserRoles = async (): Promise<string[]> => {
     try {
         const response = await axios.get<string[]>(`${BASE_URL}Users/roles`, {
-          //headers: { 
-            //"Accept": "application/json",            
-          //},
+          headers: { 
+            "Accept": "application/json",            
+          },
           withCredentials: true,
         });
         return response.data;

@@ -16,20 +16,20 @@ function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
   
-    //try {
+    try {
       await login(username, password);
       const roles = await getUserRoles();
-      console.log(roles);
-      // if (roles.includes("Admin")) {
-      //     navigate("/admindashboard");
-      // } else if (roles.includes("Tenant")) {
-      //     navigate("/tenantdashboard");
-      // } else {
-      //     navigate("/home"); 
-      // }
-      //   } catch (error) {
-      //       console.error("Login failed:", error);
-      //   }
+      console.log("Roles:", roles);
+      if (roles.includes("Admin")) {
+          navigate("/admindashboard");
+      } else if (roles.includes("Tenant")) {
+          navigate("/tenantdashboard");
+      } else {
+          navigate("/home"); 
+      }
+        } catch (error) {
+            console.error("Login failed:", error);
+        }
   };  
 
   return (
