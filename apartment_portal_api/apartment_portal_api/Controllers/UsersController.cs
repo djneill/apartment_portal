@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Security.Claims;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Users;
@@ -30,11 +31,23 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
+    // Uncomment next line to add auth
+    // [Authorize(Roles="Admin")]
     public async Task<IActionResult> GetUsers()
     {
-        var users = await _unitOfWork.UserRepository.GetAsync();
-        var userDTOs = _mapper.Map<IEnumerable<UserDTO>>(users);
-        return Ok(userDTOs);
+        var users = await _unitOfWork.UserRepository.GetUsers();
+
+        ICollection<ApplicationUser> tenants = [];
+
+        foreach (var user in users)
+        {
+            bool isTenant = await _userManager.IsInRoleAsync(user, "Tenant");
+            if (isTenant) tenants.Add(user);
+        }
+
+        var response = _mapper.Map<ICollection<GetUsersResponse>>(tenants);
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")] // /users/12

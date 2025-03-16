@@ -5,7 +5,6 @@ using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.UnitUsers;
 using apartment_portal_api.Services.AIService;
 
@@ -21,7 +20,7 @@ public class UnitOfWork : IUnitOfWork
     private PackageRepository? _packageRepository;
     private IRepository<Status>? _statusRepository;
     private IRepository<Unit>? _unitRepository;
-    private IRepository<ApplicationUser>? _userRepository;
+    private UserRepository? _userRepository;
     private IRepository<UnitUser>? _unitUserRepository;
     private InsightRepository? _insightRepository;
 
@@ -95,11 +94,11 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IRepository<ApplicationUser> UserRepository
+    public UserRepository UserRepository
     {
         get
         {
-            _userRepository ??= new Repository<ApplicationUser>(_context);
+            _userRepository ??= new UserRepository(_context);
             return _userRepository;
         }
     }
