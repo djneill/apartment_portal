@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using apartment_portal_api.Services;
 
 namespace apartment_portal_api;
 
@@ -56,6 +57,8 @@ public class Program
             options.SignIn.RequireConfirmedEmail = false;
             options.User.RequireUniqueEmail = true;
         });
+
+        builder.Services.AddScoped<AIService>();
 
         var app = builder.Build();
 

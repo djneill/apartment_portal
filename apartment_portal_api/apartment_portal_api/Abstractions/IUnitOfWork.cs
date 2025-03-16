@@ -23,6 +23,6 @@ public interface IUnitOfWork
     public IRepository<Unit> UnitRepository { get; }
     public IRepository<ApplicationUser> UserRepository { get; }
     public IRepository<UnitUser> UnitUserRepository { get; }
-    public IRepository<Insight> InsightRepository { get; }
+    public InsightRepository InsightRepository { get; }
     public Task SaveAsync();
 }
