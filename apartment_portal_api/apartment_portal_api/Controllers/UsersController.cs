@@ -7,6 +7,7 @@ using apartment_portal_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
@@ -79,6 +80,8 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
+    // Uncomment next line for auth
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -86,12 +89,6 @@ public class UsersController : ControllerBase
         //if (userClaim is null)
         //{
         //    return Unauthorized();
-        //}
-
-        //bool isAdmin = User.IsInRole("Admin");
-        //if (!isAdmin)
-        //{
-        //    return Forbid();
         //}
 
         //int adminId = int.Parse(userClaim.Value);
@@ -113,13 +110,9 @@ public class UsersController : ControllerBase
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
         }
         
-        int unitId = unit.Id; 
-        
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
-        newUser.CreatedOn = DateTime.UtcNow;
         newUser.CreatedBy = 4;  // fix when uncommenting auth
-        newUser.ModifiedOn = DateTime.UtcNow;
         newUser.ModifiedBy = 4;  // fix when uncommenting auth
         newUser.StatusId = 1;
         
@@ -129,6 +122,8 @@ public class UsersController : ControllerBase
         {
             return BadRequest(result.Errors);
         }
+
+        await _userManager.AddToRoleAsync(newUser, "Tenant");
         
         var unitUserDto = new UnitUserDTO
         {
