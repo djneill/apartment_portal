@@ -1,14 +1,12 @@
+using System.Security.Claims;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.UnitUsers;
-using apartment_portal_api.Models.Units;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using System.Security.Claims;
-using apartment_portal_api.Models;
 
 namespace apartment_portal_api.Controllers;
 
@@ -147,7 +145,7 @@ public class UsersController : ControllerBase
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    [HttpPost("{id:int}/expirationCountdown")]
+    [HttpGet("{id:int}/expirationCountdown")]
     public async Task<ActionResult> GetLeaseExpiration(int id)
     {
         //bool isAdmin = User.IsInRole("Admin");
@@ -172,5 +170,28 @@ public class UsersController : ControllerBase
         {
             ExpirationCountdown = timeDifference
         });
+    }
+
+    // Uncomment line below when turning on auth
+    // [Authorize]
+    [HttpGet("roles")]
+    public async Task<ActionResult<ICollection<string>>> GetRoles()
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        int.TryParse(userClaim.Value, out int userId);
+
+        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+
+        if (user is null) return BadRequest();
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Ok(roles);
     }
 }
