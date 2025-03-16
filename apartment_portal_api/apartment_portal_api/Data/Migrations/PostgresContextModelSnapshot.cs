@@ -189,11 +189,6 @@ namespace apartment_portal_api.Data.Migrations
                         .HasColumnName("createdOn")
                         .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
                     b.Property<DateTime>("Expiration")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("expiration");
@@ -221,9 +216,6 @@ namespace apartment_portal_api.Data.Migrations
                         .HasName("guests_pkey");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex(new[] { "Email" }, "guests_email_key")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "PhoneNumber" }, "guests_phoneNumber_key")
                         .IsUnique();

@@ -9,6 +9,9 @@ import {
   FormDemo,
   TenantDashboard,
 } from "./pages";
+import ManageGuests from "./pages/ManageGuests";
+// import ModalExample from "./components/ModalExample";
+
 function App() {
   return (
     <BrowserRouter>
@@ -20,8 +23,11 @@ function App() {
             <Route path="/users/:id" element={<UserProfile />} />
             <Route path="/formdemo" element={<FormDemo />} />
             <Route path="/tenantdashboard" element={<TenantDashboard />} />
+            {/* <Route path="/admindashboard" element={<AdminDashboard />} /> */}
+            {/* <Route path="/modal-example" element={<ModalExample />} /> */}
           </Route>
         </Routes>
+      </Routes>
     </BrowserRouter>
   );
 }

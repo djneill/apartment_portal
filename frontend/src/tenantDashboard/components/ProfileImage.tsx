@@ -36,7 +36,7 @@ const ProfileImage = ({
                 />
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-white text-primary">
-                    <UserRound size={iconSizes[size]} />
+                    <UserRound size={iconSizes['lg']} />
                 </div>
             )}
         </div>

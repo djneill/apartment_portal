@@ -3,11 +3,10 @@ using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
-using apartment_portal_api.Models.Issues;
-using apartment_portal_api.Models.Packages;
+using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Services.AIService;
 
 namespace apartment_portal_api.Data;
 
@@ -17,15 +16,20 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<Guest>? _guestRepository;
     private IRepository<ParkingPermit>? _parkingPermitRepository;
     private IssueRepository? _issueRepository;
+    private IRepository<IssueType>? _issueTypeRepository;
     private PackageRepository? _packageRepository;
     private IRepository<Status>? _statusRepository;
     private IRepository<Unit>? _unitRepository;
-    private IRepository<ApplicationUser>? _userRepository;
+    private UserRepository? _userRepository;
     private IRepository<UnitUser>? _unitUserRepository;
+    private InsightRepository? _insightRepository;
 
-    public UnitOfWork(PostgresContext context)
+    private readonly AIService _aiService;
+
+    public UnitOfWork(PostgresContext context, AIService aiService)
     {
         _context = context;
+        _aiService = aiService;
     }
 
     public IRepository<Guest> GuestRepository
@@ -51,6 +55,15 @@ public class UnitOfWork : IUnitOfWork
         {
             _issueRepository ??= new IssueRepository(_context);
             return _issueRepository;
+        }
+    }
+    
+    public IRepository<IssueType> IssueTypeRepository
+    {
+        get
+        {
+            _issueTypeRepository ??= new Repository<IssueType>(_context);
+            return _issueTypeRepository;
         }
     }
 
@@ -81,11 +94,11 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IRepository<ApplicationUser> UserRepository
+    public UserRepository UserRepository
     {
         get
         {
-            _userRepository ??= new Repository<ApplicationUser>(_context);
+            _userRepository ??= new UserRepository(_context);
             return _userRepository;
         }
     }
@@ -98,6 +111,14 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
+    public InsightRepository InsightRepository
+    {
+        get
+        {
+            _insightRepository ??= new InsightRepository(_context);
+            return _insightRepository;
+        }
+    }    
     public async Task SaveAsync()
     {
         await _context.SaveChangesAsync();

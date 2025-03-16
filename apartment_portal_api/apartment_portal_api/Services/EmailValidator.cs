@@ -32,10 +32,12 @@ public static class EmailValidator
         }
         catch (RegexMatchTimeoutException e)
         {
+            Console.WriteLine(e);
             return false;
         }
         catch (ArgumentException e)
         {
+            Console.WriteLine(e);
             return false;
         }
 

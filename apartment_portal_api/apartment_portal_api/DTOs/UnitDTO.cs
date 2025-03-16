@@ -5,5 +5,6 @@ namespace apartment_portal_api.DTOs
         public int Id { get; set; }
         public int UnitNumber { get; set; }
         public int Price { get; set; }
+        public string StatusName { get; set; }
     }
 }

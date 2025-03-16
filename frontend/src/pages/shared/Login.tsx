@@ -4,7 +4,8 @@ import InputField from "../../components/InputField";
 import SignInButton from "../../components/SignInButton";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../services/auth";
+import { getUserRoles, login } from "../../services/auth";
+import "./Login.css";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -17,11 +18,17 @@ function Login() {
 
     try {
       await login(username, password);
-      // Redirect to the home page
-      navigate("/home");
+      const roles = await getUserRoles();
+      console.log("Roles:", roles);
+      if (roles.includes("Admin")) {
+        navigate("/admindashboard");
+      } else if (roles.includes("Tenant")) {
+        navigate("/tenantdashboard");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       console.error("Login failed:", error);
-      //mostrar mensaje
     }
   };
 
