@@ -7,6 +7,7 @@ using apartment_portal_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
@@ -81,20 +82,20 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
-        //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-        //if (userClaim is null)
-        //{
-        //    return Unauthorized();
-        //}
+        if (userClaim is null)
+        {
+           return Unauthorized();
+        }
 
-        //bool isAdmin = User.IsInRole("Admin");
-        //if (!isAdmin)
-        //{
-        //    return Forbid();
-        //}
+        bool isAdmin = User.IsInRole("Admin");
+        if (!isAdmin)
+        {
+           return Forbid();
+        }
 
-        //int adminId = int.Parse(userClaim.Value);
+        int adminId = int.Parse(userClaim.Value);
 
         if (!EmailValidator.ValidateEmail(request.Email))
         {
@@ -118,9 +119,9 @@ public class UsersController : ControllerBase
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
         newUser.CreatedOn = DateTime.UtcNow;
-        newUser.CreatedBy = 4;  // fix when uncommenting auth
+        newUser.CreatedBy = adminId;
         newUser.ModifiedOn = DateTime.UtcNow;
-        newUser.ModifiedBy = 4;  // fix when uncommenting auth
+        newUser.ModifiedBy = adminId;
         newUser.StatusId = 1;
         
         var result = await _userManager.CreateAsync(newUser, request.Password);
@@ -134,8 +135,8 @@ public class UsersController : ControllerBase
         {
             UserId = newUser.Id,
             UnitId = unit.Id,
-            CreatedBy = 4,      //fix when uncommenting auth
-            ModifiedBy = 4      // fix when uncommenting auth
+            CreatedBy = adminId,
+            ModifiedBy = adminId
         };
 
         var unitUser = _mapper.Map<UnitUser>(unitUserDto);
@@ -148,9 +149,9 @@ public class UsersController : ControllerBase
     [HttpGet("{id:int}/expirationCountdown")]
     public async Task<ActionResult> GetLeaseExpiration(int id)
     {
-        //bool isAdmin = User.IsInRole("Admin");
-        //var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == id.ToString());
-        //if (!isAdmin && loggedInUserIdClaim is null) return Unauthorized();
+        bool isAdmin = User.IsInRole("Admin");
+        var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == id.ToString());
+        if (!isAdmin && loggedInUserIdClaim is null) return Unauthorized();
 
         var userRes =
             await _unitOfWork.UserRepository
@@ -173,7 +174,7 @@ public class UsersController : ControllerBase
     }
 
     // Uncomment line below when turning on auth
-    // [Authorize]
+    [Authorize]
     [HttpGet("roles")]
     public async Task<ActionResult<ICollection<string>>> GetRoles()
     {

@@ -57,18 +57,28 @@ public class Program
             options.User.RequireUniqueEmail = true;
         });
 
+        // builder.Services.ConfigureApplicationCookie(options =>
+        // {
+        //     options.Cookie.HttpOnly = true; //Prevents JS access
+        //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Ensures cookies work over HTTPS
+        //     options.Cookie.SameSite = SameSiteMode.None; //Allows frontend-backend cross-origin communication
+        // });
+
+
         var app = builder.Build();
 
         app.UseCors(allowedOrigins);
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapIdentityApi<ApplicationUser>();
+        app.MapControllers();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-        }
-
-        app.UseCors(allowedOrigins);
+        }        
 
         app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
@@ -81,11 +91,6 @@ public class Program
         {
             app.UseHttpsRedirection();
         }
-
-        app.MapIdentityApi<ApplicationUser>();
-        app.UseAuthorization();
-
-        app.MapControllers();
 
         app.Run();
     }
