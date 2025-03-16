@@ -1,30 +1,26 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
+import { Guest } from "../../types";
+import CountdownTimer from "../CountdownTimer";
 
-export default function CurrentGuestTable() {
+export default function CurrentGuestTable({ activeGuests }: { activeGuests: Guest[] }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const currentGuests = [
-    { name: "Dennis Garcia", timeRemaining: "3h 56m" },
-    { name: "Alex Smith", timeRemaining: "2h 30m" },
-    { name: "Jane Doe", timeRemaining: "1h 15m" },
-    { name: "Alex Smith", timeRemaining: "2h 30m" },
-    { name: "Alex Smith", timeRemaining: "2h 30m" },
-    { name: "Alex Smith", timeRemaining: "2h 30m" },
-    { name: "Alex Smith", timeRemaining: "2h 30m" },
-  ];
+  const displayedGuests = isExpanded ? activeGuests : activeGuests.slice(0, 3);
 
-  const displayedGuests = isExpanded ? currentGuests : currentGuests.slice(0, 3);
-
-  const mapGuests = displayedGuests.map((guest, index) => (
-    <tr key={index} className="py-2">
-      <td className="p-2">
-        <GuestProfileIcon />
-      </td>
-      <td className="p-2 text-nowrap">{guest.name.length > 15 ? guest.name.substring(0, 15) + "..." : guest.name}</td>
-      <td className="font-bold p-2">{guest.timeRemaining}</td>
-    </tr>
-  ));
+  const mapGuests = displayedGuests.map((guest, index) => {
+    const name = guest.firstName + " " + guest.lastName
+    return (
+      <tr key={index} className="p-10 ">
+        <td className="p-2">
+          <GuestProfileIcon iconSize={20} />
+        </td>
+        <td className="p-2 text-nowrap">{name.length > 15 ? name.substring(0, 15) + "..." : name}</td>
+        <td>
+          <CountdownTimer className="p-2 font-bold" expiration={guest.expiration} /></td>
+      </tr>
+    )
+  })
 
   return (
     <div className="font-heading">
@@ -45,7 +41,13 @@ export default function CurrentGuestTable() {
             </tr>
           </thead>
           <tbody>
-            {mapGuests}
+            {activeGuests.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="text-center py-4">No guests found</td>
+              </tr>
+            ) : (
+              mapGuests
+            )}
           </tbody>
         </table>
       </div>

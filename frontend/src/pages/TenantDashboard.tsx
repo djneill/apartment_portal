@@ -19,7 +19,7 @@ const TenantDashboard = () => {
 
   useEffect(() => {
     (async () => {
-      const data = await getData<Notifications[]>("notifications/latest/6");
+      const data = await getData<Notifications[]>("notifications/latest?userId=6");
       setNotifications(data);
     })();
   }, []);

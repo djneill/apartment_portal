@@ -1,17 +1,10 @@
 import { useState } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { FormInput, FormPhoneInput, FormSelect } from '../form';
+import { GuestRequest } from '../../types';
 
 interface GuestFormProps {
-  onSubmit: (data: {
-    firstName: string,
-    lastName: string,
-    phoneNumber: string;
-    duration: string;
-    carMake?: string;
-    carModel?: string;
-    licensePlate?: string;
-  }) => void;
+  onSubmit: (data: GuestRequest) => void;
 }
 
 export default function GuestForm({ onSubmit }: GuestFormProps) {
@@ -72,6 +65,17 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
     </>
   )
 
+  function calculateExpiration(duration: string): string {
+    const hoursToAdd = parseInt(duration, 10);
+    const now = new Date();
+
+    // console.log("before", now)
+    now.setHours(now.getHours() + hoursToAdd);
+    // console.log("after", now)
+    return now.toISOString();
+  }
+
+
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -86,6 +90,11 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
       }));
     }
   };
+
+  //NOT SECURE
+  function generateAccessCode(): string {
+    return (Math.floor(100000 + Math.random() * 900000)).toString()
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +120,14 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
 
     //if no errors in array, call onSubmit function
     if (!Object.values(newErrors).some(error => error)) {
-      onSubmit(formData);
+      const requestData: GuestRequest = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        phoneNumber: formData.phoneNumber,
+        accessCode: generateAccessCode(),
+        expiration: calculateExpiration(formData.duration)
+      }
+      onSubmit(requestData);
       setFormData({
         firstName: '',
         lastName: '',

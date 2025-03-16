@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API;
 //we can add the header for the bearer token here
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}api/`,
+  baseURL: `${BASE_URL}`,
   headers: {
     "Content-Type": "application/json",
   },
