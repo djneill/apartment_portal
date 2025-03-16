@@ -21,7 +21,7 @@ function App() {
           <Route path="/formdemo" element={<FormDemo />} />
           <Route path="/guests" element={<ManageGuests />} />
           <Route path="/tenantdashboard" element={<TenantDashboard />} />
-          {/* <Route path="/admindashboard" element={<AdminDashboard />} /> */}
+          <Route path="/admindashboard" element={<TempAdminDashboard />} />
           {/* <Route path="/modal-example" element={<ModalExample />} /> */}
         </Route>
       </Routes>
@@ -30,3 +30,11 @@ function App() {
 }
 
 export default App;
+
+const TempAdminDashboard = () => {
+  return (
+    <div>
+      <h1>Admin Dashboard</h1>
+    </div>
+  );
+};
