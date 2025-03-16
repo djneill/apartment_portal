@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     // Uncomment next line to add auth
-    // [Authorize(Roles="Admin")]
+    [Authorize(Roles="Admin")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _unitOfWork.UserRepository.GetUsers();
@@ -94,7 +94,7 @@ public class UsersController : ControllerBase
 
     [HttpPost("register")]
     // Uncomment next line for auth
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -134,8 +134,6 @@ public class UsersController : ControllerBase
         newUser.CreatedOn = DateTime.UtcNow;
         newUser.CreatedBy = adminId;
         newUser.ModifiedOn = DateTime.UtcNow;
-        newUser.ModifiedBy = adminId;
-        newUser.CreatedBy = adminId;
         newUser.ModifiedBy = adminId;
         newUser.StatusId = 1;
         

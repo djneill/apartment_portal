@@ -57,14 +57,6 @@ public class Program
             options.User.RequireUniqueEmail = true;
         });
 
-        // builder.Services.ConfigureApplicationCookie(options =>
-        // {
-        //     options.Cookie.HttpOnly = true; //Prevents JS access
-        //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //Ensures cookies work over HTTPS
-        //     options.Cookie.SameSite = SameSiteMode.None; //Allows frontend-backend cross-origin communication
-        // });
-
-
         var app = builder.Build();
 
         app.UseCors(allowedOrigins);
