@@ -9,6 +9,8 @@ export default function AdminDashboard() {
   const [viewAllInsights, setViewAllInsights] = useState(false);
   const notifications: [] = []
 
+  //TODO: desktop
+
   const insightCards = [
     { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time. dfailsdjf lalsdjflasjdl flasjdf" },
     { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time." },
@@ -73,10 +75,10 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className={viewAllInsights ? "" : `"-mr-5"`}>
+        <div className={viewAllInsights ? "" : "-mr-5 md:-mr-10"}>
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
             <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-sm font-semibold text-dark-gray">Insights</p></div>
-            <p className="cursor-pointer text-primary font-semibold text-sm" onClick={() => setViewAllInsights(prev => !prev)}>{viewAllInsights ? "View Less" : "View all"}</p>
+            <p className="md:hidden cursor-pointer text-primary font-semibold text-sm" onClick={() => setViewAllInsights(prev => !prev)}>{viewAllInsights ? "View Less" : "View all"}</p>
           </div>
 
           <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}>
