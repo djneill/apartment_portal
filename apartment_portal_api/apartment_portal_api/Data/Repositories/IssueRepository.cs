@@ -50,4 +50,14 @@ public class IssueRepository: Repository<Issue>
 
         return issues;
     }
+
+    public async Task<ICollection<Issue>> GetCommonIssues()
+    {
+        var query = _context.Issues
+            .FromSql($"SELECT * FROM \"issues\" WHERE \"issueTypeId\" IN (SELECT \"issueTypeId\" FROM \"issues\" WHERE age(\"createdOn\") < make_interval(days => 1) GROUP BY \"issueTypeId\" ORDER BY COUNT(\"issueTypeId\") DESC LIMIT 3) AND age(\"createdOn\") < make_interval(days => 1) AND \"statusId\" = 1;");
+
+        var res = await query.ToListAsync();
+
+        return res;
+    }
 }

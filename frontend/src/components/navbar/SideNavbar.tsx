@@ -1,6 +1,5 @@
-import {  useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
   Home,
   Users,
   AlertCircle,
@@ -8,31 +7,36 @@ import {
   Moon,
   Settings,
   LogOut,
-} from 'lucide-react';
-import NavItem from './NavItem';
-
+} from "lucide-react";
+import NavItem from "./NavItem";
+import { postData } from "../../services/api";
 
 const SideNavbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const user = {
     avatarSrc:
-      'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
-    userName: 'Jane Doe',
-    apartment: 'Unit 205',
+      "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
+    userName: "Jane Doe",
+    apartment: "Unit 205",
   };
 
   const navItems = [
-    { icon: <Home size={20} />, label: 'Dashboard', to: '/home' },
-    { icon: <Users size={20} />, label: 'Manage Tenants', to: '/users/1' },
-    { icon: <AlertCircle size={20} />, label: 'Manage Issues', to: '/reportissue' },
-    { icon: <Brain size={20} />, label: 'AI Insights', to: '/formdemo' },
+    { icon: <Home size={20} />, label: "Dashboard", to: "/home" },
+    { icon: <Users size={20} />, label: "Manage Tenants", to: "/users/1" },
+    {
+      icon: <AlertCircle size={20} />,
+      label: "Manage Issues",
+      to: "/reportissue",
+    },
+    { icon: <Brain size={20} />, label: "AI Insights", to: "/formdemo" },
   ];
 
   const settingsItems = [
-    { icon: <Moon size={20} />, label: 'Dark Mode', to: '/darkmode' }, 
-    { icon: <Settings size={20} />, label: 'Settings', to: '/settings' },
-    { icon: <LogOut size={20} />, label: 'Log Out', to: '/logout' },
+    { icon: <Moon size={20} />, label: "Dark Mode", to: "/darkmode" },
+    { icon: <Settings size={20} />, label: "Settings", to: "/settings" },
+    { icon: <LogOut size={20} />, label: "Log Out", to: "/logout" },
   ];
 
   return (
@@ -44,15 +48,12 @@ const SideNavbar = () => {
           alt={`${user.userName}'s avatar`}
           className="object-contain shrink-0 self-stretch my-auto aspect-square rounded-full w-[75px]"
         />
-       <div>
-       <h2 className="self-stretch my-auto rounded-none w-[95px]">
-          {user.userName}
-        </h2>
-        <p className="text-sm">
-          {user.apartment}
-        </p>
-       </div>
-
+        <div>
+          <h2 className="self-stretch my-auto rounded-none w-[95px]">
+            {user.userName}
+          </h2>
+          <p className="text-sm">{user.apartment}</p>
+        </div>
       </div>
 
       {/* Navigation Items */}
@@ -63,7 +64,10 @@ const SideNavbar = () => {
             icon={item.icon}
             label={item.label}
             to={item.to}
-            isActive={location.pathname === item.to || (item.to === '/users/1' && location.pathname.startsWith('/users'))}
+            isActive={
+              location.pathname === item.to ||
+              (item.to === "/users/1" && location.pathname.startsWith("/users"))
+            }
           />
         ))}
       </section>
@@ -79,6 +83,16 @@ const SideNavbar = () => {
             isActive={location.pathname === item.to}
           />
         ))}
+        <button
+          type="button"
+          onClick={async () => {
+            console.log("Logout");
+            await postData("logout", null);
+            navigate("/");
+          }}
+        >
+          Log Out
+        </button>
       </section>
     </nav>
   );

@@ -1,14 +1,14 @@
+using System.Collections;
+using System.Security.Claims;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.Models.UnitUsers;
-using apartment_portal_api.Models.Units;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using System.Security.Claims;
-using apartment_portal_api.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
@@ -30,12 +30,45 @@ public class UsersController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpGet("CurrentUser")]
+    [Authorize]
+    public async Task<IActionResult> GetCurrentUser() 
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        int.TryParse(userClaim.Value, out int userId);
+
+        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+
+        var response = _mapper.Map<GetUsersResponse>(user);
+
+        return Ok(response);
+    }
+
+
     [HttpGet]
+    // Uncomment next line to add auth
+    [Authorize(Roles="Admin")]
     public async Task<IActionResult> GetUsers()
     {
-        var users = await _unitOfWork.UserRepository.GetAsync();
-        var userDTOs = _mapper.Map<IEnumerable<UserDTO>>(users);
-        return Ok(userDTOs);
+        var users = await _unitOfWork.UserRepository.GetUsers();
+
+        ICollection<ApplicationUser> tenants = [];
+
+        foreach (var user in users)
+        {
+            bool isTenant = await _userManager.IsInRoleAsync(user, "Tenant");
+            if (isTenant) tenants.Add(user);
+        }
+
+        var response = _mapper.Map<ICollection<GetUsersResponse>>(tenants);
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")] // /users/12
@@ -81,23 +114,25 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
+    // Uncomment next line for auth
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userClaim is null)
         {
-            return Unauthorized();
+           return Unauthorized();
         }
-        
+
         bool isAdmin = User.IsInRole("Admin");
         if (!isAdmin)
         {
-            return Forbid();
+           return Forbid();
         }
-        
+
         int adminId = int.Parse(userClaim.Value);
-        
+
         if (!EmailValidator.ValidateEmail(request.Email))
         {
             return BadRequest(new { message = "Invalid email format." });
@@ -115,8 +150,6 @@ public class UsersController : ControllerBase
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
         }
         
-        int unitId = unit.Id; 
-        
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
         newUser.CreatedOn = DateTime.UtcNow;
@@ -131,6 +164,8 @@ public class UsersController : ControllerBase
         {
             return BadRequest(result.Errors);
         }
+
+        await _userManager.AddToRoleAsync(newUser, "Tenant");
         
         var unitUserDto = new UnitUserDTO
         {
@@ -147,7 +182,7 @@ public class UsersController : ControllerBase
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    [HttpPost("{id:int}/expirationCountdown")]
+    [HttpGet("{id:int}/expirationCountdown")]
     public async Task<ActionResult> GetLeaseExpiration(int id)
     {
         bool isAdmin = User.IsInRole("Admin");
@@ -172,5 +207,28 @@ public class UsersController : ControllerBase
         {
             ExpirationCountdown = timeDifference
         });
+    }
+
+    // Uncomment line below when turning on auth
+    [Authorize]
+    [HttpGet("roles")]
+    public async Task<ActionResult<ICollection<string>>> GetRoles()
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        int.TryParse(userClaim.Value, out int userId);
+
+        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+
+        if (user is null) return BadRequest();
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return Ok(roles);
     }
 }

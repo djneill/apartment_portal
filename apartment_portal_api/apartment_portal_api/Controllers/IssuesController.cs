@@ -24,18 +24,18 @@ namespace apartment_portal_api.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<IssueResponse>>> GetIssues(int userId = 0, int recordRetrievalCount = 10, int statusId = 0, bool orderByDesc = true)
         {
-            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userClaim is null)
-            {
-                return Unauthorized();
-            }
+            //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            //if (userClaim is null)
+            //{
+            //    return Unauthorized();
+            //}
         
-            bool isAdmin = User.IsInRole("Admin");
-            string reqUserId = userId.ToString();
-            if (!isAdmin && userClaim.Value != reqUserId)
-            {
-                return Forbid();
-            }
+            //bool isAdmin = User.IsInRole("Admin");
+            //string reqUserId = userId.ToString();
+            //if (!isAdmin && userClaim.Value != reqUserId)
+            //{
+            //    return Forbid();
+            //}
 
             ICollection<Issue> issues = await _unitOfWork.IssueRepository.GetIssues(userId, recordRetrievalCount, statusId, orderByDesc);
 
@@ -66,18 +66,18 @@ namespace apartment_portal_api.Controllers
         [HttpPost("report")]
         public async Task<IActionResult> ReportIssue([FromBody] ReportIssueForm report)
         {
-            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (userClaim is null)
-            {
-                return Unauthorized();
-            }
+            //if (userClaim is null)
+            //{
+            //    return Unauthorized();
+            //}
                 
-            int userId = int.Parse(userClaim.Value);
-            if (userId == 0)
-            {
-                return Unauthorized("User ID is missing.");
-            }
+            //int userId = int.Parse(userClaim.Value);
+            //if (userId == 0)
+            //{
+            //    return Unauthorized("User ID is missing.");
+            //}
             
             var issueType = await _unitOfWork.IssueTypeRepository.GetAsync(report.IssueTypeId);
             if (issueType is null)
@@ -87,7 +87,7 @@ namespace apartment_portal_api.Controllers
 
             var newIssue = new Issue
             {
-                UserId = userId,
+                UserId = report.UserId,
                 IssueTypeId = report.IssueTypeId,
                 Description = report.Description,
                 CreatedOn = DateTime.UtcNow,

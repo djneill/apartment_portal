@@ -39,24 +39,24 @@ public class GuestController : ControllerBase
         [FromQuery] bool? active
     )
     {
-        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (loggedInUserId == null)
-        {
-            return Unauthorized();
-        }
+        //if (loggedInUserId == null)
+        //{
+        //    return Unauthorized();
+        //}
 
-        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
-        var isAdmin = User.IsInRole("Admin");
+        //int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        //var isAdmin = User.IsInRole("Admin");
 
-        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
-        {
-            return Forbid();
-        }
+        //if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        //{
+        //    return Forbid();
+        //}
 
         var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
-            (isAdmin || g.UserId == loggedInUserIdInt)
-            && (!userId.HasValue || g.UserId == userId)
+            //(isAdmin || g.UserId == loggedInUserIdInt) &&
+             (!userId.HasValue || g.UserId == userId)
             && (
                 !active.HasValue
                 || (active.Value && g.Expiration > DateTime.UtcNow)
