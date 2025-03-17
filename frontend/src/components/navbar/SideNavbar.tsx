@@ -40,7 +40,7 @@ const SideNavbar = () => {
   ];
 
   return (
-    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] h-full">
+    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] min-h-screen">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img

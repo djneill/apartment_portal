@@ -1,28 +1,48 @@
-import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
+import { TriangleAlert, UserRoundPlus, Lock, FilePen, ArrowRight } from "lucide-react";
 import HeroCard from "../tenantDashboard/components/HeroCard";
-import { CurrentGuest, QuickIconButton } from "../tenantDashboard/components";
+import { QuickIconButton } from "../tenantDashboard/components";
+import { InsightLogo } from "../assets/InsightLogo";
+import IssuesList from "../components/issues/IssueList";
 
 export default function AdminDashboard() {
 
   const notifications: [] = []
 
-  const guests = ["Dennis G.", "David O.", "Felipe A."];
+  const insightCards = [
+    { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time. dfailsdjf lalsdjflasjdl flasjdf" },
+    { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time." },
+    { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time." },
+    { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time." },
+  ]
 
+  const renderInsights = insightCards.map((insight, index) => {
+    return (
+      <div
+        key={index}
+        className="w-72 bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap "
+        style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}
+      >
+        <p className="font-semibold mb-1">{insight.title}</p>
+        <div className="flex flex-col">
+          <p className="font-light text-sm line-clamp-2">
+            {insight.description}
+          </p>
+          <div className=" cursor-pointer text-sm flex items-center space-x-1">
+            <p className="text-accent">Show suggestions</p>
+            <ArrowRight size={12} color="#C4AEF1" />
+          </div>
+        </div>
+      </div>
+    );
+  });
+
+  //TODO: change to appropriate routes
   const quickActions = [
     { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/reportissue" },
-    { icon: <UserRoundPlus size={38} />, label: "Manage Guests", to: "/guests" },
-    { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
+    { icon: <UserRoundPlus size={38} />, label: "Register Tenant", to: "/" },
+    { icon: <Lock size={38} />, label: "Security", to: "/" },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
-
-
-  //TODO: implement functions ref manage guests 
-  const handleAddGuest = () => {
-    console.log("Add new guest");
-  };
-  const handleViewAllGuests = () => {
-    console.log("View all guests");
-  };
 
   return (
     <div className="min-h-screen p-5 md:p-10">
@@ -52,6 +72,18 @@ export default function AdminDashboard() {
           ))}
         </div>
 
+        <div className="-mr-5">
+          <div className="w-full flex justify-between mb-4 font-heading pr-5">
+            <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-md font-semibold text-dark-gray">Insights</p></div>
+            <p className="text-primary font-semibold text-sm">View all</p>
+          </div>
+
+          <div className="flex w-full overflow-scroll space-x-3 py-2 ">
+            {renderInsights}
+          </div>
+        </div>
+
+        <IssuesList />
 
       </div>
 
