@@ -43,10 +43,10 @@ const IssuesList: React.FC = () => {
 
   return (
     <section className="">
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex justify-between items-center mb-5 font-heading">
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
-          className="text-sm font-bold text-neutral-700"
+          className="text-sm font-bold text-neutral-700 cursor-pointer"
           onClick={handleViewAll}
         >
           View all

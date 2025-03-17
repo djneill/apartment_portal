@@ -74,8 +74,8 @@ export default function AdminDashboard() {
 
         <div className="-mr-5">
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
-            <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-md font-semibold text-dark-gray">Insights</p></div>
-            <p className="text-primary font-semibold text-sm">View all</p>
+            <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-sm font-semibold text-dark-gray">Insights</p></div>
+            <p className="cursor-pointer text-primary font-semibold text-sm">View all</p>
           </div>
 
           <div className="flex w-full overflow-scroll space-x-3 py-2 ">
