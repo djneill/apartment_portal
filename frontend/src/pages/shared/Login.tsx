@@ -5,18 +5,47 @@ import SignInButton from "../../components/SignInButton";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
+import useGlobalContext from "../../hooks/useGlobalContext";
+import { getData } from "../../services/api";
+
+type CurrentUserResponseType = {
+  id: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+};
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const globalContext = useGlobalContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await login(username, password);
+      const response = await login(username, password);
+      console.log("Login info:", response);
+
+      if (response.status !== 200) {
+        console.error("Login failed:", response);
+        //TODO: Show failed login attempt message
+        return;
+      }
+
+      const currentUserResponse = await getData<CurrentUserResponseType>(
+        "users/currentuser"
+      );
+      globalContext.setUser({
+        userId: currentUserResponse.id,
+        userName: currentUserResponse.userName,
+        firstName: currentUserResponse.firstName,
+        lastName: currentUserResponse.lastName,
+      });
+      console.log("Current User:", currentUserResponse);
+
       const roles = await getUserRoles();
       console.log("Roles:", roles);
       if (roles.includes("Admin")) {
@@ -24,7 +53,7 @@ function Login() {
       } else if (roles.includes("Tenant")) {
         navigate("/tenantdashboard");
       } else {
-        navigate("/home");
+        navigate("/home"); // TODO: We need an error page that describes that this user has no role and to contact the admin
       }
     } catch (error) {
       console.error("Login failed:", error);
