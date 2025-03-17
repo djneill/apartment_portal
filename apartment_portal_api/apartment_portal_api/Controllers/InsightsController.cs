@@ -22,7 +22,7 @@ public class InsightsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<ICollection<InsightResponse>>> GetInsights()
+    public async Task<ActionResult<AllInsightsResponse>> GetInsights()
     {
         var pastInsights = await _unitOfWork.InsightRepository.GetPastInsights();
         var pastInsightsResponse = _mapper.Map<ICollection<InsightResponse>>(pastInsights);
