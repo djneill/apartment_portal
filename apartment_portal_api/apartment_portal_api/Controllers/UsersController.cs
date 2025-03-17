@@ -30,6 +30,27 @@ public class UsersController : ControllerBase
         _mapper = mapper;
     }
 
+    [HttpGet("CurrentUser")]
+    [Authorize]
+    public async Task<IActionResult> GetCurrentUser() 
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        int.TryParse(userClaim.Value, out int userId);
+
+        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+
+        var response = _mapper.Map<GetUsersResponse>(user);
+
+        return Ok(response);
+    }
+
+
     [HttpGet]
     // Uncomment next line to add auth
     [Authorize(Roles="Admin")]
