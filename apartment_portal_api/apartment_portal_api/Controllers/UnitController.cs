@@ -24,6 +24,8 @@ public class UnitController : ControllerBase
     {
         var unit = await _unitOfWork.UnitRepository.GetAsync(id);
         if (unit is null) return NotFound();
+        
+        unit.Status = await _unitOfWork.StatusRepository.GetAsync(unit.StatusId);
 
         var unitDTO = _mapper.Map<UnitDTO>(unit);
         return Ok(unitDTO);
@@ -33,6 +35,12 @@ public class UnitController : ControllerBase
     public async Task<ActionResult<ICollection<UnitDTO>>> Get()
     {
         var units = await _unitOfWork.UnitRepository.GetAsync();
+        
+        foreach (var unit in units)
+        {
+            unit.Status = await _unitOfWork.StatusRepository.GetAsync(unit.StatusId);
+        }
+        
         var unitDTOs = _mapper.Map<ICollection<UnitDTO>>(units);
         return Ok(unitDTOs);
     }

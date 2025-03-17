@@ -2,4 +2,10 @@
 
 namespace apartment_portal_api.Models.Packages;
 
-public record PackageGetByIdResponse(int Id, int LockerNumber, int Code, Models.Statuses.Status Status, List<UserResponse> Tenants);
+public class PackageGetByIdResponse{
+    public int Id { get; set; }
+    public int LockerNumber { get; set; }
+    public int Code { get; set; }
+    public Models.Statuses.Status Status { get; set; }
+    public List<UserResponse> Tenants { get; set; } = new();
+};

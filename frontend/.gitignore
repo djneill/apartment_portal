@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 *.env
+
+# Ignore SSL certificates
+localhost.pem
+localhost-key.pem

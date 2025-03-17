@@ -17,26 +17,48 @@ namespace apartment_portal_api.DTOs
     {
         public MappingProfile()
         {
-            // Define mappings here
+            // User
             CreateMap<ApplicationUser, UserDTO>();
             CreateMap<ApplicationUser, UserResponse>();
             CreateMap<RegistrationRequestDTO, ApplicationUser>();
             CreateMap<RegistrationForm, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
-            CreateMap<Unit, UnitDTO>();
+            CreateMap<ApplicationUser, GetUsersResponse>()
+                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.UnitUserUsers.FirstOrDefault().Unit));
+            CreateMap<Unit, GetUsersUnitResponse>(); // Used in GetUsers fetch request on UserController
+
+            // Unit
+            CreateMap<Unit, UnitDTO>()
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));;
             CreateMap<UnitUserDTO, UnitUser>();
+
+            // Guest
             CreateMap<Guest, GuestDTO>();
             CreateMap<GuestPostRequest, Guest>()
                 .ForMember(
                     dest => dest.Expiration,
                     opt => opt.MapFrom(b => DateTime.UtcNow.AddHours(b.DurationInHours)));
             CreateMap<ParkingPermitPostRequest, ParkingPermit>();
+            CreateMap<ParkingPermit, ParkingPermitDTO>();
+
+            // Package
+            CreateMap<Package, PackageGetByIdResponse>();
             CreateMap<Package, PackageGetResponse>();
+
+            // Status
             CreateMap<Status, StatusResponse>();
+            CreateMap<Status, StatusDTO>();
+
+            // Issue
             CreateMap<Issue, IssueResponse>()
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
             CreateMap<IssueType, IssueTypeResponse>();
+
+            // Insight
             CreateMap<Insight, InsightResponse>();
+            CreateMap<InsightPostRequest, Insight>();
+
+            CreateMap<Issue, IssueAIPostRequest>();
         }
     }
 }
