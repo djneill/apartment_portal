@@ -7,7 +7,8 @@ import {
   ThermostatCard,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
-import { TriangleAlert, UserRoundPlus, Lock, FilePen } from 'lucide-react'
+import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
+import useGlobalContext from "../hooks/useGlobalContext";
 type Notifications = {
   date: string;
   message: string;
@@ -16,27 +17,29 @@ type Notifications = {
 
 const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
+  const { user } = useGlobalContext();
 
   useEffect(() => {
     (async () => {
       const data = await getData<Notifications[]>("notifications/latest?userId=6");
+
       setNotifications(data);
     })();
-  }, []);
+  }, [user?.userId]);
 
   const quickActions = [
-    { icon: <TriangleAlert size={38} />, label: 'Report Issues', to: '/' },
-    { icon: <UserRoundPlus size={38} />, label: 'Manage Guests', to: '/' },
-    { icon: <Lock size={38} />, label: 'Control Locks', to: '/' },
-    { icon: <FilePen size={38} />, label: 'Manage Lease', to: '/' },
+    { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/" },
+    { icon: <UserRoundPlus size={38} />, label: "Manage Guests", to: "/" },
+    { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
+    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
 
-  const guests = ['Dennis G.', 'David O.', 'Felipe A.'];
+  const guests = ["Dennis G.", "David O.", "Felipe A."];
   const handleAddGuest = () => {
-    console.log('Add new guest');
+    console.log("Add new guest");
   };
   const handleViewAllGuests = () => {
-    console.log('View all guests');
+    console.log("View all guests");
   };
 
   return (

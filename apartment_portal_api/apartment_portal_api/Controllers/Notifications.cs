@@ -11,7 +11,7 @@ using AutoMapper;
 namespace apartment_portal_api.Controllers;
 
 [ApiController]
-[Route("api/notifications")]
+[Route("notifications")]
 public class Notifications : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

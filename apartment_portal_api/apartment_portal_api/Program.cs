@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using apartment_portal_api.Services.AIService;
 
 namespace apartment_portal_api;
 
@@ -22,7 +23,7 @@ public class Program
             options.AddPolicy(name: allowedOrigins,
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173")
+                    policy.WithOrigins("https://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -57,18 +58,22 @@ public class Program
             options.User.RequireUniqueEmail = true;
         });
 
+        builder.Services.AddScoped<AIService>();
+
         var app = builder.Build();
 
         app.UseCors(allowedOrigins);
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.MapIdentityApi<ApplicationUser>();
+        app.MapControllers();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-        }
-
-        app.UseCors(allowedOrigins);
+        }        
 
         app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
@@ -81,11 +86,6 @@ public class Program
         {
             app.UseHttpsRedirection();
         }
-
-        app.MapIdentityApi<ApplicationUser>();
-        app.UseAuthorization();
-
-        app.MapControllers();
 
         app.Run();
     }

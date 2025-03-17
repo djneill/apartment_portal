@@ -2,11 +2,11 @@
 using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
-using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Services.AIService;
 
 namespace apartment_portal_api.Data;
 
@@ -22,11 +22,14 @@ public class UnitOfWork : IUnitOfWork
     private IRepository<Unit>? _unitRepository;
     private UserRepository? _userRepository;
     private IRepository<UnitUser>? _unitUserRepository;
-    private IRepository<Insight>? _insightRepository;
+    private InsightRepository? _insightRepository;
 
-    public UnitOfWork(PostgresContext context)
+    private readonly AIService _aiService;
+
+    public UnitOfWork(PostgresContext context, AIService aiService)
     {
         _context = context;
+        _aiService = aiService;
     }
 
     public IRepository<Guest> GuestRepository
@@ -108,11 +111,11 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public IRepository<Insight> InsightRepository
+    public InsightRepository InsightRepository
     {
         get
         {
-            _insightRepository ??= new Repository<Insight>(_context);
+            _insightRepository ??= new InsightRepository(_context);
             return _insightRepository;
         }
     }    
