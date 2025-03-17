@@ -46,14 +46,7 @@ const TenantDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* TODO: Create header component */}
-      <header className="px-4 pt-4 pb-1 flex flex-col justify-between items-center">
-        <button className="pb-2 self-start">
-          <div className="space-y-1">
-            <div className="w-6 h-0.5 bg-primary"></div>
-            <div className="w-6 h-0.5 bg-primary"></div>
-            <div className="w-6 h-0.5 bg-primary"></div>
-          </div>
-        </button>
+      <header className="px-4 pt-15 pb-1 flex flex-col justify-between items-center">
         <div className="flex justify-between w-full">
           <h1 className="font-medium">Welcome, John</h1>
           <p className="font-medium">Unit 205</p>
