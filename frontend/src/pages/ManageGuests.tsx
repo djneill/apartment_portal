@@ -78,8 +78,8 @@ export default function ManageGuests() {
 
 
   return (
-    <div className="w-screen min-h-screen p-4">
-      <h1 className="mt-12 mb-4 font-heading font-medium text-3xl">Manage Guests</h1>
+    <div className="min-h-screen p-4 md:p-6">
+      < h1 className="mt-12 mb-4 font-heading font-medium text-3xl" > Manage Guests</h1 >
       <div className="flex flex-col items-center ">
         <div className="w-full space-y-10 md:flex  md:space-x-10">
           <div className="flex-none w-full md:w-2/3 md:mt-10">
@@ -91,6 +91,6 @@ export default function ManageGuests() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
