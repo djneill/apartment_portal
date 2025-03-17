@@ -1,11 +1,12 @@
 import { TriangleAlert, UserRoundPlus, Lock, FilePen, ArrowRight } from "lucide-react";
+import { useState } from "react";
 import HeroCard from "../tenantDashboard/components/HeroCard";
 import { QuickIconButton } from "../tenantDashboard/components";
 import { InsightLogo } from "../assets/InsightLogo";
 import IssuesList from "../components/issues/IssueList";
 
 export default function AdminDashboard() {
-
+  const [viewAllInsights, setViewAllInsights] = useState(false);
   const notifications: [] = []
 
   const insightCards = [
@@ -19,7 +20,7 @@ export default function AdminDashboard() {
     return (
       <div
         key={index}
-        className="w-72 bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap "
+        className={` bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${viewAllInsights ? "w-full" : "w-72"} `}
         style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}
       >
         <p className="font-semibold mb-1">{insight.title}</p>
@@ -72,13 +73,13 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <div className="-mr-5">
+        <div className={viewAllInsights ? "" : `"-mr-5"`}>
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
             <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-sm font-semibold text-dark-gray">Insights</p></div>
-            <p className="cursor-pointer text-primary font-semibold text-sm">View all</p>
+            <p className="cursor-pointer text-primary font-semibold text-sm" onClick={() => setViewAllInsights(prev => !prev)}>{viewAllInsights ? "View Less" : "View all"}</p>
           </div>
 
-          <div className="flex w-full overflow-scroll space-x-3 py-2 ">
+          <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}>
             {renderInsights}
           </div>
         </div>
@@ -87,6 +88,6 @@ export default function AdminDashboard() {
 
       </div>
 
-    </div>
+    </div >
   )
 }
