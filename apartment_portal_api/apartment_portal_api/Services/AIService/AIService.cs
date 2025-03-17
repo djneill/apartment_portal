@@ -78,10 +78,7 @@ public class AIService
             PropertyNameCaseInsensitive = true
         });
 
-        if (insights == null)
-        {
-            insights = new List<InsightPostRequest>();
-        }
+        insights ??= [];
 
         return insights;
     }

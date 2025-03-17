@@ -4,5 +4,5 @@ namespace apartment_portal_api.Services.AIService;
 
 public class GeminiApiResponse
 {
-    [JsonPropertyName("candidates")] public List<Candidate> Candidates { get; set; } = new();
+    [JsonPropertyName("candidates")] public List<Candidate> Candidates { get; set; } = [];
 }
