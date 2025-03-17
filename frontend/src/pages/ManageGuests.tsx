@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 export default function ManageGuests() {
   const [guests, setGuests] = useState<{ activeGuests: Guest[]; inactiveGuests: Guest[] } | null>(null);
 
+  //TODO: change countdown to have days, hours, mins
   async function fetchActiveAndInactiveGuests() {
     try {
       const [activeGuestsResponse, inactiveGuestsResponse] = await Promise.all([

@@ -6,6 +6,7 @@ import CountdownTimer from "../CountdownTimer";
 export default function CurrentGuestTable({ activeGuests }: { activeGuests: Guest[] }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  console.log(activeGuests)
   const displayedGuests = isExpanded ? activeGuests : activeGuests.slice(0, 3);
 
   const mapGuests = displayedGuests.map((guest, index) => {
