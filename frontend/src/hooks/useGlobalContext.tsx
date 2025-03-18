@@ -5,6 +5,12 @@ export type User = {
   userName: string;
   firstName: string;
   lastName: string;
+  unit?: {
+    id: number;
+    unitNumber: string;
+    price: number;
+    statusName: string | null;
+  };
 };
 
 type GlobalContextType = {

@@ -16,10 +16,54 @@ type Notifications = {
   type: string;
 };
 
+type UserWithUnit = {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    statusId: number;
+  };
+  unit: {
+    id: number;
+    unitNumber: string;
+    price: number;
+    statusName: null | string;
+  };
+};
+
 const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [packageCount, setPackageCount] = useState(0);
-  const { user } = useGlobalContext();
+  const [unitNumber, setUnitNumber] = useState("");
+  const { user, setUser } = useGlobalContext();
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user?.userId) {
+        try {
+          const userData = await getData<UserWithUnit>(`Users/${user.userId}`);
+
+          if (userData.unit?.unitNumber) {
+            setUnitNumber(userData.unit.unitNumber);
+          }
+
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  unit: userData.unit,
+                }
+              : null
+          );
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [user?.userId, setUser]);
 
   useEffect(() => {
     (async () => {
@@ -55,11 +99,10 @@ const TenantDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* TODO: Create header component */}
-
       <header className="px-4 pt-15 pb-1 flex flex-col justify-between items-center">
         <div className="flex justify-between w-full">
           <h1 className="font-medium">Welcome, {user?.firstName}</h1>
-          <p className="font-medium">Unit 205</p>
+          <p className="font-medium">Unit {unitNumber}</p>
         </div>
       </header>
 
