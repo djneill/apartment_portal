@@ -1,5 +1,5 @@
-import { Plus } from 'lucide-react';
-import GuestProfileIcon from '../../components/guests/GuestProfileIcon';
+import { Plus } from "lucide-react";
+import GuestProfileIcon from "../../components/guests/GuestProfileIcon";
 
 interface CurrentGuestsProps {
   guests: string[];

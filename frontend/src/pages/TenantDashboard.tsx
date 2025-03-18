@@ -9,6 +9,7 @@ import {
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
+
 type Notifications = {
   date: string;
   message: string;
@@ -17,6 +18,7 @@ type Notifications = {
 
 const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
+  const [packageCount, setPackageCount] = useState(0);
   const { user } = useGlobalContext();
 
   useEffect(() => {
@@ -25,20 +27,27 @@ const TenantDashboard = () => {
         `notifications/latest?userId=${user?.userId}`
       );
       setNotifications(data);
+
+      const packagesAvailable = data.filter((notification) =>
+        notification.message.toLowerCase().includes("package")
+      ).length;
+
+      setPackageCount(packagesAvailable);
     })();
   }, [user?.userId]);
 
   const quickActions = [
     { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/" },
-    { icon: <UserRoundPlus size={38} />, label: "Manage Guests", to: "/" },
+    {
+      icon: <UserRoundPlus size={38} />,
+      label: "Manage Guests",
+      to: "/guests",
+    },
     { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
 
   const guests = ["Dennis G.", "David O.", "Felipe A."];
-  const handleAddGuest = () => {
-    console.log("Add new guest");
-  };
   const handleViewAllGuests = () => {
     console.log("View all guests");
   };
@@ -49,7 +58,7 @@ const TenantDashboard = () => {
 
       <header className="px-4 pt-15 pb-1 flex flex-col justify-between items-center">
         <div className="flex justify-between w-full">
-          <h1 className="font-medium">Welcome, John</h1>
+          <h1 className="font-medium">Welcome, {user?.firstName}</h1>
           <p className="font-medium">Unit 205</p>
         </div>
       </header>
@@ -75,14 +84,10 @@ const TenantDashboard = () => {
           ))}
         </div>
 
-        <CurrentGuest
-          guests={guests}
-          onAddGuest={handleAddGuest}
-          onViewAll={handleViewAllGuests}
-        />
+        <CurrentGuest guests={guests} onViewAll={handleViewAllGuests} />
 
         <div className="grid grid-cols-2 gap-4">
-          <PackageCard />
+          <PackageCard packageCount={packageCount} />
           <ThermostatCard />
         </div>
       </div>

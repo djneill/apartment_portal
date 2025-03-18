@@ -18,10 +18,9 @@ const HeroCard = ({
   notifications,
   onActionClick,
   onViewAllClick,
-  className = '',
+  className = "",
 }: HeroCardProps) => {
   return (
-
     <div className={`relative ${className}`}>
       {/* Header Card */}
       <div className="bg-primary text-white h-32 rounded-3xl p-4 mb-10">
@@ -51,18 +50,22 @@ const HeroCard = ({
               key={index}
               className="flex justify-between items-center px-6 py-4 hover:bg-white/5 transition-colors border-b-2 border-background/40"
             >
-              <span className="text-white/90 text-normal">{notification.message}</span>
+              <span className="text-white/90 text-normal">
+                {notification.message}
+              </span>
               <button
                 onClick={() => onActionClick?.(index)}
                 className="text-white hover:text-white transition-colors text-normal px-2 py-1 bg-accent rounded-2xl"
               >
-                {notification.action || 'View'}
+                {notification.action || "View"}
               </button>
             </div>
           ))
         ) : (
           <div className="px-6 py-8 text-center h-40">
-            <p className="text-white text-xl font-body">No new notifications, have a great day! 🎉</p>
+            <p className="text-white text-xl font-body">
+              No new notifications, have a great day! 🎉
+            </p>
           </div>
         )}
       </div>
