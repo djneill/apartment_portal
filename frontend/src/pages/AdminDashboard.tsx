@@ -10,6 +10,7 @@ export default function AdminDashboard() {
   const notifications: [] = []
 
   //TODO: desktop
+  // Chat with apartment ai strech goal
 
   const insightCards = [
     { title: "Recurring Issue Detected", description: "Leak reported in Apt 302 for the third time. dfailsdjf lalsdjflasjdl flasjdf" },
@@ -74,6 +75,7 @@ export default function AdminDashboard() {
             />
           ))}
         </div>
+
 
         <div className={viewAllInsights ? "" : "-mr-5 md:-mr-10"}>
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
