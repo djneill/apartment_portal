@@ -63,7 +63,7 @@ function Login() {
   return (
     <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
-        <h1 className="self-center login-h1">Hello Again!</h1>
+        <h1 className="self-center text-center text-4xl leading-tight">Hello Again!</h1>
 
         <InputField
           type="text"
@@ -71,7 +71,7 @@ function Login() {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="username"
           icon={<User />}
-          className="mt-8"
+          className="mt-8 rounded-xl bg-zinc-300"
         />
 
         <InputField
@@ -82,7 +82,7 @@ function Login() {
           icon={<Lock />}
           rightIcon={showPassword ? <EyeOff /> : <Eye />}
           onRightIconClick={() => setShowPassword(!showPassword)}
-          className="mt-8"
+          className="mt-8 rounded-xl bg-zinc-300"
         />
 
         <button type="button" className="self-end mt-2 text-xs font-medium">
