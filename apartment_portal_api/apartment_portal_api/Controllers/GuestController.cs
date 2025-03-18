@@ -3,7 +3,9 @@ using apartment_portal_api.Abstractions;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
+using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Users;
+using apartment_portal_api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -72,17 +74,34 @@ public class GuestController : ControllerBase
     }
 
     [HttpPost("register-guest")]
-    public async Task<ActionResult<GuestDTO>> CreateGuest(GuestCreateDTO request)
+    public async Task<ActionResult<GuestDTO>> CreateGuest(GuestPostRequest request)
     {
-        var newGuest = _mapper.Map<Guest>(request);
-        newGuest.CreatedOn = DateTime.UtcNow;
-
+        //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        //if (userClaim is null)
+        //{
+        //    return Unauthorized();
+        //}
+ 
+        //bool isAdmin = User.IsInRole("Admin");
+ 
+        //string reqUserId = request.UserId.ToString();
+        //if (!isAdmin && userClaim.Value != reqUserId)
+        //{
+        //    return Forbid();
+        //}
+ 
+        Guest newGuest = _mapper.Map<Guest>(request);
+        newGuest.AccessCode = AccessCodeGenerator.GenerateAccessCode();
+ 
+        if (request.ParkingPermit is not null)
+        {
+            ParkingPermit permit = _mapper.Map<ParkingPermit>(request.ParkingPermit);
+            newGuest.ParkingPermits.Add(permit);
+        }
+ 
         await _unitOfWork.GuestRepository.AddAsync(newGuest);
         await _unitOfWork.SaveAsync();
-
-        var guestDTO = _mapper.Map<GuestDTO>(newGuest);
-
-        return CreatedAtAction(nameof(GetGuestById), new { id = newGuest.Id }, guestDTO);
+        return Created();
     }
 
     [HttpPatch("{id:int}")]
