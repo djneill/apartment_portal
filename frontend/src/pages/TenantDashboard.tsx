@@ -43,7 +43,6 @@ const TenantDashboard = () => {
       if (user?.userId) {
         try {
           const userData = await getData<UserWithUnit>(`Users/${user.userId}`);
-
           if (userData.unit?.unitNumber) {
             setUnitNumber(userData.unit.unitNumber);
           }
@@ -81,7 +80,11 @@ const TenantDashboard = () => {
   }, [user?.userId]);
 
   const quickActions = [
-    { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/" },
+    {
+      icon: <TriangleAlert size={38} />,
+      label: "Report Issues",
+      to: "/reportissue",
+    },
     {
       icon: <UserRoundPlus size={38} />,
       label: "Manage Guests",
