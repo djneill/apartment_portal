@@ -1,18 +1,17 @@
+using apartment_portal_api.Models;
+using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Insights;
+using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.ParkingPermits;
+using apartment_portal_api.Models.Statuses;
+using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Models.Users;
+using AutoMapper;
 
 namespace apartment_portal_api.DTOs
 {
-    using AutoMapper;
-    using apartment_portal_api.Models;
-    using apartment_portal_api.Models.Issues;
-    using apartment_portal_api.Models.Guests;
-    using apartment_portal_api.Models.Users;
-    using apartment_portal_api.Models.UnitUsers;
-    using apartment_portal_api.Models.Packages;
-    using apartment_portal_api.Models.Statuses;
-
     public class MappingProfile : Profile
     {
         public MappingProfile()
@@ -48,6 +47,7 @@ namespace apartment_portal_api.DTOs
             // Status
             CreateMap<Status, StatusResponse>();
             CreateMap<Status, StatusDTO>();
+            CreateMap<StatusPostRequest, Status>();
 
             // Issue
             CreateMap<Issue, IssueResponse>()
