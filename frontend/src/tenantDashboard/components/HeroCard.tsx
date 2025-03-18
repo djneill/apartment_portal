@@ -1,6 +1,8 @@
 interface NotificationItem {
   message: string;
   action?: string;
+  message: string;
+  action?: string;
 }
 
 interface HeroCardProps {
@@ -10,9 +12,21 @@ interface HeroCardProps {
   onActionClick?: (index: number) => void;
   onViewAllClick?: () => void;
   className?: string;
+  title: string;
+  count?: number;
+  notifications: NotificationItem[];
+  onActionClick?: (index: number) => void;
+  onViewAllClick?: () => void;
+  className?: string;
 }
 
 const HeroCard = ({
+  title,
+  count,
+  notifications,
+  onActionClick,
+  onViewAllClick,
+  className = "",
   title,
   count,
   notifications,
