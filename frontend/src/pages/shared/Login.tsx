@@ -38,16 +38,19 @@ function Login() {
       const currentUserResponse = await getData<CurrentUserResponseType>(
         "users/currentuser"
       );
+
+      const roles = await getUserRoles();
+      console.log("Roles:", roles);
+
       globalContext.setUser({
         userId: currentUserResponse.id,
         userName: currentUserResponse.userName,
         firstName: currentUserResponse.firstName,
         lastName: currentUserResponse.lastName,
+        roles: roles,
       });
       console.log("Current User:", currentUserResponse);
 
-      const roles = await getUserRoles();
-      console.log("Roles:", roles);
       if (roles.includes("Admin")) {
         navigate("/admindashboard");
       } else if (roles.includes("Tenant")) {
@@ -63,7 +66,9 @@ function Login() {
   return (
     <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
-        <h1 className="self-center text-center text-4xl leading-tight">Hello Again!</h1>
+        <h1 className="self-center text-center text-4xl leading-tight">
+          Hello Again!
+        </h1>
 
         <InputField
           type="text"

@@ -1,17 +1,13 @@
-import { Plus } from 'lucide-react';
-import GuestProfileIcon from '../../components/guests/GuestProfileIcon';
+import { Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import GuestProfileIcon from "../../components/guests/GuestProfileIcon";
 
 interface CurrentGuestsProps {
   guests: string[];
-  onAddGuest?: () => void;
   onViewAll?: () => void;
 }
 
-const CurrentGuests = ({
-  guests,
-  onAddGuest,
-  onViewAll,
-}: CurrentGuestsProps) => {
+const CurrentGuests = ({ guests, onViewAll }: CurrentGuestsProps) => {
   return (
     <div>
       <div className="flex justify-between items-center mb-4 font-heading text-sm font-semibold">
@@ -25,12 +21,12 @@ const CurrentGuests = ({
       </div>
       <div className="flex justify-between ">
         <div className="flex flex-col items-center gap-2">
-          <button
-            onClick={onAddGuest}
+          <Link
+            to={"/guests"}
             className="w-20 h-20 bg-accent cursor-pointer rounded-full flex items-center justify-center hover:bg-accent/90 transition-colors"
           >
             <Plus className="text-white" size={48} />
-          </button>
+          </Link>
           <span className="text-xs">Add New</span>
         </div>
         {guests.map((guest, index) => (
