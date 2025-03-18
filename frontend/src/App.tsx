@@ -8,6 +8,7 @@ import Layout from "./components/Layout";
 import { FormDemo, TenantDashboard } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
 import GlobalContext from "./hooks/GlobalContextProvider";
+import AdminDashboard from "./pages/AdminDashboard";
 // import ModalExample from "./components/ModalExample";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
             <Route path="/formdemo" element={<FormDemo />} />
             <Route path="/guests" element={<ManageGuests />} />
             <Route path="/tenantdashboard" element={<TenantDashboard />} />
-            <Route path="/admindashboard" element={<TempAdminDashboard />} />
+            <Route path="/admindashboard" element={<AdminDashboard />} />
             {/* <Route path="/modal-example" element={<ModalExample />} /> */}
           </Route>
         </Routes>
@@ -34,10 +35,10 @@ function App() {
 
 export default App;
 
-const TempAdminDashboard = () => {
-  return (
-    <div>
-      <h1>Admin Dashboard</h1>
-    </div>
-  );
-};
+// const TempAdminDashboard = () => {
+//   return (
+//     <div>
+//       <h1>Admin Dashboard</h1>
+//     </div>
+//   );
+// };
