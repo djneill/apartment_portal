@@ -1,8 +1,6 @@
 interface NotificationItem {
   message: string;
   action?: string;
-  message: string;
-  action?: string;
 }
 
 interface HeroCardProps {
@@ -12,21 +10,9 @@ interface HeroCardProps {
   onActionClick?: (index: number) => void;
   onViewAllClick?: () => void;
   className?: string;
-  title: string;
-  count?: number;
-  notifications: NotificationItem[];
-  onActionClick?: (index: number) => void;
-  onViewAllClick?: () => void;
-  className?: string;
 }
 
 const HeroCard = ({
-  title,
-  count,
-  notifications,
-  onActionClick,
-  onViewAllClick,
-  className = "",
   title,
   count,
   notifications,
@@ -57,14 +43,14 @@ const HeroCard = ({
       </div>
 
       {/* Notification Card */}
-      <div className="bg-secondary rounded-3xl -mt-28 mx-4 overflow-hidden">
+      <div className="bg-secondary rounded-3xl -mt-28 h-60 mx-4 overflow-y-auto">
         {notifications.length > 0 ? (
           notifications.map((notification, index) => (
             <div
               key={index}
               className="flex justify-between items-center px-6 py-4 hover:bg-white/5 transition-colors border-b-2 border-background/40"
             >
-              <span className="text-white/90 text-normal">
+              <span className="text-white text-normal">
                 {notification.message}
               </span>
               <button
