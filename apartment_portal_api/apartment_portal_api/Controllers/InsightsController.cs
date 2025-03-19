@@ -2,12 +2,14 @@
 using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Services.AIService;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize(Roles = "Admin")]
 public class InsightsController : ControllerBase
 {
     private IUnitOfWork _unitOfWork;

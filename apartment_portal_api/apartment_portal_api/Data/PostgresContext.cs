@@ -1,6 +1,7 @@
 ﻿using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Insights;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Packages;
@@ -42,6 +43,8 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
     public virtual DbSet<UnitUser> UnitUsers { get; set; }
 
     public virtual DbSet<Insight> Insights { get; set; }
+
+    public virtual DbSet<InsightStatus> InsightStatuses { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -149,6 +152,26 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
                 .HasColumnName("createdOn");
+            entity.Property(e => e.InsightStatusId).HasColumnName("insightStatusId");
+
+            entity.HasOne(e => e.InsightStatus).WithMany(status => status.Insights)
+                .HasForeignKey(d => d.InsightStatusId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("insights_insightStatusId_fkey");
+        });
+
+        modelBuilder.Entity<InsightStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("insightStatuses_pkey");
+
+            entity.ToTable("insightStatuses");
+
+            entity.HasIndex(e => e.Name, "insightStatuses_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Package>(entity =>
