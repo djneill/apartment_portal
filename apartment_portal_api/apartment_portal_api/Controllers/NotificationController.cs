@@ -1,30 +1,27 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using apartment_portal_api.DTOs;
 using apartment_portal_api.Abstractions;
-using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.Issues;
+using apartment_portal_api.Models.Notifications;
 using apartment_portal_api.Models.Packages;
-using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
 
 [ApiController]
-[Route("notifications")]
-public class Notifications : ControllerBase
+[Route("[controller]")]
+public class NotificationController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
 
-    public Notifications(IUnitOfWork unitOfWork, IMapper mapper)
+    public NotificationController(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
-    
+
     [HttpGet("latest")]
-    public async Task<ActionResult> GetLatestNotifications([FromQuery] int? userId, [FromQuery] int? limit)
+    public async Task<ActionResult<ICollection<NotificationDTO>>> GetLatestNotifications([FromQuery] int? userId, [FromQuery] int? limit)
     {
         //var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -42,7 +39,7 @@ public class Notifications : ControllerBase
         //}
 
 
-        var userUnits = await _unitOfWork.UnitUserRepository.GetAsync(uu => 
+        var userUnits = await _unitOfWork.UnitUserRepository.GetAsync(uu =>
         //(isAdmin || uu.UserId == loggedInUserIdInt) &&
         (!userId.HasValue || uu.UserId == userId)
         );
@@ -60,11 +57,11 @@ public class Notifications : ControllerBase
         var packageList = packageLists.ToList();
 
         var packages = packageList.Select(p => new NotificationDTO
-            {
-                Type = "Package",
-                Message = $"You have a new package at the front desk. Status: {(p.Status != null ? p.Status.Name : "Unknown")}",
-                Date = DateTime.UtcNow
-            })
+        {
+            Type = "Package",
+            Message = $"You have a new package at the front desk. Status: {(p.Status != null ? p.Status.Name : "Unknown")}",
+            Date = DateTime.UtcNow
+        })
             .ToList();
 
 
@@ -106,12 +103,12 @@ public class Notifications : ControllerBase
                 });
             }
         }
-        
+
         var notifications = packages
             .Concat(issues)
             .Concat(leaseNotification)
             .OrderByDescending(n => n.Date)
-            .Take(limit.GetValueOrDefault(10)) 
+            .Take(limit.GetValueOrDefault(10))
             .ToList();
 
         return Ok(notifications);

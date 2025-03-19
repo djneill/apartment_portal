@@ -5,6 +5,13 @@ export type User = {
   userName: string;
   firstName: string;
   lastName: string;
+  roles?: string[];
+  unit?: {
+    id: number;
+    unitNumber: string;
+    price: number;
+    statusName: string | null;
+  };
 };
 
 type GlobalContextType = {
