@@ -37,7 +37,7 @@ const SideNavbar = () => {
 
   const navItems = [
     { icon: <Home size={20} />, label: "Dashboard", to: getDashboardPath() },
-    { icon: <Users size={20} />, label: "Manage Tenants", to: "/guests" },
+    { icon: <Users size={20} />, label: "Manage Tenants", to: "/manage" },
     {
       icon: <AlertCircle size={20} />,
       label: "Manage Issues",
