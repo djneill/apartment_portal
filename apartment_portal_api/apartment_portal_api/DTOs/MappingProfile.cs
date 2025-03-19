@@ -29,6 +29,8 @@ public class MappingProfile : Profile
         // Unit
         CreateMap<Unit, UnitDTO>()
             .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name)); ;
+        CreateMap<Unit, UnitDTO>()
+            .ForMember(dest => dest.UnitNumber, opt => opt.MapFrom(src => src.Number));
         CreateMap<UnitUserDTO, UnitUser>();
         CreateMap<Unit, UnitResponseDTO>();
 
