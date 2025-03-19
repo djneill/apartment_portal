@@ -90,8 +90,8 @@ const TenantDashboard = () => {
       label: "Manage Guests",
       to: "/guests",
     },
-    { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
+    { icon: <Lock size={38} />, label: "Control Locks", to: "" },
+    { icon: <FilePen size={38} />, label: "Manage Lease", to: "" },
   ];
 
   const guests = ["Dennis G.", "David O.", "Felipe A."];
