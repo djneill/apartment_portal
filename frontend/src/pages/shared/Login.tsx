@@ -89,8 +89,10 @@ function Login() {
           Forgot Password ?
         </button>
 
-        <SignInButton />
-      </form>
+        <SignInButton
+          text=" Sign In"
+        />     
+         </form>
     </main>
   );
 }
