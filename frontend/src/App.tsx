@@ -7,8 +7,8 @@ import "./App.css";
 import Layout from "./components/Layout";
 import { TenantDashboard } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
-
 import AdminDashboard from "./pages/AdminDashboard";
+import ErrorPage from './pages/shared/Error';
 import { useEffect } from "react";
 import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
@@ -44,6 +44,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
+      <Route path="/error" element={<ErrorPage />} />
       <Route element={<Layout />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/users/:id" element={<UserProfile />} />
