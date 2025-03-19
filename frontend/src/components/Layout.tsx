@@ -28,7 +28,7 @@ const MainLayout = () => {
       {/* Menu Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed pt-6 rounded-lg z-50 md:hidden ${
+        className={`fixed pt-6 rounded-lg z-50 ${
           isSidebarVisible ? "text-white" : "text-primary"
         } ml-4`}
       >

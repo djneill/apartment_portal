@@ -28,7 +28,7 @@ const IssueReportForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-background rounded-2xl"
+      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-white rounded-2xl"
     >
       <section className="flex flex-col self-stretch pb-2 my-auto min-w-60 w-[315px]">
         <div>
@@ -68,7 +68,7 @@ const IssueReportForm: React.FC = () => {
 
         <MainButton
           type="submit"
-          className="px-8 py-3 mt-9 text-white whitespace-nowrap rounded-3xl bg-neutral-700"
+          className="px-8 py-3 mt-9 w-full text-white whitespace-nowrap rounded-3xl bg-neutral-700"
         >
           Submit
         </MainButton>

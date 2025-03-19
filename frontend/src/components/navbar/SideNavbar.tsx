@@ -43,7 +43,7 @@ const SideNavbar = () => {
       label: "Manage Issues",
       to: "/reportissue",
     },
-    { icon: <Brain size={20} />, label: "AI Insights", to: "/formdemo" },
+    { icon: <Brain size={20} />, label: "AI Insights", to: "/guests" },
   ];
 
   const settingsItems = [
@@ -91,7 +91,7 @@ const SideNavbar = () => {
       </section>
 
       {/* Settings and Dark Mode */}
-      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white ">
+      <section className="flex flex-col items-start mt-20 ml-4 text-xl text-white ">
         {settingsItems.map((item, index) => (
           <NavItem
             key={index}
@@ -109,7 +109,6 @@ const SideNavbar = () => {
             navigate("/");
           }}
         >
-          Log Out
         </button>
       </section>
     </nav>
