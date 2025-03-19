@@ -39,7 +39,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
           onClick={onClick}
           disabled={disabled}
         >
-          {!disabled && <ArrowUpRight />}
+           <ArrowUpRight />
         </button>
       </div>
 
