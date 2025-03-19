@@ -10,55 +10,55 @@ using apartment_portal_api.Models.UnitUsers;
 using apartment_portal_api.Models.Users;
 using AutoMapper;
 
-namespace apartment_portal_api.DTOs
+namespace apartment_portal_api.DTOs;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            // User
-            CreateMap<ApplicationUser, UserDTO>();
-            CreateMap<ApplicationUser, UserResponse>();
-            CreateMap<RegistrationRequestDTO, ApplicationUser>();
-            CreateMap<RegistrationForm, ApplicationUser>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
-            CreateMap<ApplicationUser, GetUsersResponse>()
-                .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.UnitUserUsers.FirstOrDefault().Unit));
-            CreateMap<Unit, GetUsersUnitResponse>(); // Used in GetUsers fetch request on UserController
+        // User
+        CreateMap<ApplicationUser, UserDTO>();
+        CreateMap<ApplicationUser, UserResponse>();
+        CreateMap<RegistrationRequestDTO, ApplicationUser>();
+        CreateMap<RegistrationForm, ApplicationUser>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
+        CreateMap<ApplicationUser, GetUsersResponse>()
+            .ForMember(dest => dest.Unit, opt => opt.MapFrom(src => src.UnitUserUsers.FirstOrDefault().Unit));
+        CreateMap<Unit, GetUsersUnitResponse>(); // Used in GetUsers fetch request on UserController
 
-            // Unit
-            CreateMap<Unit, UnitDTO>()
-                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));;
-            CreateMap<UnitUserDTO, UnitUser>();
+        // Unit
+        CreateMap<Unit, UnitDTO>()
+            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name)); ;
+        CreateMap<UnitUserDTO, UnitUser>();
 
-            // Guest
-            CreateMap<Guest, GuestDTO>();
-            CreateMap<GuestPostRequest, Guest>()
-                .ForMember(
-                    dest => dest.Expiration,
-                    opt => opt.MapFrom(b => DateTime.UtcNow.AddHours(b.DurationInHours)));
-            CreateMap<ParkingPermitPostRequest, ParkingPermit>();
-            CreateMap<ParkingPermit, ParkingPermitDTO>();
+        // Guest
+        CreateMap<Guest, GuestDTO>();
+        CreateMap<GuestPatchDTO, Guest>();
+        CreateMap<GuestPostRequest, Guest>()
+            .ForMember(
+                dest => dest.Expiration,
+                opt => opt.MapFrom(b => DateTime.UtcNow.AddHours(b.DurationInHours)));
+        CreateMap<ParkingPermitPostRequest, ParkingPermit>();
+        CreateMap<ParkingPermit, ParkingPermitDTO>();
 
-            // Package
-            CreateMap<Package, PackageGetByIdResponse>();
-            CreateMap<Package, PackageGetResponse>();
+        // Package
+        CreateMap<Package, PackageGetByIdResponse>();
+        CreateMap<Package, PackageGetResponse>();
 
-            // Status
-            CreateMap<Status, StatusResponse>();
-            CreateMap<Status, StatusDTO>();
-            CreateMap<StatusPostRequest, Status>();
+        // Status
+        CreateMap<Status, StatusResponse>();
+        CreateMap<Status, StatusDTO>();
+        CreateMap<StatusPostRequest, Status>();
 
-            // Issue
-            CreateMap<Issue, IssueResponse>()
-                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
-            CreateMap<IssueType, IssueTypeResponse>();
+        // Issue
+        CreateMap<Issue, IssueResponse>()
+            .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.ApplicationUser));
+        CreateMap<IssueType, IssueTypeResponse>();
 
-            // Insight
-            CreateMap<Insight, InsightResponse>();
-            CreateMap<InsightPostRequest, Insight>();
+        // Insight
+        CreateMap<Insight, InsightResponse>();
+        CreateMap<InsightPostRequest, Insight>();
 
-            CreateMap<Issue, IssueAIPostRequest>();
-        }
+        CreateMap<Issue, IssueAIPostRequest>();
     }
 }
