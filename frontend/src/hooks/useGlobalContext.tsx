@@ -1,18 +1,5 @@
 import { createContext, useContext } from "react";
-
-export type User = {
-  userId: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  roles?: string[];
-  unit?: {
-    id: number;
-    unitNumber: string;
-    price: number;
-    statusName: string | null;
-  };
-};
+import { User } from "../Types";
 
 type GlobalContextType = {
   user: User | null;
