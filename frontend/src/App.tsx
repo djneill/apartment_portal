@@ -45,15 +45,13 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route element={<Layout />}>
-        <Route>
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          <Route path="/users/:id" element={<UserProfile />} />
-        </Route>
-        <Route>
-          <Route path="/guests" element={<ManageGuests />} />
-          <Route path="/reportissue" element={<ReportIssue />} />
-          <Route path="/tenantdashboard" element={<TenantDashboard />} />
-        </Route>
+        <Route path="/admindashboard" element={<AdminDashboard />} />
+        <Route path="/users/:id" element={<UserProfile />} />
+      </Route>
+      <Route element={<Layout />}>
+        <Route path="/guests" element={<ManageGuests />} />
+        <Route path="/reportissue" element={<ReportIssue />} />
+        <Route path="/tenantdashboard" element={<TenantDashboard />} />
       </Route>
     </Routes>
   );
