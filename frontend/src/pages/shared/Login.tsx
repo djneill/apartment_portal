@@ -3,17 +3,11 @@ import { useState } from "react";
 import InputField from "../../components/InputField";
 import SignInButton from "../../components/SignInButton";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-
-type CurrentUserResponseType = {
-  id: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-};
+import { CurrentUserResponseType } from "../../Types";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -38,16 +32,19 @@ function Login() {
       const currentUserResponse = await getData<CurrentUserResponseType>(
         "users/currentuser"
       );
+
+      const roles = await getUserRoles();
+      console.log("Roles:", roles);
+
       globalContext.setUser({
         userId: currentUserResponse.id,
         userName: currentUserResponse.userName,
         firstName: currentUserResponse.firstName,
         lastName: currentUserResponse.lastName,
+        roles: roles,
       });
       console.log("Current User:", currentUserResponse);
 
-      const roles = await getUserRoles();
-      console.log("Roles:", roles);
       if (roles.includes("Admin")) {
         navigate("/admindashboard");
       } else if (roles.includes("Tenant")) {
@@ -60,10 +57,20 @@ function Login() {
     }
   };
 
+  if (globalContext.user?.roles?.includes("Admin")) {
+    return <Navigate to={"/admindashboard"} />;
+  }
+
+  if (globalContext.user?.roles?.includes("Tenant")) {
+    return <Navigate to={"/tenantdashboard"} />;
+  }
+
   return (
     <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
-        <h1 className="self-center text-center text-4xl leading-tight">Hello Again!</h1>
+        <h1 className="self-center text-center text-4xl leading-tight">
+          Hello Again!
+        </h1>
 
         <InputField
           type="text"

@@ -30,6 +30,7 @@ public class MappingProfile : Profile
         CreateMap<Unit, UnitDTO>()
             .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name)); ;
         CreateMap<UnitUserDTO, UnitUser>();
+        CreateMap<Unit, UnitResponseDTO>();
 
         // Guest
         CreateMap<Guest, GuestDTO>();
@@ -44,6 +45,7 @@ public class MappingProfile : Profile
         // Package
         CreateMap<Package, PackageGetByIdResponse>();
         CreateMap<Package, PackageGetResponse>();
+        CreateMap<PackagePostRequest, Package>();
 
         // Status
         CreateMap<Status, StatusResponse>();

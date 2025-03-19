@@ -1,7 +1,8 @@
 ﻿using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Packages;
-using Microsoft.AspNetCore.Mvc;
+using apartment_portal_api.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
 
@@ -21,7 +22,9 @@ public class PackageController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PackageGetByIdResponse>> GetById(int id)
     {
-        var package = await _unitOfWork.PackageRepository.GetAsync(id);
+        var packageList = await _unitOfWork.PackageRepository.GetAsync(p => p.Id == id, $"{nameof(Package.Unit)},{nameof(Package.Status)}");
+        var package = packageList.FirstOrDefault();
+
         if (package is null) return NotFound(package);
 
         var packageDto = _mapper.Map<PackageGetByIdResponse>(package);
@@ -29,7 +32,7 @@ public class PackageController : ControllerBase
     }
 
     [HttpGet("/Packages")]
-    public async Task<ActionResult<ICollection<PackageGetResponse>>> Get(int userId, int statusId = 0)
+    public async Task<ActionResult<ICollection<PackageGetResponse>>> Get(int userId = 0, int statusId = 0)
     {
         //var loggedInUserRoleClaim = User.Claims.FirstOrDefault(claim => claim.Value == "Admin");
         //var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == userId.ToString());
@@ -43,7 +46,7 @@ public class PackageController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, Package package)
+    public async Task<ActionResult> Update(int id, PackagePutRequest package)
     {
         if (id != package.Id) return BadRequest();
 
@@ -51,7 +54,6 @@ public class PackageController : ControllerBase
         if (dbPackage is null) return BadRequest();
 
         dbPackage.LockerNumber = package.LockerNumber;
-        dbPackage.Code = package.Code;
         dbPackage.StatusId = package.StatusId;
         dbPackage.UnitId = package.UnitId;
         await _unitOfWork.SaveAsync();
@@ -62,22 +64,19 @@ public class PackageController : ControllerBase
     public async Task<ActionResult> Create(PackagePostRequest postData)
     {
         var newPackage = _mapper.Map<Package>(postData);
+        newPackage.Code = AccessCodeGenerator.GenerateAccessCode();
 
         await _unitOfWork.PackageRepository.AddAsync(newPackage);
         await _unitOfWork.SaveAsync();
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = newPackage.Id },
-            newPackage
-        );
+        return Created();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
         var packageToDelete = await _unitOfWork.PackageRepository.GetAsync(id);
-        if (packageToDelete is null) return BadRequest();
+        if (packageToDelete is null) return NotFound();
 
         _unitOfWork.PackageRepository.Delete(packageToDelete);
         await _unitOfWork.SaveAsync();
@@ -93,9 +92,8 @@ public class PackageController : ControllerBase
         if (packageToPatch is null) return BadRequest();
 
         packageToPatch.LockerNumber = patchData.LockerNumber ?? packageToPatch.LockerNumber;
-        packageToPatch.Code = patchData.Code ?? packageToPatch.Code;
         packageToPatch.StatusId = patchData.StatusId ?? packageToPatch.StatusId;
-        packageToPatch.UnitId = patchData.UnitUsersId ?? packageToPatch.UnitId;
+        packageToPatch.UnitId = patchData.UnitId ?? packageToPatch.UnitId;
 
         await _unitOfWork.SaveAsync();
         return Ok();
