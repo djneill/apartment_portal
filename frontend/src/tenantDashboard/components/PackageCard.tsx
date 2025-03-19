@@ -141,7 +141,7 @@ const PackageCard = ({ packageCount = 0 }) => {
             ) : (
               <button
                 onClick={handleRevealCode}
-                className="w-full bg-primary text-white py-3 px-6 rounded-4xl mb-4 text-xl font-heading font-semibold"
+                className="w-full bg-primary cursor-pointer text-white py-3 px-6 rounded-4xl mb-4 text-xl font-heading font-semibold"
               >
                 Reveal Code
               </button>
