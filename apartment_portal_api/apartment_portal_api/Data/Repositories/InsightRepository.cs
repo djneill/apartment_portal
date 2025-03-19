@@ -16,7 +16,7 @@ public class InsightRepository : Repository<Insight>
 
     public async Task<ICollection<Insight>> GetPastInsights()
     {
-        IQueryable<Insight> query = _dbSet.OrderByDescending(insight => insight.CreatedOn).Take(5);
+        IQueryable<Insight> query = _dbSet.OrderBy(insight => insight.InsightStatusId).ThenByDescending(insight => insight.CreatedOn).Include(i => i.InsightStatus);
 
         return await query.ToListAsync();
     }

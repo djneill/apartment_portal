@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apartment_portal_api.Data;
@@ -11,9 +12,11 @@ using apartment_portal_api.Data;
 namespace apartment_portal_api.Data.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20250319213159_insightStatusesTable")]
+    partial class insightStatusesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -282,8 +285,6 @@ namespace apartment_portal_api.Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("insights_pkey");
-
-                    b.HasIndex("InsightStatusId");
 
                     b.ToTable("insights", (string)null);
                 });
@@ -722,18 +723,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("apartment_portal_api.Models.Insights.Insight", b =>
-                {
-                    b.HasOne("apartment_portal_api.Models.InsightStatuses.InsightStatus", "InsightStatus")
-                        .WithMany("Insights")
-                        .HasForeignKey("InsightStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("insights_insightStatusId_fkey");
-
-                    b.Navigation("InsightStatus");
-                });
-
             modelBuilder.Entity("apartment_portal_api.Models.Issues.Issue", b =>
                 {
                     b.HasOne("apartment_portal_api.Models.IssueTypes.IssueType", "IssueType")
@@ -875,11 +864,6 @@ namespace apartment_portal_api.Data.Migrations
             modelBuilder.Entity("apartment_portal_api.Models.Guests.Guest", b =>
                 {
                     b.Navigation("ParkingPermits");
-                });
-
-            modelBuilder.Entity("apartment_portal_api.Models.InsightStatuses.InsightStatus", b =>
-                {
-                    b.Navigation("Insights");
                 });
 
             modelBuilder.Entity("apartment_portal_api.Models.IssueTypes.IssueType", b =>

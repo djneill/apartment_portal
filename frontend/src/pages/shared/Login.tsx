@@ -3,17 +3,11 @@ import { useState } from "react";
 import InputField from "../../components/InputField";
 import SignInButton from "../../components/SignInButton";
 import { User, Lock, Eye, EyeOff } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-
-type CurrentUserResponseType = {
-  id: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-};
+import { CurrentUserResponseType } from "../../Types";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -63,6 +57,14 @@ function Login() {
     }
   };
 
+  if (globalContext.user?.roles?.includes("Admin")) {
+    return <Navigate to={"/admindashboard"} />;
+  }
+
+  if (globalContext.user?.roles?.includes("Tenant")) {
+    return <Navigate to={"/tenantdashboard"} />;
+  }
+
   return (
     <main className="loginContainer flex items-center justify-center h-screen">
       <form onSubmit={handleSubmit} className="loginForm">
@@ -94,8 +96,10 @@ function Login() {
           Forgot Password ?
         </button>
 
-        <SignInButton />
-      </form>
+        <SignInButton
+          text=" Sign In"
+        />     
+         </form>
     </main>
   );
 }
