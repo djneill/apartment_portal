@@ -45,20 +45,20 @@ public class PackageController : ControllerBase
         return Ok(packageDtos);
     }
 
-    //[HttpPut("{id:int}")]
-    //public async Task<ActionResult> Update(int id, PackagePutRequest package)
-    //{
-    //    if (id != package.Id) return BadRequest();
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Update(int id, PackagePutRequest package)
+    {
+        if (id != package.Id) return BadRequest();
 
-    //    var dbPackage = await _unitOfWork.PackageRepository.GetAsync(id);
-    //    if (dbPackage is null) return BadRequest();
+        var dbPackage = await _unitOfWork.PackageRepository.GetAsync(id);
+        if (dbPackage is null) return BadRequest();
 
-    //    dbPackage.LockerNumber = package.LockerNumber;
-    //    dbPackage.StatusId = package.StatusId;
-    //    dbPackage.UnitId = package.UnitId;
-    //    await _unitOfWork.SaveAsync();
-    //    return Ok();
-    //}
+        dbPackage.LockerNumber = package.LockerNumber;
+        dbPackage.StatusId = package.StatusId;
+        dbPackage.UnitId = package.UnitId;
+        await _unitOfWork.SaveAsync();
+        return Ok();
+    }
 
     [HttpPost]
     public async Task<ActionResult> Create(PackagePostRequest postData)
