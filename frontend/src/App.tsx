@@ -8,8 +8,8 @@ import Layout from "./components/Layout";
 import { TenantDashboard } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
-import ErrorPage from './pages/shared/Error';
-import { useEffect } from "react";
+import ErrorPage from "./pages/shared/Error";
+import { useEffect, useState } from "react";
 import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
@@ -17,6 +17,7 @@ import { getUserRoles } from "./services/auth";
 
 function App() {
   const { setUser } = useGlobalContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -25,6 +26,7 @@ function App() {
       );
 
       if (!currentUserResponse.id) {
+        setIsLoading(false);
         redirect("/");
         return;
       }
@@ -38,8 +40,12 @@ function App() {
         lastName: currentUserResponse.lastName,
         roles: roles,
       });
+
+      setIsLoading(false);
     })();
   }, [setUser]);
+
+  if (isLoading) return <h1>Loading App...</h1>;
 
   return (
     <Routes>
