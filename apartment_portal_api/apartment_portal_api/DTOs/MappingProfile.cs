@@ -42,6 +42,7 @@ public class MappingProfile : Profile
 
         // Guest
         CreateMap<Guest, GuestDTO>();
+        CreateMap<GuestPatchDTO, Guest>();
         CreateMap<GuestPostRequest, Guest>()
             .ForMember(
                 dest => dest.Expiration,

@@ -1,13 +1,10 @@
-using System.Security.Claims;
 using apartment_portal_api.Abstractions;
-using apartment_portal_api.DTOs;
-using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.ParkingPermits;
-using apartment_portal_api.Models.Users;
 using apartment_portal_api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
@@ -31,6 +28,9 @@ public class GuestController : ControllerBase
         if (guest == null)
             return NotFound();
 
+        var isUserOrAdmin = IsUserOrAdmin(guest.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
         var guestDTO = _mapper.Map<GuestDTO>(guest);
         return Ok(guestDTO);
     }
@@ -41,23 +41,23 @@ public class GuestController : ControllerBase
         [FromQuery] bool? active
     )
     {
-        //var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        //if (loggedInUserId == null)
-        //{
-        //    return Unauthorized();
-        //}
+        if (loggedInUserId == null)
+        {
+            return Unauthorized();
+        }
 
-        //int.TryParse(loggedInUserId, out int loggedInUserIdInt);
-        //var isAdmin = User.IsInRole("Admin");
+        int.TryParse(loggedInUserId, out int loggedInUserIdInt);
+        var isAdmin = User.IsInRole("Admin");
 
-        //if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
-        //{
-        //    return Forbid();
-        //}
+        if (!isAdmin && userId.HasValue && userId != loggedInUserIdInt)
+        {
+            return Forbid();
+        }
 
         var guests = await _unitOfWork.GuestRepository.GetAsync(g =>
-            //(isAdmin || g.UserId == loggedInUserIdInt) &&
+            (isAdmin || g.UserId == loggedInUserIdInt) &&
              (!userId.HasValue || g.UserId == userId)
             && (
                 !active.HasValue
@@ -70,42 +70,31 @@ public class GuestController : ControllerBase
             return NotFound(new { message = "No guests found." });
 
         var guestDTOs = _mapper.Map<IEnumerable<GuestDTO>>(guests);
-        return Ok(new { success = true, data = guestDTOs });
+        return Ok(guestDTOs);
     }
 
     [HttpPost("register-guest")]
     public async Task<ActionResult<GuestDTO>> CreateGuest(GuestPostRequest request)
     {
-        //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        //if (userClaim is null)
-        //{
-        //    return Unauthorized();
-        //}
- 
-        //bool isAdmin = User.IsInRole("Admin");
- 
-        //string reqUserId = request.UserId.ToString();
-        //if (!isAdmin && userClaim.Value != reqUserId)
-        //{
-        //    return Forbid();
-        //}
- 
+        var isUserOrAdmin = IsUserOrAdmin(request.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
         Guest newGuest = _mapper.Map<Guest>(request);
         newGuest.AccessCode = AccessCodeGenerator.GenerateAccessCode();
- 
+
         if (request.ParkingPermit is not null)
         {
             ParkingPermit permit = _mapper.Map<ParkingPermit>(request.ParkingPermit);
             newGuest.ParkingPermits.Add(permit);
         }
- 
+
         await _unitOfWork.GuestRepository.AddAsync(newGuest);
         await _unitOfWork.SaveAsync();
         return Created();
     }
 
     [HttpPatch("{id:int}")]
-    public async Task<ActionResult<GuestDTO>> EditGuest(int id, GuestPatchDTO patchData)
+    public async Task<ActionResult> EditGuest(int id, GuestPatchDTO patchData)
     {
         if (id != patchData.Id)
             return BadRequest();
@@ -114,15 +103,20 @@ public class GuestController : ControllerBase
         if (guestToPatch is null)
             return NotFound();
 
-        _mapper.Map(patchData, guestToPatch);
+        var isUserOrAdmin = IsUserOrAdmin(guestToPatch.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
+        guestToPatch.FirstName = patchData.FirstName ?? guestToPatch.FirstName;
+        guestToPatch.LastName = patchData.LastName ?? guestToPatch.LastName;
+        guestToPatch.LastName = patchData.PhoneNumber ?? guestToPatch.LastName;
+        guestToPatch.Expiration = CalculateExpiration(patchData.DurationInHours, guestToPatch.Expiration);
         await _unitOfWork.SaveAsync();
 
-        var editedGuestDTO = _mapper.Map<GuestDTO>(guestToPatch);
-        return Ok(editedGuestDTO);
+        return Ok();
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<GuestDTO>> UpdateGuest(int id, GuestDTO putData)
+    public async Task<ActionResult> UpdateGuest(int id, GuestPutRequest putData)
     {
         if (id != putData.Id)
             return BadRequest();
@@ -131,23 +125,37 @@ public class GuestController : ControllerBase
         if (guestToUpdate is null)
             return NotFound();
 
-        _mapper.Map(putData, guestToUpdate);
+        var isUserOrAdmin = IsUserOrAdmin(guestToUpdate.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
+
+        guestToUpdate.FirstName = putData.FirstName;
+        guestToUpdate.LastName = putData.LastName;
+        guestToUpdate.PhoneNumber = putData.PhoneNumber;
+        guestToUpdate.Expiration = CalculateExpiration(putData.DurationInHours, guestToUpdate.Expiration);
         await _unitOfWork.SaveAsync();
 
-        var updatedGuestDTO = _mapper.Map<GuestDTO>(guestToUpdate);
-        return Ok(guestToUpdate);
+        return Ok();
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<GuestDTO>> DeleteGuest(int id)
+    public async Task<ActionResult> DeleteGuest(int id)
     {
-        var guestToDelete = await _unitOfWork.GuestRepository.GetAsync(id);
+        var guest = await _unitOfWork.GuestRepository.GetAsync(g => g.Id == id, nameof(Guest.ParkingPermits));
+        var guestToDelete = guest.FirstOrDefault();
         if (guestToDelete is null)
             return NotFound();
 
+        var isUserOrAdmin = IsUserOrAdmin(guestToDelete.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
+        foreach (ParkingPermit parkingPermit in guestToDelete.ParkingPermits)
+        {
+            _unitOfWork.ParkingPermitRepository.Delete(parkingPermit);
+        }
         _unitOfWork.GuestRepository.Delete(guestToDelete);
         await _unitOfWork.SaveAsync();
-        return NoContent();
+        return Ok();
     }
 
     [HttpGet("{id:int}/parking-permits")]
@@ -161,41 +169,85 @@ public class GuestController : ControllerBase
         if (guest is null)
             return NotFound();
 
+        var isUserOrAdmin = IsUserOrAdmin(guest.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
         var permitDTOs = _mapper.Map<IEnumerable<ParkingPermitDTO>>(guest.ParkingPermits);
 
         return Ok(permitDTOs);
     }
 
     [HttpPatch("{id:int}/parking-permits/{permitId:int}")]
-    public async Task<ActionResult<ParkingPermitDTO>> EditGuestParkingPermits(
+    public async Task<ActionResult> EditGuestParkingPermits(
         int id,
+        int permitId,
         ParkingPermitPatchDTO patchData
     )
     {
-        if (id != patchData.Id)
+        if (permitId != patchData.Id)
             return BadRequest();
 
-        var parkingPermitToPatch = await _unitOfWork.ParkingPermitRepository.GetAsync(id);
+        var parkingPermits = await _unitOfWork.ParkingPermitRepository.GetAsync(pp => pp.Id == id, nameof(ParkingPermit.Guest));
+        var parkingPermitToPatch = parkingPermits.FirstOrDefault();
         if (parkingPermitToPatch is null)
             return NotFound();
 
-        _mapper.Map(patchData, parkingPermitToPatch);
-        await _unitOfWork.SaveAsync();
+        var isUserOrAdmin = IsUserOrAdmin(parkingPermitToPatch.Guest.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
 
-        var editedParkingPermitDTO = _mapper.Map<ParkingPermitDTO>(parkingPermitToPatch);
-        return Ok(editedParkingPermitDTO);
+        parkingPermitToPatch.VehicleMake = patchData.VehicleMake ?? parkingPermitToPatch.VehicleMake;
+        parkingPermitToPatch.VehicleModel = patchData.VehicleModel ?? parkingPermitToPatch.VehicleModel;
+        parkingPermitToPatch.LicensePlate = patchData.LicensePlate ?? parkingPermitToPatch.LicensePlate;
+        parkingPermitToPatch.LicensePlateState = patchData.LicensePlateState ?? parkingPermitToPatch.LicensePlateState;
+
+        await _unitOfWork.SaveAsync();
+        return Ok();
     }
 
-    [HttpDelete("{id:int}/parking-permits/{permitId:int}")]
-    public async Task<ActionResult<ParkingPermitDTO>> DeleteGuestParkingPermits(int id)
+    [HttpDelete("{guestId:int}/parking-permits/{permitId:int}")]
+    public async Task<ActionResult> DeleteGuestParkingPermits(int guestId, int permitId)
     {
-        var parkingPermitToDelete = await _unitOfWork.ParkingPermitRepository.GetAsync(id);
+        var parkingPermit = await _unitOfWork.ParkingPermitRepository
+            .GetAsync(p => p.Id == permitId && p.GuestId == guestId, nameof(ParkingPermit.Guest));
+        var parkingPermitToDelete = parkingPermit.FirstOrDefault();
+
         if (parkingPermitToDelete is null)
             return NotFound();
+
+        var isUserOrAdmin = IsUserOrAdmin(parkingPermitToDelete.Guest.UserId);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
 
         _unitOfWork.ParkingPermitRepository.Delete(parkingPermitToDelete);
         await _unitOfWork.SaveAsync();
 
-        return NoContent();
+        return Ok();
+    }
+
+    private ActionResult? IsUserOrAdmin(int requestUserId)
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && userClaim.Value != requestUserId.ToString())
+        {
+            return Forbid();
+        }
+
+        return null;
+    }
+
+    private DateTime CalculateExpiration(int? durationInHours, DateTime currentExpiration)
+    {
+        if (durationInHours is null)
+            return currentExpiration;
+
+        DateTime newExpiration = DateTime.UtcNow.AddHours((int)durationInHours);
+
+        return newExpiration;
     }
 }
