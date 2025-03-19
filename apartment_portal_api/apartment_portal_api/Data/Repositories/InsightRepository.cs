@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Data.Repositories;
 
-public class InsightRepository: Repository<Insight>
+public class InsightRepository : Repository<Insight>
 {
     private readonly DbSet<Insight> _dbSet;
     private readonly PostgresContext _context;

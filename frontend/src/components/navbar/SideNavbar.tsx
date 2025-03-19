@@ -10,21 +10,34 @@ import {
 } from "lucide-react";
 import NavItem from "./NavItem";
 import { postData } from "../../services/api";
+import useGlobalContext from "../../hooks/useGlobalContext";
 
 const SideNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user: globalUser } = useGlobalContext();
 
   const user = {
     avatarSrc:
       "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250",
-    userName: "Jane Doe",
-    apartment: "Unit 205",
+    apartment: globalUser?.unit?.unitNumber
+      ? `Unit ${globalUser.unit.unitNumber}`
+      : "",
+    userName: globalUser
+      ? `${globalUser.firstName} ${globalUser.lastName}`
+      : "Guest",
+  };
+
+  const getDashboardPath = () => {
+    if (!globalUser || !globalUser.roles) return "/";
+    if (globalUser.roles.includes("Admin")) return "/admindashboard";
+    if (globalUser.roles.includes("Tenant")) return "/tenantdashboard";
+    return "/";
   };
 
   const navItems = [
-    { icon: <Home size={20} />, label: "Dashboard", to: "/home" },
-    { icon: <Users size={20} />, label: "Manage Tenants", to: "/users/1" },
+    { icon: <Home size={20} />, label: "Dashboard", to: getDashboardPath() },
+    { icon: <Users size={20} />, label: "Manage Tenants", to: "/guests" },
     {
       icon: <AlertCircle size={20} />,
       label: "Manage Issues",
@@ -40,7 +53,7 @@ const SideNavbar = () => {
   ];
 
   return (
-    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] h-full">
+    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] min-h-screen">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img
@@ -66,7 +79,12 @@ const SideNavbar = () => {
             to={item.to}
             isActive={
               location.pathname === item.to ||
-              (item.to === "/users/1" && location.pathname.startsWith("/users"))
+              (item.to === "/users/1" &&
+                location.pathname.startsWith("/users")) ||
+              ((item.to === "/admindashboard" ||
+                item.to === "/tenantdashboard") &&
+                (location.pathname === "/admindashboard" ||
+                  location.pathname === "/tenantdashboard"))
             }
           />
         ))}
