@@ -1,8 +1,7 @@
 ﻿using apartment_portal_api.Abstractions;
-using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Statuses;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
 
@@ -37,7 +36,7 @@ public class StatusController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, Status status)
+    public async Task<ActionResult> Update(int id, StatusPutRequest status)
     {
         if (id != status.Id) return BadRequest();
 
@@ -59,11 +58,7 @@ public class StatusController : ControllerBase
 
         await _unitOfWork.SaveAsync();
 
-        return CreatedAtAction(
-            nameof(GetById),
-            new { id = newStatus.Id },
-            newStatus
-        );
+        return Created();
     }
 
     [HttpDelete("{id:int}")]

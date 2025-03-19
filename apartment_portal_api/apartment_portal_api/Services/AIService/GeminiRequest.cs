@@ -8,15 +8,15 @@ public class GeminiRequest
 
     public GeminiRequest(string prompt, string issues)
     {
-        Contents = new List<Content>
-        {
+        Contents =
+        [
             new Content
             {
-                Parts = new List<Parts>
-                {
+                Parts =
+                [
                     new Parts($"{prompt}\n\nIssues:\n{issues}") // Merge prompt and issues
-                }
+                ]
             }
-        };
+        ];
     }
 }

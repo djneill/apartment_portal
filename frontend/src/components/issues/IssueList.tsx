@@ -42,11 +42,11 @@ const IssuesList: React.FC = () => {
   }
 
   return (
-    <section className="mt-10">
-      <div className="flex justify-between items-center mb-5">
+    <section className="">
+      <div className="flex justify-between items-center mb-5 font-heading">
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
-          className="text-sm font-bold text-neutral-700"
+          className="text-sm font-bold text-neutral-700 cursor-pointer"
           onClick={handleViewAll}
         >
           View all
@@ -54,7 +54,7 @@ const IssuesList: React.FC = () => {
       </div>
 
       {/* Carousel Container */}
-      <div className="overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
+      <div className="overflow-x-auto whitespace-nowrap scroll-smooth bg-background py-2 -mr-5">
         <div className="inline-flex gap-5">
           {issues.map((issue) => (
             <IssueCard

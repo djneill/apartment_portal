@@ -12,11 +12,11 @@ public partial class Status
     public string Name { get; set; } = null!;
 
     // Linking properties for EF Core
-    public virtual ICollection<Package> Packages { get; set; } = new List<Package>();
-    public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
+    public virtual ICollection<Package> Packages { get; set; } = [];
+    public virtual ICollection<Issue> Issues { get; set; } = [];
 
-    public virtual ICollection<Unit> Units { get; set; } = new List<Unit>();
+    public virtual ICollection<Unit> Units { get; set; } = [];
 
-    public virtual ICollection<ApplicationUser> Users { get; set; } = new List<ApplicationUser>();
+    public virtual ICollection<ApplicationUser> Users { get; set; } = [];
 
 }
