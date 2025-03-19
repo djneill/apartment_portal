@@ -19,7 +19,6 @@ function App() {
             <Route path="/tenantdashboard" element={<TenantDashboard />} />
             <Route path="/reportissue" element={<ReportIssue />} />
             <Route path="/guests" element={<ManageGuests />} />
-            <Route path="/admindashboard" element={<TempAdminDashboard />} />
             <Route path="/tenantdashboard" element={<TenantDashboard />} />
             <Route path="/admindashboard" element={<AdminDashboard />} />
           </Route>
