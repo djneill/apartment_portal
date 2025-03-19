@@ -1,6 +1,6 @@
-using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Insights;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
 using apartment_portal_api.Models.Packages;
@@ -57,8 +57,12 @@ public class MappingProfile : Profile
         CreateMap<IssueType, IssueTypeResponse>();
 
         // Insight
-        CreateMap<Insight, InsightResponse>();
+        CreateMap<Insight, InsightResponse>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.InsightStatus));
         CreateMap<InsightPostRequest, Insight>();
+
+        // InsightStatus
+        CreateMap<InsightStatus, InsightStatusResponse>();
 
         CreateMap<Issue, IssueAIPostRequest>();
     }
