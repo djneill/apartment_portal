@@ -33,6 +33,12 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UnitNumber, opt => opt.MapFrom(src => src.Number));
         CreateMap<UnitUserDTO, UnitUser>();
         CreateMap<Unit, UnitResponseDTO>();
+        CreateMap<UnitPostRequestDTO, Unit>();
+        CreateMap<UnitDTO, Unit>();
+        CreateMap<UnitDTO, Unit>()
+            .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.UnitNumber));
+        CreateMap<UnitPatchRequestDTO, Unit>();
+        
 
         // Guest
         CreateMap<Guest, GuestDTO>();
