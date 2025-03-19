@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import { FormDemo, TenantDashboard } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
 import GlobalContext from "./hooks/GlobalContextProvider";
+import ErrorPage from './pages/shared/Error';
 // import ModalExample from "./components/ModalExample";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
     <BrowserRouter>
       <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/error" element={<ErrorPage />} />
           <Route element={<Layout />}>
             <Route path="/home" element={<Home />} />
             <Route path="/reportissue" element={<ReportIssue />} />
