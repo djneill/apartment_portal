@@ -7,6 +7,7 @@ import "./App.css";
 import Layout from "./components/Layout";
 import { TenantDashboard } from "./pages";
 import ManageGuests from "./pages/ManageGuests";
+import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from './pages/shared/Error';
 import { useEffect } from "react";
 import { CurrentUserResponseType } from "./Types";
