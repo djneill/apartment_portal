@@ -47,6 +47,7 @@ const SideNavbar = () => {
     { icon: <Home size={20} />, label: "Dashboard", to: "/admindashboard" },
     { icon: <Users size={20} />, label: "Manage Tenants", to: "/admin/tenantlist" },
     { icon: <AlertCircle size={20} />, label: "Manage Issues", to: "/issues" },
+    { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 
   //  items for Tenant
@@ -54,7 +55,6 @@ const SideNavbar = () => {
     { icon: <Home size={20} />, label: "Dashboard", to: "/tenantdashboard" },
     { icon: <Users size={20} />, label: "Manage Guests", to: "/guests" },
     { icon: <AlertCircle size={20} />, label: "Report Issue", to: "/reportissue" },
-    { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 
   // based on role 
