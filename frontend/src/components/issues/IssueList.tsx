@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
-import issuesData from "../../data/issues.json";
+import useGlobalContext from "../../hooks/useGlobalContext";
+import { getData } from "../../services/api";
+import { ApiIssue } from "../../Types";
 
 interface Issue {
   id: number;
@@ -8,22 +10,39 @@ interface Issue {
   title: string;
   isNew: boolean;
   disabled: boolean;
+  type: string;
 }
 
 const IssuesList: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const { user: globalUser } = useGlobalContext();
+  console.log(globalUser);
   useEffect(() => {
-    try {
-      setIssues(issuesData);
-    } catch (err) {
-      setError("Failed to load issues");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    const fetchIssues = async () => {
+      if (!globalUser?.userId) return;
+
+      try {
+        const data = await getData<ApiIssue[]>(`Issues?userId=${globalUser.userId}`);
+        const mappedIssues = data.map((issue: any) => ({
+          id: issue.id,
+          date: new Date(issue.createdOn).toLocaleDateString(),
+          title: issue.description,
+          type: issue.issueType.name,
+          isNew: true,
+          disabled: issue.status.id !== 1, 
+        }));
+        setIssues(mappedIssues);
+      } catch (err) {
+        setError("Failed to load issues");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIssues();
+  }, [globalUser]);
 
   const handleViewAll = () => {
     console.log("Navigate to all issues page");
@@ -60,6 +79,7 @@ const IssuesList: React.FC = () => {
             key={issue.id}
             date={issue.date}
             title={issue.title}
+            type={issue.type}
             isNew={issue.isNew}
             disabled={issue.disabled}
             onClick={() => !issue.disabled && handleIssueClick(issue.id)}
@@ -74,6 +94,7 @@ const IssuesList: React.FC = () => {
               key={issue.id}
               date={issue.date}
               title={issue.title}
+              type={issue.type}
               isNew={issue.isNew}
               disabled={issue.disabled}
               onClick={() => !issue.disabled && handleIssueClick(issue.id)}

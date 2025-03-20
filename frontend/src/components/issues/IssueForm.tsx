@@ -2,16 +2,31 @@ import React, { useEffect, useState } from "react";
 import FormInput from "../form/FormInput";
 import MainButton from "../MainButton";
 import FormSelect from "../form/FormSelect";
-import { getData } from "../../services/api";
+import { getData , postData} from "../../services/api";
+import useGlobalContext from "../../hooks/useGlobalContext";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dropdownOptions, setDropdownOptions] = useState<{ value: string; label: string }[]>([]);
+  const { user: globalUser } = useGlobalContext();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const  handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ issueType, description,});
+    const requestBody = {
+      userId: globalUser?.userId, 
+      issueTypeId: parseInt(issueType), 
+      description: description,
+    };
+    try {
+      const response = await postData("Issues/report", requestBody);
+      console.log("Issue reported successfully:", response);
+
+      setIssueType("");
+      setDescription("");
+    } catch (error) {
+      console.error("Failed to report issue:", error);
+    }
   };
 
 
@@ -39,7 +54,8 @@ const IssueReportForm: React.FC = () => {
           <FormSelect
             label="Type of Issue"
             value={issueType}
-            onChange={(e) => setIssueType(e.target.value)} options={dropdownOptions}    
+            onChange={(e) => setIssueType(e.target.value)}
+            options={dropdownOptions}
             required
             />
 
