@@ -41,7 +41,7 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out z-40 min-h-full ${
+        className={`fixed inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-in-out z-40 min-h-full ${
           isSidebarVisible ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:relative `}
       >
