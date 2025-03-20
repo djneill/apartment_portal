@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Security.Claims;
 using apartment_portal_api.Abstractions;
-using apartment_portal_api.Models.Users;
-using apartment_portal_api.Models.UnitUsers;
 using apartment_portal_api.DTOs;
+using apartment_portal_api.Models.UnitUsers;
+using apartment_portal_api.Models.Users;
 using apartment_portal_api.Services;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
@@ -32,7 +31,7 @@ public class UsersController : ControllerBase
 
     [HttpGet("CurrentUser")]
     [Authorize]
-    public async Task<IActionResult> GetCurrentUser() 
+    public async Task<IActionResult> GetCurrentUser()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -53,7 +52,7 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     // Uncomment next line to add auth
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _unitOfWork.UserRepository.GetUsers();
@@ -73,20 +72,19 @@ public class UsersController : ControllerBase
 
     [HttpGet("{id}")] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
-    { 
+    {
         var user = await _unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
         );
+        var userObj = user.FirstOrDefault();
 
-        if (user == null)
+        if (userObj == null)
         {
             return NotFound(new { message = $"User with ID {id} not found" });
         }
 
-        var userObj = user.FirstOrDefault();
-
-        var unitUser = userObj?.UnitUserUsers?.FirstOrDefault();
+        var unitUser = userObj.UnitUserUsers.FirstOrDefault();
         if (unitUser == null)
         {
             return NotFound(new { message = "No unit found for the given user." });
@@ -122,13 +120,13 @@ public class UsersController : ControllerBase
 
         if (userClaim is null)
         {
-           return Unauthorized();
+            return Unauthorized();
         }
 
         bool isAdmin = User.IsInRole("Admin");
         if (!isAdmin)
         {
-           return Forbid();
+            return Forbid();
         }
 
         int adminId = int.Parse(userClaim.Value);
@@ -137,19 +135,19 @@ public class UsersController : ControllerBase
         {
             return BadRequest(new { message = "Invalid email format." });
         }
-        
+
         var existingUser = await _userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
         {
             return BadRequest(new { message = "A user with this email already exists." });
         }
-        
+
         var unit = (await _unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
         if (unit is null)
         {
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
         }
-        
+
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
         newUser.CreatedOn = DateTime.UtcNow;
@@ -157,16 +155,16 @@ public class UsersController : ControllerBase
         newUser.ModifiedOn = DateTime.UtcNow;
         newUser.ModifiedBy = adminId;
         newUser.StatusId = 1;
-        
+
         var result = await _userManager.CreateAsync(newUser, request.Password);
-    
+
         if (!result.Succeeded)
         {
             return BadRequest(result.Errors);
         }
 
         await _userManager.AddToRoleAsync(newUser, "Tenant");
-        
+
         var unitUserDto = new UnitUserDTO
         {
             UserId = newUser.Id,
@@ -178,7 +176,7 @@ public class UsersController : ControllerBase
         var unitUser = _mapper.Map<UnitUser>(unitUserDto);
         await _unitOfWork.UnitUserRepository.AddAsync(unitUser);
         await _unitOfWork.SaveAsync();
-            
+
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
