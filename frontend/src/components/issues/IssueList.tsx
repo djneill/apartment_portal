@@ -42,19 +42,32 @@ const IssuesList: React.FC = () => {
   }
 
   return (
-    <section className="mt-10">
-      <div className="flex justify-between items-center mb-5">
+    <section className="">
+      <div className="flex justify-between items-center mb-5 font-heading">
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
-          className="text-sm font-bold text-neutral-700"
+          className="text-sm font-bold text-neutral-700 cursor-pointer"
           onClick={handleViewAll}
         >
           View all
         </button>
       </div>
 
-      {/* Carousel Container */}
-      <div className="overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
+      {/* Flex Container for Desktop */}
+      <div className="hidden md:flex md:flex-wrap md:gap-5">
+        {issues.map((issue) => (
+          <IssueCard
+            key={issue.id}
+            date={issue.date}
+            title={issue.title}
+            isNew={issue.isNew}
+            disabled={issue.disabled}
+            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+          />
+        ))}
+      </div>
+
+      <div className="md:hidden overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
         <div className="inline-flex gap-5">
           {issues.map((issue) => (
             <IssueCard

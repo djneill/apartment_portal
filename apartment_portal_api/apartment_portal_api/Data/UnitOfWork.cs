@@ -2,8 +2,10 @@
 using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
-using apartment_portal_api.Models.ParkingPermits;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.LeaseStatuses;
+using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.UnitUsers;
 using apartment_portal_api.Services.AIService;
@@ -23,6 +25,9 @@ public class UnitOfWork : IUnitOfWork
     private UserRepository? _userRepository;
     private IRepository<UnitUser>? _unitUserRepository;
     private InsightRepository? _insightRepository;
+    private IRepository<InsightStatus>? _insightStatusRepository;
+    private LeaseAgreementRepository? _leaseAgreementRepository;
+    private IRepository<LeaseStatus>? _leaseStatusRepository;
 
     private readonly AIService _aiService;
 
@@ -118,7 +123,34 @@ public class UnitOfWork : IUnitOfWork
             _insightRepository ??= new InsightRepository(_context);
             return _insightRepository;
         }
-    }    
+    }
+
+    public IRepository<InsightStatus> InsightStatusRepository
+    {
+        get
+        {
+            _insightStatusRepository ??= new Repository<InsightStatus>(_context); 
+            return _insightStatusRepository;
+        }
+    }
+
+    public LeaseAgreementRepository LeaseAgreementRepository
+    {
+        get
+        {
+            _leaseAgreementRepository ??= new LeaseAgreementRepository(_context);
+            return _leaseAgreementRepository;
+        }
+    }
+
+    public IRepository<LeaseStatus> LeaseStatusRepository
+    {
+        get
+        {
+            _leaseStatusRepository ??= new Repository<LeaseStatus>(_context); 
+            return _leaseStatusRepository;
+        }
+    }
     public async Task SaveAsync()
     {
         await _context.SaveChangesAsync();

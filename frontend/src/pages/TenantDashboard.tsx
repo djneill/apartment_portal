@@ -9,35 +9,92 @@ import {
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
+
 type Notifications = {
   date: string;
   message: string;
   type: string;
 };
 
+type UserWithUnit = {
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    statusId: number;
+  };
+  unit: {
+    id: number;
+    unitNumber: string;
+    price: number;
+    statusName: null | string;
+  };
+};
+
 const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
-  const { user } = useGlobalContext();
+  const [packageCount, setPackageCount] = useState(0);
+  const [unitNumber, setUnitNumber] = useState("");
+  const { user, setUser } = useGlobalContext();
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (user?.userId) {
+        try {
+          const userData = await getData<UserWithUnit>(`Users/${user.userId}`);
+          if (userData.unit?.unitNumber) {
+            setUnitNumber(userData.unit.unitNumber);
+          }
+
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  unit: userData.unit,
+                }
+              : null
+          );
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
+      }
+    };
+
+    fetchUserDetails();
+  }, [user?.userId, setUser]);
 
   useEffect(() => {
     (async () => {
-      const data = await getData<Notifications[]>("notifications/latest?userId=6");
-
+      const data = await getData<Notifications[]>(
+        `notification/latest?userId=${user?.userId}`
+      );
       setNotifications(data);
+
+      const packagesAvailable = data.filter((notification) =>
+        notification.message.toLowerCase().includes("package")
+      ).length;
+
+      setPackageCount(packagesAvailable);
     })();
   }, [user?.userId]);
 
   const quickActions = [
-    { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/" },
-    { icon: <UserRoundPlus size={38} />, label: "Manage Guests", to: "/" },
-    { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
+    {
+      icon: <TriangleAlert size={38} />,
+      label: "Report Issues",
+      to: "/reportissue",
+    },
+    {
+      icon: <UserRoundPlus size={38} />,
+      label: "Manage Guests",
+      to: "/guests",
+    },
+    { icon: <Lock size={38} />, label: "Control Locks", to: "" },
+    { icon: <FilePen size={38} />, label: "Manage Lease", to: "" },
   ];
 
   const guests = ["Dennis G.", "David O.", "Felipe A."];
-  const handleAddGuest = () => {
-    console.log("Add new guest");
-  };
   const handleViewAllGuests = () => {
     console.log("View all guests");
   };
@@ -45,17 +102,10 @@ const TenantDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* TODO: Create header component */}
-      <header className="px-4 pt-4 pb-1 flex flex-col justify-between items-center">
-        <button className="pb-2 self-start">
-          <div className="space-y-1">
-            <div className="w-6 h-0.5 bg-primary"></div>
-            <div className="w-6 h-0.5 bg-primary"></div>
-            <div className="w-6 h-0.5 bg-primary"></div>
-          </div>
-        </button>
+      <header className="px-4 pt-15 pb-1 flex flex-col justify-between items-center">
         <div className="flex justify-between w-full">
-          <h1 className="font-medium">Welcome, John</h1>
-          <p className="font-medium">Unit 205</p>
+          <h1 className="font-medium">Welcome, {user?.firstName}</h1>
+          <p className="font-medium">Unit {unitNumber}</p>
         </div>
       </header>
 
@@ -80,14 +130,10 @@ const TenantDashboard = () => {
           ))}
         </div>
 
-        <CurrentGuest
-          guests={guests}
-          onAddGuest={handleAddGuest}
-          onViewAll={handleViewAllGuests}
-        />
+        <CurrentGuest guests={guests} onViewAll={handleViewAllGuests} />
 
         <div className="grid grid-cols-2 gap-4">
-          <PackageCard />
+          <PackageCard packageCount={packageCount} />
           <ThermostatCard />
         </div>
       </div>

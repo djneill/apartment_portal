@@ -1,14 +1,23 @@
-import { useState } from 'react';
-import SideNavbar from './navbar/SideNavbar';
-import { Outlet } from 'react-router-dom';
-import { Menu } from 'lucide-react';
+import { useState } from "react";
+import SideNavbar from "./navbar/SideNavbar";
+import { Navigate, Outlet } from "react-router-dom";
+import { Menu } from "lucide-react";
+import useGlobalContext from "../hooks/useGlobalContext";
 
-const MainLayout = () => {
+const MainLayout = ({ usersRole }: { usersRole: string }) => {
+  const { user } = useGlobalContext();
+
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
   };
+
+  if (user?.userId === 0) return <Navigate to="/" replace />;
+  if (user?.roles?.includes("Admin") && usersRole !== "Admin")
+    return <Navigate to="/admindashboard" replace />;
+  if (user?.roles?.includes("Tenant") && usersRole !== "Tenant")
+    return <Navigate to="/tenantdashboard" replace />;
 
   return (
     <div className="flex relative">
@@ -23,9 +32,9 @@ const MainLayout = () => {
       {/* Menu Button */}
       <button
         onClick={toggleSidebar}
-        className={`fixed pt-6 rounded-lg z-50 md:hidden ${
+        className={`fixed pt-6 rounded-lg z-50 ${
           isSidebarVisible ? "text-white" : "text-primary"
-        } ml-4`} 
+        } ml-4`}
       >
         <Menu size={32} />
       </button>
@@ -33,7 +42,7 @@ const MainLayout = () => {
       {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 w-64 transform transition-transform duration-300 ease-in-out z-40 ${
-          isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
+          isSidebarVisible ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:relative`}
       >
         <SideNavbar />
