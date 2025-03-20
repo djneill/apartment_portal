@@ -79,7 +79,10 @@ export default function AdminDashboard() {
 
         <div className={viewAllInsights ? "" : "-mr-5 md:-mr-10"}>
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
-            <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-sm font-semibold text-dark-gray">Insights</p></div>
+            <div className="flex space-x-1 items-center">
+              <InsightLogo />
+              <p className="text-sm font-semibold text-dark-gray">Insights</p>
+            </div>
             <p className="md:hidden cursor-pointer text-primary font-semibold text-sm" onClick={() => setViewAllInsights(prev => !prev)}>{viewAllInsights ? "View Less" : "View all"}</p>
           </div>
 
