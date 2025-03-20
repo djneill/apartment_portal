@@ -1,30 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormInput from "../form/FormInput";
 import MainButton from "../MainButton";
 import FormSelect from "../form/FormSelect";
+import { getData } from "../../services/api";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [images, setImages] = useState<File[]>([]);
+  const [dropdownOptions, setDropdownOptions] = useState<{ value: string; label: string }[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ issueType, description, images });
+    console.log({ issueType, description,});
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const fileArray = Array.from(e.target.files);
-      setImages((prevImages) => [...prevImages, ...fileArray]);
+
+  useEffect(() => {
+    async function fetchIssueTypes() {
+      const response = await getData<{ id: number; name: string }[]>("issues/types");
+      if (response) {
+        const options = response.map((issue) => ({
+          value: issue.id.toString(),
+          label: issue.name,
+        }));
+        setDropdownOptions(options);
+      }
     }
-  };
-  const dropdownOptions = [
-          { value: "bug", label: "Bug" },
-          { value: "feature", label: "Feature Request" },
-          { value: "support", label: "Support Request" },
-          { value: "other", label: "Other" },
-        ];
+
+    fetchIssueTypes();
+  }, []);
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -50,14 +55,6 @@ const IssueReportForm: React.FC = () => {
         </label>
 
         <div className="relative">
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            aria-label="Upload images"
-          />
           <button
             type="button"
             className="gap-2.5 self-start px-3.5 py-2 mt-2.5 text-black whitespace-nowrap bg-violet-300 rounded-3xl min-h-[30px]"
