@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Data.Repositories;
 
-public class UserRepository: Repository<ApplicationUser>
+public class UserRepository : Repository<ApplicationUser>
 {
     private readonly DbSet<ApplicationUser> _dbSet;
 

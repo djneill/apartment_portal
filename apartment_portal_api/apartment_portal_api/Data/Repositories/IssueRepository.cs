@@ -1,13 +1,9 @@
 ﻿using apartment_portal_api.Models.Issues;
-using apartment_portal_api.Models.IssueTypes;
-using apartment_portal_api.Models.Packages;
-using apartment_portal_api.Models.Statuses;
-using apartment_portal_api.Models.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace apartment_portal_api.Data.Repositories;
 
-public class IssueRepository: Repository<Issue>
+public class IssueRepository : Repository<Issue>
 {
     private readonly PostgresContext _context;
     private readonly DbSet<Issue> _dbSet;
@@ -31,7 +27,7 @@ public class IssueRepository: Repository<Issue>
             query = query.Where(issue => issue.UserId == userId);
         }
 
-        if (statusId  != 0)
+        if (statusId != 0)
         {
             query = query.Where(issue => issue.StatusId == statusId);
         }

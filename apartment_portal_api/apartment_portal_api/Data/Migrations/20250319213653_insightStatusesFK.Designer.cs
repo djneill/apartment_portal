@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using apartment_portal_api.Data;
@@ -11,9 +12,11 @@ using apartment_portal_api.Data;
 namespace apartment_portal_api.Data.Migrations
 {
     [DbContext(typeof(PostgresContext))]
-    partial class PostgresContextModelSnapshot : ModelSnapshot
+    [Migration("20250319213653_insightStatusesFK")]
+    partial class insightStatusesFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,73 +355,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.ToTable("issues", (string)null);
                 });
 
-            modelBuilder.Entity("apartment_portal_api.Models.LeaseAgreements.LeaseAgreement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date")
-                        .HasColumnName("endDate");
-
-                    b.Property<int>("LeaseStatusId")
-                        .HasColumnType("integer")
-                        .HasColumnName("leaseStatusId");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("link");
-
-                    b.Property<DateOnly?>("SignedOn")
-                        .HasColumnType("date")
-                        .HasColumnName("signedOn");
-
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date")
-                        .HasColumnName("startDate");
-
-                    b.Property<int>("UnitUsersId")
-                        .HasColumnType("integer")
-                        .HasColumnName("unitUsersId");
-
-                    b.HasKey("Id")
-                        .HasName("leaseAgreements_pkey");
-
-                    b.HasIndex("LeaseStatusId");
-
-                    b.HasIndex("UnitUsersId");
-
-                    b.ToTable("leaseAgreements", (string)null);
-                });
-
-            modelBuilder.Entity("apartment_portal_api.Models.LeaseStatuses.LeaseStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("character varying")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("leaseStatuses_pkey");
-
-                    b.HasIndex(new[] { "Name" }, "leaseStatuses_name_key")
-                        .IsUnique();
-
-                    b.ToTable("leaseStatuses", (string)null);
-                });
-
             modelBuilder.Entity("apartment_portal_api.Models.Packages.Package", b =>
                 {
                     b.Property<int>("Id")
@@ -572,6 +508,15 @@ namespace apartment_portal_api.Data.Migrations
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean")
                         .HasColumnName("isPrimary");
+
+                    b.Property<string>("LeaseAgreement")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("leaseAgreement");
+
+                    b.Property<DateTime>("LeaseExpiration")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("leaseExpiration");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer")
@@ -822,27 +767,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.Navigation("Status");
                 });
 
-            modelBuilder.Entity("apartment_portal_api.Models.LeaseAgreements.LeaseAgreement", b =>
-                {
-                    b.HasOne("apartment_portal_api.Models.LeaseStatuses.LeaseStatus", "Status")
-                        .WithMany("LeaseAgreements")
-                        .HasForeignKey("LeaseStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("leaseAgreements_leaseStatusId_fkey");
-
-                    b.HasOne("apartment_portal_api.Models.UnitUsers.UnitUser", "UnitUser")
-                        .WithMany("LeaseAgreements")
-                        .HasForeignKey("UnitUsersId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("leaseAgreements_unitUsersId_fkey");
-
-                    b.Navigation("Status");
-
-                    b.Navigation("UnitUser");
-                });
-
             modelBuilder.Entity("apartment_portal_api.Models.Packages.Package", b =>
                 {
                     b.HasOne("apartment_portal_api.Models.Statuses.Status", "Status")
@@ -966,11 +890,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.Navigation("Issues");
                 });
 
-            modelBuilder.Entity("apartment_portal_api.Models.LeaseStatuses.LeaseStatus", b =>
-                {
-                    b.Navigation("LeaseAgreements");
-                });
-
             modelBuilder.Entity("apartment_portal_api.Models.Statuses.Status", b =>
                 {
                     b.Navigation("Issues");
@@ -987,11 +906,6 @@ namespace apartment_portal_api.Data.Migrations
                     b.Navigation("Packages");
 
                     b.Navigation("UnitUsers");
-                });
-
-            modelBuilder.Entity("apartment_portal_api.Models.UnitUsers.UnitUser", b =>
-                {
-                    b.Navigation("LeaseAgreements");
                 });
 
             modelBuilder.Entity("apartment_portal_api.Models.Users.ApplicationUser", b =>

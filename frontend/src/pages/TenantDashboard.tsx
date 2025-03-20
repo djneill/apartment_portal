@@ -5,10 +5,12 @@ import {
   CurrentGuest,
   PackageCard,
   ThermostatCard,
+  LockControlModal,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
+import { useNavigate } from "react-router-dom";
 
 type Notifications = {
   date: string;
@@ -36,7 +38,9 @@ const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [packageCount, setPackageCount] = useState(0);
   const [unitNumber, setUnitNumber] = useState("");
+  const [isLockModalOpen, setIsLockModalOpen] = useState(false);
   const { user, setUser } = useGlobalContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -71,13 +75,20 @@ const TenantDashboard = () => {
       );
       setNotifications(data);
 
-      const packagesAvailable = data.filter((notification) =>
-        notification.message.toLowerCase().includes("package")
+      const packagesAvailable = data.filter(
+        (notification) => notification.type === "Package"
       ).length;
 
       setPackageCount(packagesAvailable);
     })();
   }, [user?.userId]);
+
+  const handleNotificationClick = (index: number) => {
+    const notification = notifications[index];
+    if (notification.type === "Issue") {
+      navigate("/reportissue");
+    }
+  };
 
   const quickActions = [
     {
@@ -90,8 +101,13 @@ const TenantDashboard = () => {
       label: "Manage Guests",
       to: "/guests",
     },
-    { icon: <Lock size={38} />, label: "Control Locks", to: "/" },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
+    {
+      icon: <Lock size={38} />,
+      label: "Control Locks",
+      to: "",
+      onClick: () => setIsLockModalOpen(true),
+    },
+    { icon: <FilePen size={38} />, label: "Manage Lease", to: "" },
   ];
 
   const guests = ["Dennis G.", "David O.", "Felipe A."];
@@ -114,7 +130,7 @@ const TenantDashboard = () => {
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
-          onActionClick={(index) => console.log("Clicked notification", index)}
+          onActionClick={handleNotificationClick}
           onViewAllClick={() => console.log("View all clicked")}
         />
 
@@ -125,6 +141,7 @@ const TenantDashboard = () => {
               icon={action.icon}
               label={action.label}
               to={action.to}
+              onClick={action.onClick}
               variant="primary"
             />
           ))}
@@ -137,6 +154,11 @@ const TenantDashboard = () => {
           <ThermostatCard />
         </div>
       </div>
+
+      <LockControlModal
+        isOpen={isLockModalOpen}
+        onClose={() => setIsLockModalOpen(false)}
+      />
     </div>
   );
 };

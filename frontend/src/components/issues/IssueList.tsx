@@ -53,8 +53,21 @@ const IssuesList: React.FC = () => {
         </button>
       </div>
 
-      {/* Carousel Container */}
-      <div className="overflow-x-auto whitespace-nowrap scroll-smooth bg-background py-2 -mr-5">
+      {/* Flex Container for Desktop */}
+      <div className="hidden md:flex md:flex-wrap md:gap-5">
+        {issues.map((issue) => (
+          <IssueCard
+            key={issue.id}
+            date={issue.date}
+            title={issue.title}
+            isNew={issue.isNew}
+            disabled={issue.disabled}
+            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+          />
+        ))}
+      </div>
+
+      <div className="md:hidden overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
         <div className="inline-flex gap-5">
           {issues.map((issue) => (
             <IssueCard

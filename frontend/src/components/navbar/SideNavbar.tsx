@@ -15,7 +15,7 @@ import useGlobalContext from "../../hooks/useGlobalContext";
 const SideNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user: globalUser } = useGlobalContext();
+  const { user: globalUser, setUser } = useGlobalContext();
 
   const user = {
     avatarSrc:
@@ -43,13 +43,13 @@ const SideNavbar = () => {
       label: "Manage Issues",
       to: "/reportissue",
     },
-    { icon: <Brain size={20} />, label: "AI Insights", to: "/formdemo" },
+    { icon: <Brain size={20} />, label: "AI Insights", to: "/guests" },
   ];
 
   const settingsItems = [
     { icon: <Moon size={20} />, label: "Dark Mode", to: "/darkmode" },
     { icon: <Settings size={20} />, label: "Settings", to: "/settings" },
-    { icon: <LogOut size={20} />, label: "Log Out", to: "/logout" },
+    // { icon: <LogOut size={20} />, label: "Log Out", to: "/logout" },
   ];
 
   return (
@@ -91,7 +91,7 @@ const SideNavbar = () => {
       </section>
 
       {/* Settings and Dark Mode */}
-      <section className="flex flex-col items-start mt-40 ml-4 max-w-full text-xl text-white ">
+      <section className="flex flex-col items-start mt-20 ml-4 text-xl text-white ">
         {settingsItems.map((item, index) => (
           <NavItem
             key={index}
@@ -104,12 +104,25 @@ const SideNavbar = () => {
         <button
           type="button"
           onClick={async () => {
-            console.log("Logout");
             await postData("logout", null);
-            navigate("/");
+            setUser({
+              userId: 0,
+              userName: "",
+              firstName: "",
+              lastName: "",
+              roles: [],
+            });
+            navigate("/", { replace: true });
           }}
         >
-          Log Out
+          <div
+            className={`flex justify-between items-center px-6 py-3 mt-3 w-full text-xl text-white rounded-3xl`}
+          >
+            <div className="flex gap-4 items-center whitespace-nowrap">
+              <LogOut size={20} />
+              <span>Log Out</span>
+            </div>
+          </div>
         </button>
       </section>
     </nav>

@@ -1,8 +1,11 @@
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Insights;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.LeaseAgreements;
+using apartment_portal_api.Models.LeaseStatuses;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Statuses;
@@ -28,12 +31,23 @@ public class MappingProfile : Profile
 
         // Unit
         CreateMap<Unit, UnitDTO>()
-            .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name)); ;
+            .ForMember(dest => dest.UnitNumber, opt => opt.MapFrom(src => src.Number));
         CreateMap<UnitUserDTO, UnitUser>();
         CreateMap<Unit, UnitResponseDTO>();
+        CreateMap<UnitPostRequestDTO, Unit>();
+        CreateMap<UnitDTO, Unit>();
+        CreateMap<UnitDTO, Unit>()
+            .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.UnitNumber));
+        CreateMap<UnitPatchRequestDTO, Unit>();
+        CreateMap<UnitPutRequestDTO, Unit>();
+
+        // UnitUsers
+        CreateMap<UnitUser, UnitUserResponse>();
+
 
         // Guest
         CreateMap<Guest, GuestDTO>();
+        CreateMap<GuestPatchDTO, Guest>();
         CreateMap<GuestPostRequest, Guest>()
             .ForMember(
                 dest => dest.Expiration,
@@ -57,9 +71,20 @@ public class MappingProfile : Profile
         CreateMap<IssueType, IssueTypeResponse>();
 
         // Insight
-        CreateMap<Insight, InsightResponse>();
+        CreateMap<Insight, InsightResponse>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.InsightStatus));
         CreateMap<InsightPostRequest, Insight>();
 
+        // InsightStatus
+        CreateMap<InsightStatus, InsightStatusResponse>();
+
         CreateMap<Issue, IssueAIPostRequest>();
+
+        // LeaseAgreements
+        CreateMap<LeaseAgreementPostRequest, LeaseAgreement>();
+        CreateMap<LeaseAgreement, LeaseAgreementResponse>();
+
+        // LeaseStatuses
+        CreateMap<LeaseStatus, LeaseStatusResponse>();
     }
 }

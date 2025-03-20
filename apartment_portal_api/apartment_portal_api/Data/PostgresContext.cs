@@ -1,8 +1,11 @@
 ﻿using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
 using apartment_portal_api.Models.Insights;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.LeaseAgreements;
+using apartment_portal_api.Models.LeaseStatuses;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Statuses;
@@ -42,6 +45,12 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
     public virtual DbSet<UnitUser> UnitUsers { get; set; }
 
     public virtual DbSet<Insight> Insights { get; set; }
+
+    public virtual DbSet<InsightStatus> InsightStatuses { get; set; }
+
+    public virtual DbSet<LeaseAgreement> LeaseAgreements { get; set; }
+
+    public virtual DbSet<LeaseStatus> LeaseStatuses { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -149,6 +158,68 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
                 .HasColumnName("createdOn");
+            entity.Property(e => e.InsightStatusId).HasColumnName("insightStatusId");
+
+            entity.HasOne(e => e.InsightStatus).WithMany(status => status.Insights)
+                .HasForeignKey(d => d.InsightStatusId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("insights_insightStatusId_fkey");
+        });
+
+        modelBuilder.Entity<LeaseAgreement>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("leaseAgreements_pkey");
+
+            entity.ToTable("leaseAgreements");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+            entity.Property(e => e.StartDate).HasColumnName("startDate");
+            entity.Property(e => e.EndDate).HasColumnName("endDate");
+            entity.Property(e => e.SignedOn).HasColumnName("signedOn");
+            entity.Property(e => e.Link).HasColumnName("link");
+            entity.Property(e => e.UnitUsersId).HasColumnName("unitUsersId");
+            entity.Property(e => e.LeaseStatusId).HasColumnName("leaseStatusId");
+
+            entity.HasOne(e => e.Status).WithMany(status => status.LeaseAgreements)
+                .HasForeignKey(d => d.LeaseStatusId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("leaseAgreements_leaseStatusId_fkey");
+
+            entity.HasOne(e => e.UnitUser).WithMany(uu => uu.LeaseAgreements)
+                .HasForeignKey(d => d.UnitUsersId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("leaseAgreements_unitUsersId_fkey");
+        });
+
+        modelBuilder.Entity<LeaseStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("leaseStatuses_pkey");
+
+            entity.ToTable("leaseStatuses");
+
+            entity.HasIndex(e => e.Name, "leaseStatuses_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
+        });
+
+
+        modelBuilder.Entity<InsightStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("insightStatuses_pkey");
+
+            entity.ToTable("insightStatuses");
+
+            entity.HasIndex(e => e.Name, "insightStatuses_name_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
+                .HasColumnType("character varying")
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Package>(entity =>
@@ -243,8 +314,6 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
                 .HasColumnName("createdOn");
             entity.Property(e => e.IsPrimary).HasColumnName("isPrimary");
-            entity.Property(e => e.LeaseAgreement).HasColumnName("leaseAgreement");
-            entity.Property(e => e.LeaseExpiration).HasColumnName("leaseExpiration");
             entity.Property(e => e.ModifiedBy).HasColumnName("modifiedBy");
             entity.Property(e => e.ModifiedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")

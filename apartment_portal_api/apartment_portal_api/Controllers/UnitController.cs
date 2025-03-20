@@ -46,20 +46,20 @@ public class UnitController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, UnitDTO unitDTO)
+    public async Task<ActionResult> Update(int id, UnitPutRequestDTO unitPutDTO)
     {
-        if (id != unitDTO.Id) return BadRequest();
+        if (id != unitPutDTO.Id) return BadRequest();
 
         var dbUnit = await _unitOfWork.UnitRepository.GetAsync(id);
         if (dbUnit is null) return NotFound();
 
-        _mapper.Map(unitDTO, dbUnit);
+        _mapper.Map(unitPutDTO, dbUnit);
         await _unitOfWork.SaveAsync();
         return Ok();
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(UnitPostRequestDTO postData)
+    public async Task<ActionResult<UnitDTO>> Create(UnitPostRequestDTO postData)
     {
         var newUnit = _mapper.Map<Unit>(postData);
         await _unitOfWork.UnitRepository.AddAsync(newUnit);
