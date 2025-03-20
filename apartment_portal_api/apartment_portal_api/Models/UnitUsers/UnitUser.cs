@@ -1,4 +1,5 @@
-﻿using apartment_portal_api.Models.Users;
+﻿using apartment_portal_api.Models.LeaseAgreements;
+using apartment_portal_api.Models.Users;
 
 namespace apartment_portal_api.Models.UnitUsers;
 
@@ -10,10 +11,6 @@ public partial class UnitUser
     public int UnitId { get; set; }
 
     public bool IsPrimary { get; set; }
-
-    public string LeaseAgreement { get; set; } = null!;
-
-    public DateTime LeaseExpiration { get; set; }
 
     public DateTime CreatedOn { get; set; }
 
@@ -32,4 +29,6 @@ public partial class UnitUser
     public virtual Unit Unit { get; set; } = null!;
 
     public virtual ApplicationUser ApplicationUser { get; set; } = null!;
+
+    public virtual ICollection<LeaseAgreement> LeaseAgreements { get; set; } = [];
 }

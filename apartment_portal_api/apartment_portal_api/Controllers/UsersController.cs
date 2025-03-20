@@ -182,33 +182,6 @@ public class UsersController : ControllerBase
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    [HttpGet("{id:int}/expirationCountdown")]
-    public async Task<ActionResult> GetLeaseExpiration(int id)
-    {
-        bool isAdmin = User.IsInRole("Admin");
-        var loggedInUserIdClaim = User.Claims.FirstOrDefault(claim => claim.Value == id.ToString());
-        if (!isAdmin && loggedInUserIdClaim is null) return Unauthorized();
-
-        var userRes =
-            await _unitOfWork.UserRepository
-                .GetAsync(u => u.Id == id, nameof(ApplicationUser.UnitUserUsers));
-
-        var user = userRes.FirstOrDefault();
-        var unit = user?.UnitUserUsers.FirstOrDefault();
-
-        if (user is null || unit is null)
-        {
-            return NotFound();
-        }
-
-        var timeDifference = unit.LeaseExpiration - DateTime.UtcNow;
-
-        return Ok( new
-        {
-            ExpirationCountdown = timeDifference
-        });
-    }
-
     // Uncomment line below when turning on auth
     [Authorize]
     [HttpGet("roles")]
