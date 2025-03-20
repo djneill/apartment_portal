@@ -1,9 +1,10 @@
 ﻿using apartment_portal_api.Data.Repositories;
 using apartment_portal_api.Models;
 using apartment_portal_api.Models.Guests;
-using apartment_portal_api.Models.Insights;
-using apartment_portal_api.Models.ParkingPermits;
+using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.LeaseStatuses;
+using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Statuses;
 using apartment_portal_api.Models.UnitUsers;
 
@@ -21,5 +22,8 @@ public interface IUnitOfWork
     public UserRepository UserRepository { get; }
     public IRepository<UnitUser> UnitUserRepository { get; }
     public InsightRepository InsightRepository { get; }
+    public IRepository<InsightStatus> InsightStatusRepository { get; }
+    public LeaseAgreementRepository LeaseAgreementRepository { get; }
+    public IRepository<LeaseStatus> LeaseStatusRepository { get; }
     public Task SaveAsync();
 }
