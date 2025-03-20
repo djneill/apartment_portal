@@ -33,35 +33,26 @@ const IssueReportForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-white rounded-2xl"
+      className="w-full items-center p-5 text-sm font-medium bg-white rounded-2xl"
     >
-      <section className="flex flex-col self-stretch pb-2 my-auto min-w-60 w-[315px]">
         <div>
           <FormSelect
             label="Type of Issue"
             value={issueType}
-            onChange={(e) => setIssueType(e.target.value)} options={dropdownOptions}          />
+            onChange={(e) => setIssueType(e.target.value)} options={dropdownOptions}    
+            required
+            />
 
           <FormInput
             label="Description of Issue"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Write a detailed description"
+            required
           />
         </div>
 
-        <label className="self-start mt-8 text-neutral-500">
-          Upload Images (optional)
-        </label>
-
-        <div className="relative">
-          <button
-            type="button"
-            className="gap-2.5 self-start px-3.5 py-2 mt-2.5 text-black whitespace-nowrap bg-violet-300 rounded-3xl min-h-[30px]"
-          >
-            Upload
-          </button>
-        </div>
+     
 
         <MainButton
           type="submit"
@@ -69,7 +60,6 @@ const IssueReportForm: React.FC = () => {
         >
           Submit
         </MainButton>
-      </section>
     </form>
   );
 };
