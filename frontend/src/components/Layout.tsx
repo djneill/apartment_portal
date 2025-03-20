@@ -41,7 +41,7 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out z-40  ${
+        className={`fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out z-40 min-h-full ${
           isSidebarVisible ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:relative `}
       >
@@ -49,7 +49,7 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto min-h-screen">
         <Outlet />
       </main>
     </div>
