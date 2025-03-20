@@ -14,6 +14,7 @@ import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
+import AdminTenantList from "./pages/AdminTenantList";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -56,6 +57,7 @@ function App() {
     <Routes>
       <Route element={<Layout usersRole={"Admin"} />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
+        <Route path="/admin/tenantlist" element={<AdminTenantList />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/reportissue" element={<ReportIssue />} />
       </Route>
