@@ -4,6 +4,8 @@ using apartment_portal_api.Models.Insights;
 using apartment_portal_api.Models.InsightStatuses;
 using apartment_portal_api.Models.Issues;
 using apartment_portal_api.Models.IssueTypes;
+using apartment_portal_api.Models.LeaseAgreements;
+using apartment_portal_api.Models.LeaseStatuses;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.ParkingPermits;
 using apartment_portal_api.Models.Statuses;
@@ -37,8 +39,11 @@ public class MappingProfile : Profile
         CreateMap<UnitDTO, Unit>()
             .ForMember(dest => dest.Number, opt => opt.MapFrom(src => src.UnitNumber));
         CreateMap<UnitPatchRequestDTO, Unit>();
-        CreateMap<UnitPutRequestDTO, Unit>();  
-        
+        CreateMap<UnitPutRequestDTO, Unit>();
+
+        // UnitUsers
+        CreateMap<UnitUser, UnitUserResponse>();
+
 
         // Guest
         CreateMap<Guest, GuestDTO>();
@@ -74,5 +79,12 @@ public class MappingProfile : Profile
         CreateMap<InsightStatus, InsightStatusResponse>();
 
         CreateMap<Issue, IssueAIPostRequest>();
+
+        // LeaseAgreements
+        CreateMap<LeaseAgreementPostRequest, LeaseAgreement>();
+        CreateMap<LeaseAgreement, LeaseAgreementResponse>();
+
+        // LeaseStatuses
+        CreateMap<LeaseStatus, LeaseStatusResponse>();
     }
 }
