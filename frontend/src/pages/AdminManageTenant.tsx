@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import GuestProfileIcon from "../components/guests/GuestProfileIcon";
 import LeaseCountdown from "../components/LeaseCountdown";
 import { PackageCard } from "../tenantDashboard/components";
+import IssuesList from "../components/issues/IssueList";
+import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 export default function AdminManageTenant() {
 
   const navigate = useNavigate()
@@ -10,6 +12,8 @@ export default function AdminManageTenant() {
   const goBack = () => {
     navigate(-1);
   };
+
+  const guests = ["Josh O", "David O", "Ayo O", "Dennis S"]
 
   return (
     <div className="px-4 mt-14 font-heading min-h-screen space-y-6">
@@ -29,6 +33,12 @@ export default function AdminManageTenant() {
       <LeaseCountdown />
 
       <PackageCard />
+
+      <IssuesList />
+
+
+      <CurrentGuestTable activeGuests={guests} />
+
     </div>
   )
 }

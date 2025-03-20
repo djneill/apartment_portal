@@ -37,10 +37,11 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
       )}
 
       {/* Menu Button */}
-      {
-        showMenuButton && <button
+
+      {showMenuButton &&
+        <button
           onClick={toggleSidebar}
-          className={`fixed pt-6 rounded-lg z-50 ${isSidebarVisible ? "text-white" : "text-primary"
+          className={`fixed pt-6 rounded-lg z-50 md:hidden ${isSidebarVisible ? "text-white" : "text-primary"
             } ml-4`}
         >
           <Menu size={32} />

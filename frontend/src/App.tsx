@@ -67,6 +67,7 @@ function App() {
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
+        <Route path="/manage" element={<AdminManageTenant />} />
       </Route>
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/" element={<Login />} />
