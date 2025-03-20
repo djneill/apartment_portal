@@ -1,5 +1,6 @@
 interface NotificationItem {
   message: string;
+  type: string;
   action?: string;
 }
 
@@ -53,12 +54,14 @@ const HeroCard = ({
               <span className="text-white text-normal">
                 {notification.message}
               </span>
-              <button
-                onClick={() => onActionClick?.(index)}
-                className="text-white hover:text-white transition-colors text-normal px-2 py-1 bg-accent rounded-2xl"
-              >
-                {notification.action || "View"}
-              </button>
+              {notification.type === 'Issue' && onActionClick && (
+                <button
+                  onClick={() => onActionClick(index)}
+                  className="text-white hover:text-white transition-colors text-normal px-2 py-1 bg-accent rounded-2xl"
+                >
+                  View
+                </button>
+              )}
             </div>
           ))
         ) : (
