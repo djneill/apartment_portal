@@ -5,6 +5,7 @@ import {
   CurrentGuest,
   PackageCard,
   ThermostatCard,
+  LockControlModal,
 } from "../tenantDashboard/components";
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
@@ -37,6 +38,7 @@ const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [packageCount, setPackageCount] = useState(0);
   const [unitNumber, setUnitNumber] = useState("");
+  const [isLockModalOpen, setIsLockModalOpen] = useState(false);
   const { user, setUser } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -99,7 +101,12 @@ const TenantDashboard = () => {
       label: "Manage Guests",
       to: "/guests",
     },
-    { icon: <Lock size={38} />, label: "Control Locks", to: "" },
+    { 
+      icon: <Lock size={38} />, 
+      label: "Control Locks", 
+      to: "", 
+      onClick: () => setIsLockModalOpen(true)
+    },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "" },
   ];
 
@@ -134,6 +141,7 @@ const TenantDashboard = () => {
               icon={action.icon}
               label={action.label}
               to={action.to}
+              onClick={action.onClick}
               variant="primary"
             />
           ))}
@@ -146,6 +154,11 @@ const TenantDashboard = () => {
           <ThermostatCard />
         </div>
       </div>
+
+      <LockControlModal 
+        isOpen={isLockModalOpen} 
+        onClose={() => setIsLockModalOpen(false)} 
+      />
     </div>
   );
 };

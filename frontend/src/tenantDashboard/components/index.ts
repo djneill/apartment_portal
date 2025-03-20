@@ -4,3 +4,4 @@ export { default as ProfileImage } from './ProfileImage';
 export { default as CurrentGuest } from './CurrentGuest';
 export { default as PackageCard } from './PackageCard';
 export { default as ThermostatCard } from './ThermostatCard';
+export { default as LockControlModal } from './LockControlModal';
