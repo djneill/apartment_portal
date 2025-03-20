@@ -9,6 +9,7 @@ import {
 import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
+import { useNavigate } from "react-router-dom";
 
 type Notifications = {
   date: string;
@@ -37,6 +38,7 @@ const TenantDashboard = () => {
   const [packageCount, setPackageCount] = useState(0);
   const [unitNumber, setUnitNumber] = useState("");
   const { user, setUser } = useGlobalContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -71,13 +73,20 @@ const TenantDashboard = () => {
       );
       setNotifications(data);
 
-      const packagesAvailable = data.filter((notification) =>
-        notification.message.toLowerCase().includes("package")
+      const packagesAvailable = data.filter((notification) => 
+        notification.type === 'Package'
       ).length;
 
       setPackageCount(packagesAvailable);
     })();
   }, [user?.userId]);
+
+  const handleNotificationClick = (index: number) => {
+    const notification = notifications[index];
+    if (notification.type === 'Issue') {
+      navigate('/reportissue');
+    }
+  };
 
   const quickActions = [
     {
@@ -114,7 +123,7 @@ const TenantDashboard = () => {
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
-          onActionClick={(index) => console.log("Clicked notification", index)}
+          onActionClick={handleNotificationClick}
           onViewAllClick={() => console.log("View all clicked")}
         />
 
