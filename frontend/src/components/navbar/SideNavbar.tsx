@@ -63,7 +63,7 @@ const SideNavbar = () => {
     : tenantNavItems;
 
   return (
-    <nav className="flex flex-col items-start pt-14 mx-auto font-medium bg-primary min-h-full ">
+    <nav className="flex flex-col items-start pt-14 mx-auto font-medium bg-primary max-w-[480px] min-h-full ">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img
@@ -104,7 +104,7 @@ const SideNavbar = () => {
       <section className="mt-auto mb-10 ml-4 w-full">
         <button
           onClick={handleLogout}
-          className="flex justify-between items-center px-6 py-3 mt-3 w-full text-xl text-white hover:bg-secondary hover:text-black rounded-3xl transition-colors duration-200"
+          className="flex justify-between items-center px-6 py-1 mt-3 w-full max-w-[90%] text-xl text-white hover:bg-secondary hover:text-black rounded-3xl transition-colors duration-200"
         >
           <div className="flex gap-4 items-center whitespace-nowrap">
             <LogOut size={20} />
