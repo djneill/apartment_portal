@@ -21,27 +21,32 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const currentUserResponse = await getData<CurrentUserResponseType>(
-        "users/currentuser"
-      );
+      try {
+        const currentUserResponse = await getData<CurrentUserResponseType>(
+          "users/currentuser"
+        );
 
-      if (!currentUserResponse.id) {
-        setIsLoading(false);
+        if (!currentUserResponse.id) {
+          setIsLoading(false);
+          redirect("/");
+          return;
+        }
+
+        const roles = await getUserRoles();
+
+        setUser({
+          userId: currentUserResponse.id,
+          userName: currentUserResponse.userName,
+          firstName: currentUserResponse.firstName,
+          lastName: currentUserResponse.lastName,
+          roles: roles,
+        });
+      } catch (error) {
+        console.error("Error getting current user:", error);
         redirect("/");
-        return;
+      } finally {
+        setIsLoading(false);
       }
-
-      const roles = await getUserRoles();
-
-      setUser({
-        userId: currentUserResponse.id,
-        userName: currentUserResponse.userName,
-        firstName: currentUserResponse.firstName,
-        lastName: currentUserResponse.lastName,
-        roles: roles,
-      });
-
-      setIsLoading(false);
     })();
   }, [setUser]);
 
@@ -52,6 +57,7 @@ function App() {
       <Route element={<Layout usersRole={"Admin"} />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/users/:id" element={<UserProfile />} />
+        <Route path="/reportissue" element={<ReportIssue />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
