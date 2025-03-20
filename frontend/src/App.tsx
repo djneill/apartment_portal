@@ -49,17 +49,18 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/error" element={<ErrorPage />} />
-      <Route element={<Layout />}>
+      <Route element={<Layout usersRole={"Admin"} />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/users/:id" element={<UserProfile />} />
       </Route>
-      <Route element={<Layout />}>
+      <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
       </Route>
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/" element={<Login />} />
+      <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
 }

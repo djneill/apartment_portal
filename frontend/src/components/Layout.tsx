@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { Menu } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
 
-const MainLayout = () => {
+const MainLayout = ({ usersRole }: { usersRole: string }) => {
   const { user } = useGlobalContext();
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
@@ -14,6 +14,10 @@ const MainLayout = () => {
   };
 
   if (user?.userId === 0) return <Navigate to="/" replace />;
+  if (user?.roles?.includes("Admin") && usersRole !== "Admin")
+    return <Navigate to="/admindashboard" replace />;
+  if (user?.roles?.includes("Tenant") && usersRole !== "Tenant")
+    return <Navigate to="/tenantdashboard" replace />;
 
   return (
     <div className="flex relative">
