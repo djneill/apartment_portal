@@ -34,26 +34,26 @@ const SideNavbar = () => {
     if (globalUser.roles.includes("Tenant")) return "/tenantdashboard";
     return "/";
   };
+  const handleLogout = async () => {
+    await postData("logout", null);
+    console.log("Logging out..."); 
+    setUser(null); 
+    navigate("/", { replace: true });
+  }
+  async () => {
 
+    navigate("/", { replace: true });
+  }
   const navItems = [
     { icon: <Home size={20} />, label: "Dashboard", to: getDashboardPath() },
     { icon: <Users size={20} />, label: "Manage Tenants", to: "/guests" },
-    {
-      icon: <AlertCircle size={20} />,
-      label: "Manage Issues",
-      to: "/reportissue",
-    },
-    { icon: <Brain size={20} />, label: "AI Insights", to: "/guests" },
+    {   icon: <AlertCircle size={20} />,    label: "Manage Issues",  to: "/reportissue", },
+    { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 
-  const settingsItems = [
-    { icon: <Moon size={20} />, label: "Dark Mode", to: "/darkmode" },
-    { icon: <Settings size={20} />, label: "Settings", to: "/settings" },
-    // { icon: <LogOut size={20} />, label: "Log Out", to: "/logout" },
-  ];
 
   return (
-    <nav className="flex flex-col items-start pt-14 mx-auto w-full font-medium bg-primary max-w-[480px] min-h-screen">
+    <nav className="flex flex-col items-start pt-14 mx-auto font-medium bg-primary min-h-full ">
       {/* User Profile */}
       <div className="flex gap-3 items-center mt-12 ml-4 text-xl text-white">
         <img
@@ -90,30 +90,11 @@ const SideNavbar = () => {
         ))}
       </section>
 
-      {/* Settings and Dark Mode */}
-      <section className="flex flex-col items-start mt-20 ml-4 text-xl text-white ">
-        {settingsItems.map((item, index) => (
-          <NavItem
-            key={index}
-            icon={item.icon}
-            label={item.label}
-            to={item.to}
-            isActive={location.pathname === item.to}
-          />
-        ))}
+      {/* Log Out */}
+      <section className="mt-auto mb-10 ml-4 text-xl w-full">
         <button
           type="button"
-          onClick={async () => {
-            await postData("logout", null);
-            setUser({
-              userId: 0,
-              userName: "",
-              firstName: "",
-              lastName: "",
-              roles: [],
-            });
-            navigate("/", { replace: true });
-          }}
+          onClick={handleLogout}
         >
           <div
             className={`flex justify-between items-center px-6 py-3 mt-3 w-full text-xl text-white rounded-3xl`}
