@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
-import { Guest } from "../../types";
+import { Guest } from "../../Types";
 import CountdownTimer from "../CountdownTimer";
 
 export default function CurrentGuestTable({ activeGuests }: { activeGuests: Guest[] }) {

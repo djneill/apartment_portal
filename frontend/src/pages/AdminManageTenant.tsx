@@ -13,6 +13,9 @@ export default function AdminManageTenant() {
     navigate(-1);
   };
 
+  //TODO: package card component needs to have the add package btn if user is admin
+  //- latest issues needs to pull data from user
+
   const guests = ["Josh O", "David O", "Ayo O", "Dennis S"]
 
   return (

@@ -57,6 +57,7 @@ const PackageCard = ({ packageCount = 0 }) => {
     if (user?.userId && packageCount > 0) {
       fetchPackageData();
     }
+
   }, [user?.userId, packageCount]);
 
   const handleOpenModal = () => {

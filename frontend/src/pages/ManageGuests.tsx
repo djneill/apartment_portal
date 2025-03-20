@@ -3,7 +3,7 @@ import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import GuestForm from "../components/guests/GuestForm";
 import PreviousGuests from "../components/guests/PreviousGuests";
 import { getData, postData } from "../services/api";
-import { Guest, GuestsResponse, GuestRequest } from "../types";
+import { Guest, GuestsResponse, GuestRequest } from "../Types";
 import { AxiosError } from "axios";
 
 export default function ManageGuests() {
