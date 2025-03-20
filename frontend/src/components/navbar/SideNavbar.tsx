@@ -34,23 +34,33 @@ const SideNavbar = () => {
     if (globalUser.roles.includes("Tenant")) return "/tenantdashboard";
     return "/";
   };
+
   const handleLogout = async () => {
     await postData("logout", null);
     console.log("Logging out..."); 
     setUser(null); 
     navigate("/", { replace: true });
   }
-  async () => {
 
-    navigate("/", { replace: true });
-  }
-  const navItems = [
-    { icon: <Home size={20} />, label: "Dashboard", to: getDashboardPath() },
-    { icon: <Users size={20} />, label: "Manage Tenants", to: "/guests" },
-    {   icon: <AlertCircle size={20} />,    label: "Manage Issues",  to: "/reportissue", },
+  // items for Admin
+  const adminNavItems = [
+    { icon: <Home size={20} />, label: "Dashboard", to: "/admindashboard" },
+    { icon: <Users size={20} />, label: "Manage Tenants", to: "/admin/tenantlist" },
+    { icon: <AlertCircle size={20} />, label: "Manage Issues", to: "/issues" },
+  ];
+
+  //  items for Tenant
+  const tenantNavItems = [
+    { icon: <Home size={20} />, label: "Dashboard", to: "/tenantdashboard" },
+    { icon: <Users size={20} />, label: "Manage Guests", to: "/guests" },
+    { icon: <AlertCircle size={20} />, label: "Report Issue", to: "/reportissue" },
     { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 
+  // based on role 
+  const navItems = globalUser?.roles?.includes("Admin")
+    ? adminNavItems
+    : tenantNavItems;
 
   return (
     <nav className="flex flex-col items-start pt-14 mx-auto font-medium bg-primary min-h-full ">
@@ -90,19 +100,15 @@ const SideNavbar = () => {
         ))}
       </section>
 
-      {/* Log Out */}
-      <section className="mt-auto mb-10 ml-4 text-xl w-full">
+      {/* Log Out Section */}
+      <section className="mt-auto mb-10 ml-4 w-full">
         <button
-          type="button"
           onClick={handleLogout}
+          className="flex justify-between items-center px-6 py-3 mt-3 w-full text-xl text-white hover:bg-secondary hover:text-black rounded-3xl transition-colors duration-200"
         >
-          <div
-            className={`flex justify-between items-center px-6 py-3 mt-3 w-full text-xl text-white rounded-3xl`}
-          >
-            <div className="flex gap-4 items-center whitespace-nowrap">
-              <LogOut size={20} />
-              <span>Log Out</span>
-            </div>
+          <div className="flex gap-4 items-center whitespace-nowrap">
+            <LogOut size={20} />
+            <span>Log Out</span>
           </div>
         </button>
       </section>
