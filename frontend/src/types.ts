@@ -50,4 +50,4 @@ export interface GuestRequest {
 export interface TimerProps {
   expiration: string;
   className: string;
-}
+} 
