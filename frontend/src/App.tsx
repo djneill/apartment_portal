@@ -64,7 +64,7 @@ function App() {
         <Route path="/admin/manageTenant" element={<AdminManageTenant />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<ReportIssue />} />
-
+        <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
