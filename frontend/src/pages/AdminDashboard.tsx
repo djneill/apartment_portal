@@ -1,4 +1,3 @@
-
 import {
   TriangleAlert,
   UserRoundPlus,
@@ -14,22 +13,40 @@ import IssuesList from "../components/issues/IssueList";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { getData } from "../services/api";
 
-type Notifications = {
+interface Notifications {
   date: string;
   message: string;
   type: string;
 };
 
-type Insight = {
-  title: string;
-  description: string;
-};
 
-type Issue = {
+interface Issue {
   id: number;
   title: string;
   status: string;
 };
+
+
+
+interface InsightStatus {
+  id: number;
+  name: string;
+}
+
+interface Insight {
+  id: number;
+  title: string;
+  summary: string;
+  suggestion: string;
+  createdOn: string;
+  status: InsightStatus;
+}
+
+interface InsightResponse {
+  currentInsights: Insight[];
+  pastInsights: Insight[];
+}
+
 
 export default function AdminDashboard() {
   const { user } = useGlobalContext();
@@ -46,13 +63,13 @@ export default function AdminDashboard() {
       try {
         const [notifsData, insightsData, issuesData] = await Promise.all([
           getData<Notifications[]>(`notification/latest?userId=${user.userId}`),
-          getData<Insight[]>(`Insights`),
+          getData<InsightResponse>(`Insights`),
           getData<Issue[]>(`Issues`)
         ]);
         setNotifications(notifsData);
-        setInsights(insightsData);
+        setInsights(insightsData.currentInsights);
         setIssues(issuesData);
-        console.log(notifsData, insightsData, issuesData)
+        console.log(insightsData)
       } catch (error) {
         console.error("Error fetching admin data", error);
       }
@@ -61,20 +78,19 @@ export default function AdminDashboard() {
     fetchData();
   }, [user?.userId]);
 
-  const renderInsights = insights.map((insight, index) => (
+  const renderInsights = insights.map((insight) => (
     <div
-      key={index}
+      key={insight.id}
       className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${viewAllInsights ? "w-full" : "w-72"
         }`}
       style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
     >
       <p className="font-semibold mb-1">{insight.title}</p>
       <div className="flex flex-col">
-        <p className="font-light text-sm line-clamp-2">{insight.description}</p>
+        <p className="font-light text-sm line-clamp-2">{insight.summary}</p>
         <div className="cursor-pointer text-sm flex items-center space-x-1">
           <p className="text-accent">Show suggestions</p>
           <ArrowRight size={12} color="#C4AEF1" />
-
         </div>
       </div>
     </div>
