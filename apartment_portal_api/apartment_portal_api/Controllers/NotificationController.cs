@@ -1,12 +1,11 @@
-using System.Linq.Expressions;
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.Models.Issues;
+using apartment_portal_api.Models.LeaseAgreements;
 using apartment_portal_api.Models.Notifications;
 using apartment_portal_api.Models.Packages;
+using apartment_portal_api.Models.UnitUsers;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using apartment_portal_api.Models.LeaseAgreements;
-using apartment_portal_api.Models.UnitUsers;
 
 namespace apartment_portal_api.Controllers;
 
@@ -29,7 +28,7 @@ public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
         List<NotificationDTO> packages = await GetPackageNotifications(userUnitIds, userId);
 
         List<NotificationDTO> issues = await GetIssueNotifications(userId);
-        
+
         List<NotificationDTO> leaseNotifications = await GetLeaseAgreementNotifications(userId);
 
         var notifications = leaseNotifications
@@ -87,10 +86,10 @@ public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
             }
 
 
-            
+
             DateTime expiration = lease.EndDate.ToDateTime(new TimeOnly());
             int daysUntilExpiration = (int)(expiration - DateTime.UtcNow).TotalDays;
-            if (lease.LeaseStatusId == 1 && daysUntilExpiration <= 30 && daysUntilExpiration >= 0)
+            if (lease.LeaseStatusId == 1 && daysUntilExpiration is <= 30 and >= 0)
             {
                 var notification = new NotificationDTO
                 {
@@ -123,7 +122,7 @@ public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
         {
             issueList = await unitOfWork.IssueRepository.GetAsync(i => i.Status.Name != "Inactive", nameof(Issue.Status));
         }
-        
+
         var issues = issueList
             .OrderByDescending(i => i.CreatedOn)
             .Select(i => new NotificationDTO
@@ -148,11 +147,11 @@ public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
         }
 
         var packages = packageLists.Select(p => new NotificationDTO
-            {
-                Type = "Package",
-                Message = $"You have a new package at the front desk. Status: {p.Status.Name}",
-                Date = DateTime.UtcNow
-            })
+        {
+            Type = "Package",
+            Message = $"You have a new package at the front desk. Status: {p.Status.Name}",
+            Date = DateTime.UtcNow
+        })
             .ToList();
 
         return packages;
