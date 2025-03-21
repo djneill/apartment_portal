@@ -13,11 +13,16 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); 
   const navigate = useNavigate();
   const globalContext = useGlobalContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!username.trim() || !password.trim()) {
+      setErrorMessage("Username and password are required."); 
+    }
 
     try {
       const response = await login(username, password);
@@ -25,7 +30,7 @@ function Login() {
 
       if (response.status !== 200) {
         console.error("Login failed:", response);
-        //TODO: Show failed login attempt message
+        setErrorMessage("Login failed. Please check your email and password.");
         return;
       }
 
@@ -50,10 +55,11 @@ function Login() {
       } else if (roles.includes("Tenant")) {
         navigate("/tenantdashboard");
       } else {
-        navigate("/home"); // TODO: We need an error page that describes that this user has no role and to contact the admin
+        navigate("/error"); 
       }
     } catch (error) {
       console.error("Login failed:", error);
+      setErrorMessage("An unexpected error occurred. Please try again."); // Set error message for unexpected errors
     }
   };
 
@@ -76,7 +82,7 @@ function Login() {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="username"
+          placeholder="email"
           icon={<User />}
           className="mt-8 rounded-xl bg-zinc-300"
         />
@@ -99,7 +105,13 @@ function Login() {
         <SignInButton
           text=" Sign In"
         />     
-         </form>
+                {/* Error message container */}
+          {errorMessage && (
+            <div className="text-red-500 text-sm">
+              {errorMessage}
+            </div>
+          )}
+      </form>
     </main>
   );
 }
