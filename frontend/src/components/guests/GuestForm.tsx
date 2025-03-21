@@ -1,18 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
 import { FormInput, FormPhoneInput, FormSelect } from '../form';
-import { GuestRequest } from '../../types';
+import { GuestRequest, Guest } from '../../Types';
 
 interface GuestFormProps {
   onSubmit: (data: GuestRequest) => void;
+  editGuest?: Guest | null;
 }
 
-export default function GuestForm({ onSubmit }: GuestFormProps) {
+function formatPhoneNumber(phone: string): string {
+  if (!phone) return "";
+  const cleaned = phone.replace(/\D/g, ""); 
+  if (cleaned.length === 10) {
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+  }
+  return phone; 
+}
+
+export default function GuestForm({ onSubmit, editGuest }: GuestFormProps) {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    duration: '4',
+    firstName: editGuest?.firstName || '',
+    lastName: editGuest?.lastName || '',
+    phoneNumber: editGuest?.phoneNumber || '',
+    duration: editGuest ? '4' : '4',
     carMake: '',
     carModel: '',
     licensePlate: ''
@@ -30,7 +40,19 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
 
   const [showParkingFields, setShowParkingFields] = useState(false);
 
-
+  useEffect(() => {
+    if (editGuest) {
+      setFormData({
+        firstName: editGuest.firstName || '',
+        lastName: editGuest.lastName || '',
+        phoneNumber: formatPhoneNumber(editGuest.phoneNumber) || '',
+        duration: '4',
+        carMake: '',
+        carModel: '',
+        licensePlate: '',
+      });
+    }
+  }, [editGuest]);
 
   const handleToggleParking = () => {
     setShowParkingFields(prev => !prev);
@@ -65,21 +87,12 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
     </>
   )
 
-  function calculateExpiration(duration: string): string {
-    const hoursToAdd = parseInt(duration, 10);
-    const now = new Date();
-
-    // console.log("before", now)
-    now.setHours(now.getHours() + hoursToAdd);
-    // console.log("after", now)
-    return now.toISOString();
-  }
 
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: field === "phoneNumber" ? formatPhoneNumber(value) : value
     }));
 
     // Clears error when typing
@@ -120,12 +133,15 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
 
     //if no errors in array, call onSubmit function
     if (!Object.values(newErrors).some(error => error)) {
+
+      const parsedDuration = Number(formData.duration);
+
       const requestData: GuestRequest = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         phoneNumber: formData.phoneNumber,
         accessCode: generateAccessCode(),
-        expiration: calculateExpiration(formData.duration)
+        durationInHours: parsedDuration
       }
       onSubmit(requestData);
       setFormData({
@@ -143,7 +159,7 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
   const durationOptions = [
     { value: '4', label: '4 hours' },
     { value: '12', label: '12 hours' },
-    { value: '1', label: '1 day' },
+    { value: '24', label: '1 day' },
   ];
 
   return (
@@ -197,7 +213,7 @@ export default function GuestForm({ onSubmit }: GuestFormProps) {
           type="submit"
           className="w-full bg-primary text-white py-2 px-4 rounded-full hover:bg-primary/90 transition-colors"
         >
-          Add Guest
+          {editGuest ? "Update Guest" : "Add Guest"}
         </button>
       </div>
     </form>

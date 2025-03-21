@@ -1,3 +1,24 @@
+export type CurrentUserResponseType = {
+  id: number;
+  userName: string;
+  firstName: string;
+  lastName: string;
+};
+
+export type User = {
+  userId: number;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  roles?: string[];
+  unit?: {
+    id: number;
+    unitNumber: string;
+    price: number;
+    statusName: string | null;
+  };
+};
+
 export interface Guest {
   id: number;
   firstName: string;
@@ -11,7 +32,7 @@ export interface Guest {
 
 export interface GuestsResponse {
   message?: string;
-  data?: Guest[];
+  data: Guest[];
 }
 
 export interface GuestRequest {
@@ -19,7 +40,7 @@ export interface GuestRequest {
   lastName: string;
   phoneNumber: string;
   accessCode: string;
-  expiration: string;
+  durationInHours: number;
   carMake?: string;
   carModel?: string;
   carColor?: string;

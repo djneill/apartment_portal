@@ -1,28 +1,10 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
 import { Plus } from 'lucide-react';
-import { Guest } from "../../types";
+import { Guest } from "../../Types";
 
-export const PreviousGuests = ({ inactiveGuests }: { inactiveGuests: Guest[] }) => {
+export const PreviousGuests = ({ inactiveGuests, setEditGuest }: { inactiveGuests: Guest[], setEditGuest: (guest: Guest) => void }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-
-  // console.log("in prev", inactiveGuests)
-  // const previousGuests = [
-  //   { name: "Dennis Garcia", timeRemaining: "3h 56m" },
-  //   { name: "Dennis Garcia", timeRemaining: "3h 56m" },
-  //   { name: "Alex Smith", timeRemaining: "2h 30m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Jane Doe", timeRemaining: "1h 15m" },
-  //   { name: "Alex Smith", timeRemaining: "2h 30m" },
-  //   { name: "Alex Smith", timeRemaining: "2h 30m" },
-  //   { name: "Alex Smith", timeRemaining: "2h 30m" },
-  //   { name: "Alex Smith", timeRemaining: "2h 30m" },
-  // ];
-
 
   function PlusOverlay() {
     return (
@@ -35,10 +17,10 @@ export const PreviousGuests = ({ inactiveGuests }: { inactiveGuests: Guest[] }) 
   const displayPrevGuests = isExpanded ? inactiveGuests : inactiveGuests.slice(0, 8)
 
   const mapPreviousGuests = displayPrevGuests.map((guest, index) => {
-    const name = guest.firstName + " " + guest.lastName
+    const name = `${guest.firstName} ${guest.lastName}`;
     return (
       <div key={index} className="flex flex-col items-center space-y-2 ">
-        <div className="relative inline-block cursor-pointer">
+        <div className="relative inline-block cursor-pointer" onClick={() => setEditGuest(guest)}>
           <GuestProfileIcon size={65} iconSize={40} />
           <PlusOverlay />
         </div>

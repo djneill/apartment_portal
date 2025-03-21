@@ -2,92 +2,95 @@ import { useEffect, useState } from "react";
 import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import GuestForm from "../components/guests/GuestForm";
 import PreviousGuests from "../components/guests/PreviousGuests";
-import { getData, postData } from "../services/api";
-import { Guest, GuestsResponse, GuestRequest } from "../types";
-import { AxiosError } from "axios";
+import { getData, postData, patchData } from "../services/api";
+import { Guest, GuestRequest } from "../Types";
+import useGlobalContext from "../hooks/useGlobalContext";
 
 export default function ManageGuests() {
   const [guests, setGuests] = useState<{ activeGuests: Guest[]; inactiveGuests: Guest[] } | null>(null);
+  const [editGuest, setEditGuest] = useState<Guest | null>(null);
 
-  //TODO: change countdown to have days, hours, mins
-  async function fetchActiveAndInactiveGuests() {
-    try {
-      const [activeGuestsResponse, inactiveGuestsResponse] = await Promise.all([
-        getData<GuestsResponse>("Guest?userId=6&active=true"),
-        getData<GuestsResponse>("Guest?userId=6&active=false"),
-      ])
-
-      const activeGuests: Guest[] = activeGuestsResponse.data || [];
-      const inactiveGuests: Guest[] = inactiveGuestsResponse.data || [];
-
-      if (activeGuestsResponse.message === "No guests found.") {
-        console.log("No active guests found.");
-      }
-      if (inactiveGuestsResponse.message === "No guests found.") {
-        console.log("No inactive guests found.");
-      }
-
-
-      return { activeGuests, inactiveGuests };
-
-    } catch (error) {
-      const axiosError = error as AxiosError;
-
-      if (axiosError.response && axiosError.response.status === 404) {
-        const responseData = axiosError.response.data as { message?: string };
-        if (responseData.message === "No guests found.") {
-          return { activeGuests: [], inactiveGuests: [] };
-        }
-      }
-
-      console.error("Error fetching guests:", axiosError);
-      throw axiosError;
-    }
-  }
-
-  async function createGuest(guest: GuestRequest) {
-    try {
-      postData("Guest/register-guest", guest)
-    } catch (error) {
-      const axiosError = error as AxiosError
-      console.error(axiosError)
-    }
-  }
-
-
-  function handleSubmit(data: GuestRequest) {
-    console.log(data)
-    createGuest(data)
-  }
+  const { user } = useGlobalContext();
 
   useEffect(() => {
-    async function loadGuests() {
-      try {
-        const guestData = await fetchActiveAndInactiveGuests()
-        setGuests(guestData)
-        // console.log(guestData)
-      } catch (error) {
-        console.error("Error loading guests", error)
-        throw error
+    const fetchGuests = async () =>{
+      if (!user?.userId) {
+        console.error("User not logged in");
+        return;
       }
+      try {
+        const response = await getData<Guest[]>(`/Guest?userId=${user?.userId}`);
+
+        const activeGuests = response.filter(guest => guest.expiration > new Date().toISOString());
+        const inactiveGuests = response.filter(guest => guest.expiration <= new Date().toISOString());
+        setGuests({ activeGuests, inactiveGuests });
+      } catch (error) {
+        console.error("Error fetching guests:", error);
+      } 
+    };
+    fetchGuests();
+  }, [user?.userId]);
+
+
+  async function handleSubmit(data: GuestRequest) {
+    if (!user?.userId) {
+      console.error("User is not logged in, cannot submit guest");
+      return;
     }
-    loadGuests()
-  }, [])
+    try {
+      if (editGuest) {
+        await patchData(`/guest/${editGuest.id}`, {
+          ...data,
+          id: editGuest.id, 
+          userId: user?.userId
+        });
 
+        const updatedGuests = await getData<Guest[]>(`/Guest?userId=${user?.userId}`);
+      
+        const activeGuests = updatedGuests.filter(
+          guest => new Date(guest.expiration) > new Date()
+        );
+        const inactiveGuests = updatedGuests.filter(
+          guest => new Date(guest.expiration) <= new Date()
+        );
+  
+        setGuests({ activeGuests, inactiveGuests });
 
+      } else {
+      const newGuest = await postData<Guest>("/guest/register-guest", {
+        ...data,
+        userId: user?.userId, 
+      });
+      const response = await getData<Guest[]>(`/Guest?userId=${user?.userId}`);
+      console.log("API Response:", response);
 
+      if (!response) {
+        console.error("Error: API response does not contain valid data.");
+        return;
+      }
+      const activeGuests = response.filter(guest => guest.expiration && new Date(guest.expiration) >= new Date());
+      const inactiveGuests = response.filter(guest => new Date(guest.expiration) < new Date());
+      setGuests({
+          activeGuests: [...activeGuests, newGuest], 
+          inactiveGuests: inactiveGuests,
+        });
+  }}catch (error) {
+      console.error("Error submitting guest:", error);
+    } 
+  }
 
+  
   return (
     <div className="min-h-screen p-4 md:p-6">
       < h1 className="mt-12 mb-4 font-heading font-medium text-3xl" > Manage Guests</h1 >
       <div className="flex flex-col items-center ">
         <div className="w-full space-y-10 md:flex  md:space-x-10">
           <div className="flex-none w-full md:w-2/3 md:mt-10">
-            <GuestForm onSubmit={handleSubmit} />
+            <GuestForm onSubmit={handleSubmit} editGuest={editGuest}/>
           </div>
           <div className="md:flex flex-col flex-grow space-y-8">
             <CurrentGuestTable activeGuests={guests?.activeGuests || []} />
-            <PreviousGuests inactiveGuests={guests?.inactiveGuests || []} />
+            <PreviousGuests inactiveGuests={guests?.inactiveGuests || []}  setEditGuest={setEditGuest}/>
           </div>
         </div>
       </div>

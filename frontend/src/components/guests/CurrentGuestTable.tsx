@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
-import { Guest } from "../../types";
+import { Guest } from "../../Types";
 import CountdownTimer from "../CountdownTimer";
 
 export default function CurrentGuestTable({ activeGuests }: { activeGuests: Guest[] }) {
@@ -10,7 +10,7 @@ export default function CurrentGuestTable({ activeGuests }: { activeGuests: Gues
   const displayedGuests = isExpanded ? activeGuests : activeGuests.slice(0, 3);
 
   const mapGuests = displayedGuests.map((guest, index) => {
-    const name = guest.firstName + " " + guest.lastName
+    const name = `${guest.firstName} ${guest.lastName}`;
     return (
       <tr key={index} className="p-10 ">
         <td className="p-2">

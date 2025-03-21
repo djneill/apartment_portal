@@ -42,7 +42,8 @@ export const deleteData = async <T>(endpoint: string): Promise<T> => {
 };
 
 // PATCH
-export const patchData = async <T>(endpoint: string): Promise<T> => {
-  const response = await axiosInstance.patch<T>(endpoint);
+export const patchData = async <T>(endpoint: string,
+  payload: unknown): Promise<T> => {
+  const response = await axiosInstance.patch<T>(endpoint, payload);
   return response.data;
 };

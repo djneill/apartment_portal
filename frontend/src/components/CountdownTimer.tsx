@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { TimerProps } from "../types"
+import { TimerProps } from "../Types"
 
 export const CountdownTimer = ({ expiration, className }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
 
   function calculateTimeLeft() {
     const currentTime = new Date().getTime()
-    const expirationTime = new Date(expiration).getTime() //gets the time of expiration from ISO format
+    const expirationTime = new Date(expiration).getTime()
     const difference = expirationTime - currentTime
 
     if (difference <= 0) {
