@@ -1,45 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import IssueCard from "./IssueCard";
-import issuesData from "../../data/issues.json";
+import { Issue } from "../../pages/AdminDashboard";
+import { useNavigate } from "react-router-dom";
 
-interface Issue {
-  id: number;
-  date: string;
-  title: string;
-  isNew: boolean;
-  disabled: boolean;
+interface IssuesListProps {
+  issues: Issue[];
 }
 
-const IssuesList: React.FC = () => {
-  const [issues, setIssues] = useState<Issue[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const IssuesList: React.FC<IssuesListProps> = ({ issues }) => {
+  const [viewAllIssues, setViewAllIssues] = useState(false)
+  const navigate = useNavigate()
 
-  useEffect(() => {
-    try {
-      setIssues(issuesData);
-    } catch (err) {
-      setError("Failed to load issues");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
-  const handleViewAll = () => {
-    console.log("Navigate to all issues page");
-  };
 
   const handleIssueClick = (issueId: number) => {
     console.log(`Clicked on issue ${issueId}`);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
+  const formatDate = (isoDate: string) => {
+    const issueDate = new Date(isoDate)
+
+    const month = (issueDate.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
+    const day = issueDate.getDate().toString().padStart(2, "0");
+    const year = issueDate.getFullYear();
+
+    return `${month}/${day}/${year}`;
   }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const renderIssues = issues.map((issue) => {
+    const formattedDate = formatDate(issue.createdOn)
+
+    const isNew = issue.status.name === "Active" ? true : false
+
+    return (
+      <IssueCard
+        key={issue.id}
+        date={formattedDate}
+        title={issue.description}
+        isNew={isNew}
+        onClick={() => !isNew && handleIssueClick(issue.id)}
+      />
+    )
+  })
 
   return (
     <section className="">
@@ -47,41 +49,19 @@ const IssuesList: React.FC = () => {
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
           className="text-sm font-bold text-neutral-700 cursor-pointer"
-          onClick={handleViewAll}
+          onClick={() => setViewAllIssues(prev => !prev)}
         >
-          View all
+          {viewAllIssues ? "View Less" : "View all"}
         </button>
       </div>
 
-      {/* Flex Container for Desktop */}
-      <div className="hidden md:flex md:flex-wrap md:gap-5">
-        {issues.map((issue) => (
-          <IssueCard
-            key={issue.id}
-            date={issue.date}
-            title={issue.title}
-            isNew={issue.isNew}
-            disabled={issue.disabled}
-            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
-          />
-        ))}
-      </div>
-
-      <div className="md:hidden overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
-        <div className="inline-flex gap-5">
-          {issues.map((issue) => (
-            <IssueCard
-              key={issue.id}
-              date={issue.date}
-              title={issue.title}
-              isNew={issue.isNew}
-              disabled={issue.disabled}
-              onClick={() => !issue.disabled && handleIssueClick(issue.id)}
-            />
-          ))}
+      <div className="-mr-10">
+        <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllIssues ? "flex-col space-y-2 " : ""}`}>
+          {renderIssues}
         </div>
+
       </div>
-    </section>
+    </section >
   );
 };
 

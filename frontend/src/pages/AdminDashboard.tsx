@@ -12,6 +12,7 @@ import { InsightLogo } from "../assets/InsightLogo";
 import IssuesList from "../components/issues/IssueList";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { getData } from "../services/api";
+import { User } from "../Types.ts"
 
 interface Notifications {
   date: string;
@@ -20,15 +21,23 @@ interface Notifications {
 };
 
 
-interface Issue {
+export interface Issue {
+  createdOn: string;
+  description: string;
   id: number;
-  title: string;
-  status: string;
+  issueType: IssueType;
+  status: Status;
+  user: User;
 };
 
+interface IssueType {
+  id: string;
+  name: string;
+}
 
 
-interface InsightStatus {
+
+interface Status {
   id: number;
   name: string;
 }
@@ -39,7 +48,7 @@ interface Insight {
   summary: string;
   suggestion: string;
   createdOn: string;
-  status: InsightStatus;
+  status: Status;
 }
 
 interface InsightResponse {
@@ -69,7 +78,6 @@ export default function AdminDashboard() {
         setNotifications(notifsData);
         setInsights(insightsData.currentInsights);
         setIssues(issuesData);
-        console.log(insightsData)
       } catch (error) {
         console.error("Error fetching admin data", error);
       }
@@ -100,8 +108,8 @@ export default function AdminDashboard() {
   const quickActions = [
     {
       icon: <TriangleAlert size={38} />,
-      label: "Report Issues",
-      to: "/reportissue",
+      label: "Manage Issues",
+      to: "/",
     },
     { icon: <UserRoundPlus size={38} />, label: "Register Tenant", to: "/" },
     { icon: <Lock size={38} />, label: "Security", to: "/" },
@@ -151,15 +159,12 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <div
-            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""
-              }`}
-          >
+          <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}>
             {renderInsights}
           </div>
         </div>
 
-        <IssuesList />
+        <IssuesList issues={issues} />
       </div >
     </div >
   );
