@@ -4,8 +4,8 @@ import {
   Users,
   AlertCircle,
   Brain,
-  Moon,
-  Settings,
+  // Moon,
+  // Settings,
   LogOut,
 } from "lucide-react";
 import NavItem from "./NavItem";
@@ -28,24 +28,28 @@ const SideNavbar = () => {
       : "Guest",
   };
 
-  const getDashboardPath = () => {
-    if (!globalUser || !globalUser.roles) return "/";
-    if (globalUser.roles.includes("Admin")) return "/admindashboard";
-    if (globalUser.roles.includes("Tenant")) return "/tenantdashboard";
-    return "/";
-  };
+  // const getDashboardPath = () => {
+  //   if (!globalUser || !globalUser.roles) return "/";
+  //   if (globalUser.roles.includes("Admin")) return "/admindashboard";
+  //   if (globalUser.roles.includes("Tenant")) return "/tenantdashboard";
+  //   return "/";
+  // };
 
   const handleLogout = async () => {
     await postData("logout", null);
-    console.log("Logging out..."); 
-    setUser(null); 
+    console.log("Logging out...");
+    setUser(null);
     navigate("/", { replace: true });
-  }
+  };
 
   // items for Admin
   const adminNavItems = [
     { icon: <Home size={20} />, label: "Dashboard", to: "/admindashboard" },
-    { icon: <Users size={20} />, label: "Manage Tenants", to: "/admin/tenantlist" },
+    {
+      icon: <Users size={20} />,
+      label: "Manage Tenants",
+      to: "/admin/tenantlist",
+    },
     { icon: <AlertCircle size={20} />, label: "Manage Issues", to: "/issues" },
     { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
@@ -54,10 +58,14 @@ const SideNavbar = () => {
   const tenantNavItems = [
     { icon: <Home size={20} />, label: "Dashboard", to: "/tenantdashboard" },
     { icon: <Users size={20} />, label: "Manage Guests", to: "/guests" },
-    { icon: <AlertCircle size={20} />, label: "Report Issue", to: "/reportissue" },
+    {
+      icon: <AlertCircle size={20} />,
+      label: "Report Issue",
+      to: "/reportissue",
+    },
   ];
 
-  // based on role 
+  // based on role
   const navItems = globalUser?.roles?.includes("Admin")
     ? adminNavItems
     : tenantNavItems;

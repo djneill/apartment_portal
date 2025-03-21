@@ -61,13 +61,12 @@ function App() {
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<ReportIssue />} />
-
+        <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
-        <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/" element={<Login />} />
