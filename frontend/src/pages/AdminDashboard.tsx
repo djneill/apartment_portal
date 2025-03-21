@@ -1,5 +1,12 @@
-import { TriangleAlert, UserRoundPlus, Lock, FilePen, ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+
+import {
+  TriangleAlert,
+  UserRoundPlus,
+  Lock,
+  FilePen,
+  ArrowRight,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import HeroCard from "../tenantDashboard/components/HeroCard";
 import { QuickIconButton } from "../tenantDashboard/components";
 import { InsightLogo } from "../assets/InsightLogo";
@@ -67,6 +74,7 @@ export default function AdminDashboard() {
         <div className="cursor-pointer text-sm flex items-center space-x-1">
           <p className="text-accent">Show suggestions</p>
           <ArrowRight size={12} color="#C4AEF1" />
+
         </div>
       </div>
     </div>
@@ -74,7 +82,11 @@ export default function AdminDashboard() {
 
   // Quick actions for your dashboard
   const quickActions = [
-    { icon: <TriangleAlert size={38} />, label: "Report Issues", to: "/reportissue" },
+    {
+      icon: <TriangleAlert size={38} />,
+      label: "Report Issues",
+      to: "/reportissue",
+    },
     { icon: <UserRoundPlus size={38} />, label: "Register Tenant", to: "/" },
     { icon: <Lock size={38} />, label: "Security", to: "/" },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
@@ -83,18 +95,18 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen p-5 md:p-10">
-
       <div className="space-y-6 mt-14 ">
         <header className="">
-          <h1 className="font-normal text-2xl font-heading">Welcome {user?.firstName + " " + user?.lastName}</h1>
-        </header>
+          <h1 className="font-normal text-2xl font-heading">
+            Welcome, {user?.firstName}
+          </h1>
+        </header >
         <HeroCard
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
           onActionClick={(index) => console.log("Clicked notification", index)}
           onViewAllClick={() => console.log("View all clicked")}
-
         />
 
         <div className="grid grid-cols-4 gap-4">
@@ -109,22 +121,30 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-
         <div className={viewAllInsights ? "" : "-mr-5 md:-mr-10"}>
           <div className="w-full flex justify-between mb-4 font-heading pr-5">
-            <div className="flex space-x-1 items-center"><InsightLogo /><p className="text-sm font-semibold text-dark-gray">Insights</p></div>
-            <p className="md:hidden cursor-pointer text-primary font-semibold text-sm" onClick={() => setViewAllInsights(prev => !prev)}>{viewAllInsights ? "View Less" : "View all"}</p>
+            <div className="flex space-x-1 items-center">
+              <InsightLogo />
+              <p className="text-sm font-semibold text-dark-gray">Insights</p>
+            </div>
+            <p
+              className="md:hidden cursor-pointer text-primary font-semibold text-sm"
+              onClick={() => setViewAllInsights((prev) => !prev)}
+            >
+              {viewAllInsights ? "View Less" : "View all"}
+            </p>
           </div>
 
-          <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}>
+          <div
+            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""
+              }`}
+          >
             {renderInsights}
           </div>
         </div>
 
         <IssuesList />
-
-      </div>
-
+      </div >
     </div >
-  )
+  );
 }
