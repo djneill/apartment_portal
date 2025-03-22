@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UserContext } from "./useGlobalContext";
-import { User } from "../Types";
+import { User } from "../types";
 
 const defaultUser: User = {
   userId: 0,

@@ -4,7 +4,7 @@ import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../types";
 
-const IssuesList: React.FC = () => {
+const IssuesListAdmin: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,9 +15,7 @@ const IssuesList: React.FC = () => {
       if (!globalUser?.userId) return;
 
       try {
-        const data = await getData<ApiIssue[]>(
-          `Issues?userId=${globalUser.userId}`
-        );
+        const data = await getData<ApiIssue[]>(`Issues`);
         const mappedIssues = data.map((issue: any) => {
           const currentDate = new Date();
 
@@ -26,7 +24,7 @@ const IssuesList: React.FC = () => {
           const timeDifference = currentDate.getTime() - issueDate.getTime();
 
           const daysDifference = timeDifference / (1000 * 3600 * 24);
-          //if the issue is from today or within the last 3 days
+
           const isNew = daysDifference <= 3;
 
           return {
@@ -112,4 +110,4 @@ const IssuesList: React.FC = () => {
   );
 };
 
-export default IssuesList;
+export default IssuesListAdmin;
