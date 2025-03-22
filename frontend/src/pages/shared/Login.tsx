@@ -7,13 +7,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { CurrentUserResponseType } from "../../types";
+import { CurrentUserResponseType } from "../../Types";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); 
   const navigate = useNavigate();
   const globalContext = useGlobalContext();
 
@@ -21,7 +21,7 @@ function Login() {
     e.preventDefault();
 
     if (!username.trim() || !password.trim()) {
-      setErrorMessage("Username and password are required.");
+      setErrorMessage("Username and password are required."); 
     }
 
     try {
@@ -55,7 +55,7 @@ function Login() {
       } else if (roles.includes("Tenant")) {
         navigate("/tenantdashboard");
       } else {
-        navigate("/error");
+        navigate("/error"); 
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -102,11 +102,15 @@ function Login() {
           Forgot Password ?
         </button>
 
-        <SignInButton text=" Sign In" />
-        {/* Error message container */}
-        {errorMessage && (
-          <div className="text-red-500 text-sm">{errorMessage}</div>
-        )}
+        <SignInButton
+          text=" Sign In"
+        />     
+                {/* Error message container */}
+          {errorMessage && (
+            <div className="text-red-500 text-sm">
+              {errorMessage}
+            </div>
+          )}
       </form>
     </main>
   );

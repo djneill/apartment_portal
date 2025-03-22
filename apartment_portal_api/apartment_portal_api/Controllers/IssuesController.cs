@@ -1,15 +1,16 @@
 using System.Security.Claims;
 using apartment_portal_api.Abstractions;
-using apartment_portal_api.Services;
 using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Issues;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class IssuesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -20,27 +21,28 @@ namespace apartment_portal_api.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
         [HttpGet]
         public async Task<ActionResult<ICollection<IssueResponse>>> GetIssues(int userId = 0, int recordRetrievalCount = 10, int statusId = 0, bool orderByDesc = true)
         {
-            //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            //if (userClaim is null)
-            //{
-            //    return Unauthorized();
-            //}
-        
-            //bool isAdmin = User.IsInRole("Admin");
-            //string reqUserId = userId.ToString();
-            //if (!isAdmin && userClaim.Value != reqUserId)
-            //{
-            //    return Forbid();
-            //}
+            // Retrieve the current user's id.
+            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userClaim))
+                return Unauthorized();
+
+            int loggedInUserId = int.Parse(userClaim);
+            bool isAdmin = User.IsInRole("Admin");
+
+            // If a userId filter is provided and the caller is not an admin, 
+            // ensure that the requested userId matches the logged-in user.
+            if (!isAdmin && userId != 0 && userId != loggedInUserId)
+                return Forbid();
+
+            // For non-admins with no specified userId, set the filter to the logged-in user's id.
+            if (!isAdmin && userId == 0)
+                userId = loggedInUserId;
 
             ICollection<Issue> issues = await _unitOfWork.IssueRepository.GetIssues(userId, recordRetrievalCount, statusId, orderByDesc);
-
             var response = _mapper.Map<ICollection<IssueResponse>>(issues);
-
             return Ok(response);
         }
         
@@ -51,6 +53,15 @@ namespace apartment_portal_api.Controllers
             if (issue == null)
             {
                 return NotFound(new { message = "Issue not found." });
+            }
+            // Optionally, if you want to restrict access to the issue by its owner (non-admins):
+            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(userClaim))
+            {
+                int loggedInUserId = int.Parse(userClaim);
+                bool isAdmin = User.IsInRole("Admin");
+                if (!isAdmin && issue.UserId != loggedInUserId)
+                    return Forbid();
             }
             return Ok(issue);
         }
@@ -66,18 +77,16 @@ namespace apartment_portal_api.Controllers
         [HttpPost("report")]
         public async Task<IActionResult> ReportIssue([FromBody] ReportIssueForm report)
         {
-            //var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            // Ensure the caller is authenticated.
+            var userClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userClaim))
+                return Unauthorized();
 
-            //if (userClaim is null)
-            //{
-            //    return Unauthorized();
-            //}
-                
-            //int userId = int.Parse(userClaim.Value);
-            //if (userId == 0)
-            //{
-            //    return Unauthorized("User ID is missing.");
-            //}
+            int loggedInUserId = int.Parse(userClaim);
+            bool isAdmin = User.IsInRole("Admin");
+            // For non-admins, the report's UserId must match the logged-in user.
+            if (!isAdmin && report.UserId != loggedInUserId)
+                return Forbid();
             
             var issueType = await _unitOfWork.IssueTypeRepository.GetAsync(report.IssueTypeId);
             if (issueType is null)
