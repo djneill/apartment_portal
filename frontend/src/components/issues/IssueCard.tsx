@@ -16,10 +16,10 @@ const IssueCard: React.FC<IssueCardProps> = ({
 }) => {
 
   return (
-    <article className={`relative p-4 bg-white rounded-3xl shadow-[0_4px_8px_rgba(0,0,0,0.15)] border border-black  w-72 ${!isNew ? "border-dashed" : ""}`}>
+    <article className={`relative p-4 bg-white rounded-3xl shadow-[0_4px_8px_rgba(0,0,0,0.15)] border border-black  min-w-72 ${!isNew ? "border-dashed" : ""}`}>
       {/* Flex container for date, New Issue badge, and arrow button */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2 ">
+        <div className="flex items-center space-x-1 ">
           <div className="p-3  text-xs text-center text-white bg-black rounded-full w-24">
             {date}
           </div>
