@@ -57,6 +57,7 @@ const PackageCard = ({ packageCount = 0 }) => {
     if (user?.userId && packageCount > 0) {
       fetchPackageData();
     }
+
   }, [user?.userId, packageCount]);
 
   const handleOpenModal = () => {
@@ -94,9 +95,7 @@ const PackageCard = ({ packageCount = 0 }) => {
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">
-        Packages
-      </h3>
+      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">Packages</h3>
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
           <span className="text-md font-bold">

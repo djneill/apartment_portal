@@ -1,5 +1,6 @@
 using apartment_portal_api.Abstractions;
 using apartment_portal_api.DTOs;
+using apartment_portal_api.Models.LeaseAgreements;
 using apartment_portal_api.Models.UnitUsers;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.Services;
@@ -12,68 +13,55 @@ using System.Security.Claims;
 namespace apartment_portal_api.Controllers;
 
 [Route("[controller]")] // /users
-[ApiController]
-public class UsersController : ControllerBase
+[ApiController, Authorize]
+public class UsersController(
+    IUnitOfWork unitOfWork,
+    UserManager<ApplicationUser> userManager,
+    IMapper mapper)
+    : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IMapper _mapper;
-
-    public UsersController(
-        IUnitOfWork unitOfWork,
-        UserManager<ApplicationUser> userManager,
-        IMapper mapper)
-    {
-        _unitOfWork = unitOfWork;
-        _userManager = userManager;
-        _mapper = mapper;
-    }
-
     [HttpGet("CurrentUser")]
-    [Authorize]
     public async Task<IActionResult> GetCurrentUser()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
 
-        int.TryParse(userClaim.Value, out int userId);
+        if (!int.TryParse(userClaim.Value, out int userId))
+            return Unauthorized();
 
-        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+        var user = await unitOfWork.UserRepository.GetAsync(userId);
 
-        var response = _mapper.Map<GetUsersResponse>(user);
+        var response = mapper.Map<GetUsersResponse>(user);
 
         return Ok(response);
     }
 
-
     [HttpGet]
-    // Uncomment next line to add auth
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetUsers()
     {
-        var users = await _unitOfWork.UserRepository.GetUsers();
+        var users = await unitOfWork.UserRepository.GetUsers();
 
-        ICollection<ApplicationUser> tenants = [];
-
+        ICollection<ApplicationUser> tenants = new List<ApplicationUser>();
         foreach (var user in users)
         {
-            bool isTenant = await _userManager.IsInRoleAsync(user, "Tenant");
+            bool isTenant = await userManager.IsInRoleAsync(user, "Tenant");
             if (isTenant) tenants.Add(user);
         }
 
-        var response = _mapper.Map<ICollection<GetUsersResponse>>(tenants);
+        var response = mapper.Map<ICollection<GetUsersResponse>>(tenants);
 
         return Ok(response);
     }
 
-    [HttpGet("{id}")] // /users/12
+    [HttpGet("{id}"),] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
-        var user = await _unitOfWork.UserRepository.GetAsync(
+        var isUserOrAdmin = IsUserOrAdmin(id);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
+        var user = await unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
         );
@@ -111,77 +99,65 @@ public class UsersController : ControllerBase
         });
     }
 
-    [HttpPost("register")]
-    // Uncomment next line for auth
-    [Authorize(Roles = "Admin")]
+    [HttpPost("register"), Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
-
-        bool isAdmin = User.IsInRole("Admin");
-        if (!isAdmin)
-        {
-            return Forbid();
-        }
 
         int adminId = int.Parse(userClaim.Value);
 
         if (!EmailValidator.ValidateEmail(request.Email))
-        {
             return BadRequest(new { message = "Invalid email format." });
-        }
 
-        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        var existingUser = await userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
-        {
             return BadRequest(new { message = "A user with this email already exists." });
-        }
 
-        var unit = (await _unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
+        var unit = (await unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
         if (unit is null)
-        {
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
-        }
 
-        var newUser = _mapper.Map<ApplicationUser>(request);
+        var newUser = mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
-        newUser.CreatedOn = DateTime.UtcNow;
         newUser.CreatedBy = adminId;
-        newUser.ModifiedOn = DateTime.UtcNow;
         newUser.ModifiedBy = adminId;
         newUser.StatusId = 1;
 
-        var result = await _userManager.CreateAsync(newUser, request.Password);
+        var result = await userManager.CreateAsync(newUser, request.Password);
 
         if (!result.Succeeded)
-        {
             return BadRequest(result.Errors);
-        }
 
-        await _userManager.AddToRoleAsync(newUser, "Tenant");
+        await userManager.AddToRoleAsync(newUser, "Tenant");
 
         var unitUserDto = new UnitUserDTO
         {
             UserId = newUser.Id,
             UnitId = unit.Id,
             CreatedBy = adminId,
-            ModifiedBy = adminId
+            ModifiedBy = adminId,
+            IsPrimary = request.IsPrimary
         };
 
-        var unitUser = _mapper.Map<UnitUser>(unitUserDto);
-        await _unitOfWork.UnitUserRepository.AddAsync(unitUser);
-        await _unitOfWork.SaveAsync();
+        var unitUser = mapper.Map<UnitUser>(unitUserDto);
+
+        LeaseAgreement agreement = new()
+        {
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            Link = $"leaseagreement.com/{newUser.Id}/{unit.Number}",  // TODO: Update this line when we know what the link is
+            LeaseStatusId = 3,
+            UnitUser = unitUser
+        };
+
+        await unitOfWork.LeaseAgreementRepository.AddAsync(agreement);
+        await unitOfWork.SaveAsync();
 
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    // Uncomment line below when turning on auth
-    [Authorize]
     [HttpGet("roles")]
     public async Task<ActionResult<ICollection<string>>> GetRoles()
     {
@@ -194,12 +170,30 @@ public class UsersController : ControllerBase
 
         int.TryParse(userClaim.Value, out int userId);
 
-        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+        var user = await unitOfWork.UserRepository.GetAsync(userId);
 
         if (user is null) return BadRequest();
 
-        var roles = await _userManager.GetRolesAsync(user);
+        var roles = await userManager.GetRolesAsync(user);
 
-        return Ok(roles);
+        return null;
+    }
+
+    private ActionResult? IsUserOrAdmin(int requestUserId)
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && userClaim.Value != requestUserId.ToString())
+        {
+            return Forbid();
+        }
+
+        return null;
     }
 }

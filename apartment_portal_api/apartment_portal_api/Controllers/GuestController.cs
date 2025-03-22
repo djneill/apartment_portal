@@ -5,11 +5,12 @@ using apartment_portal_api.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]"), Authorize]
 public class GuestController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -81,6 +82,15 @@ public class GuestController : ControllerBase
 
         Guest newGuest = _mapper.Map<Guest>(request);
         newGuest.AccessCode = AccessCodeGenerator.GenerateAccessCode();
+        
+        if (request.DurationInHours > 0)
+        {
+            newGuest.Expiration = DateTime.UtcNow.AddHours(request.DurationInHours);
+        }
+        else
+        {
+            return BadRequest("Invalid duration provided.");
+        }
 
         if (request.ParkingPermit is not null)
         {
@@ -108,7 +118,7 @@ public class GuestController : ControllerBase
 
         guestToPatch.FirstName = patchData.FirstName ?? guestToPatch.FirstName;
         guestToPatch.LastName = patchData.LastName ?? guestToPatch.LastName;
-        guestToPatch.LastName = patchData.PhoneNumber ?? guestToPatch.LastName;
+        guestToPatch.PhoneNumber = patchData.PhoneNumber ?? guestToPatch.PhoneNumber;
         guestToPatch.Expiration = CalculateExpiration(patchData.DurationInHours, guestToPatch.Expiration);
         await _unitOfWork.SaveAsync();
 
@@ -245,8 +255,10 @@ public class GuestController : ControllerBase
     {
         if (durationInHours is null)
             return currentExpiration;
+        
+        DateTime baseTime = currentExpiration > DateTime.UtcNow ? currentExpiration : DateTime.UtcNow;
 
-        DateTime newExpiration = DateTime.UtcNow.AddHours((int)durationInHours);
+        DateTime newExpiration = baseTime.AddHours((int)durationInHours);
 
         return newExpiration;
     }
