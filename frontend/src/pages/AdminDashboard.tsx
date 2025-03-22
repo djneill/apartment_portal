@@ -9,33 +9,15 @@ import { useState, useEffect } from "react";
 import HeroCard from "../tenantDashboard/components/HeroCard";
 import { QuickIconButton } from "../tenantDashboard/components";
 import { InsightLogo } from "../assets/InsightLogo";
-import IssuesList from "../components/issues/IssueList";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { getData } from "../services/api";
-import { User } from "../Types.ts"
+import IssuesListAdmin from "../components/issues/IssueListAdmin.tsx";
 
 interface Notifications {
   date: string;
   message: string;
   type: string;
 };
-
-
-export interface Issue {
-  createdOn: string;
-  description: string;
-  id: number;
-  issueType: IssueType;
-  status: Status;
-  user: User;
-};
-
-interface IssueType {
-  id: string;
-  name: string;
-}
-
-
 
 interface Status {
   id: number;
@@ -63,21 +45,18 @@ export default function AdminDashboard() {
   const [viewAllInsights, setViewAllInsights] = useState(false);
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
-  const [issues, setIssues] = useState<Issue[]>([]);
 
   useEffect(() => {
     if (!user?.userId) return;
 
     const fetchData = async () => {
       try {
-        const [notifsData, insightsData, issuesData] = await Promise.all([
+        const [notifsData, insightsData] = await Promise.all([
           getData<Notifications[]>(`notification/latest?userId=${user.userId}`),
           getData<InsightResponse>(`Insights`),
-          getData<Issue[]>(`Issues`)
         ]);
         setNotifications(notifsData);
         setInsights(insightsData.currentInsights);
-        setIssues(issuesData);
       } catch (error) {
         console.error("Error fetching admin data", error);
       }
@@ -164,7 +143,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <IssuesList issues={issues} />
+        <IssuesListAdmin />
       </div >
     </div >
   );

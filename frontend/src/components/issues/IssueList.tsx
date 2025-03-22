@@ -58,31 +58,13 @@ const IssuesList: React.FC = () => {
     console.log(`Clicked on issue ${issueId}`);
   };
 
-  const formatDate = (isoDate: string) => {
-    const issueDate = new Date(isoDate)
-
-    const month = (issueDate.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
-    const day = issueDate.getDate().toString().padStart(2, "0");
-    const year = issueDate.getFullYear();
-
-    return `${month}/${day}/${year}`;
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const renderIssues = issues.map((issue) => {
-    const formattedDate = formatDate(issue.createdOn)
-
-    const isNew = issue.status.name === "Active" ? true : false
-
-    return (
-      <IssueCard
-        key={issue.id}
-        date={formattedDate}
-        title={issue.description}
-        isNew={isNew}
-        onClick={() => !isNew && handleIssueClick(issue.id)}
-      />
-    )
-  })
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <section className="">
@@ -90,9 +72,9 @@ const IssuesList: React.FC = () => {
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
           className="text-sm font-bold text-neutral-700 cursor-pointer"
-          onClick={() => setViewAllIssues(prev => !prev)}
+          onClick={handleViewAll}
         >
-          {viewAllIssues ? "View Less" : "View all"}
+          View all
         </button>
       </div>
 
@@ -125,9 +107,8 @@ const IssuesList: React.FC = () => {
             />
           ))}
         </div>
-
       </div>
-    </section >
+    </section>
   );
 };
 
