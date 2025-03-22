@@ -6,13 +6,12 @@ using apartment_portal_api.Models.Notifications;
 using apartment_portal_api.Models.Packages;
 using apartment_portal_api.Models.UnitUsers;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]"), Authorize]
 public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
 {
     [HttpGet("latest")]

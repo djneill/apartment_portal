@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace apartment_portal_api.Controllers;
 
 [Route("[controller]")] // /users
-[ApiController]
+[ApiController, Authorize]
 public class UsersController(
     IUnitOfWork unitOfWork,
     UserManager<ApplicationUser> userManager,
@@ -55,9 +55,12 @@ public class UsersController(
         return Ok(response);
     }
 
-    [HttpGet("{id}")] // /users/12
+    [HttpGet("{id}"),] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
+        var isUserOrAdmin = IsUserOrAdmin(id);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
         var user = await unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
@@ -156,7 +159,6 @@ public class UsersController(
     }
 
     [HttpGet("roles")]
-    [Authorize]
     public async Task<ActionResult<ICollection<string>>> GetRoles()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -173,6 +175,24 @@ public class UsersController(
         if (user is null) return BadRequest();
 
         var roles = await userManager.GetRolesAsync(user);
+
+        return null;
+    }
+
+    private ActionResult? IsUserOrAdmin(int requestUserId)
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && userClaim.Value != requestUserId.ToString())
+        {
+            return Forbid();
+        }
 
         return null;
     }
