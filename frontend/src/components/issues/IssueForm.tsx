@@ -1,74 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FormInput from "../form/FormInput";
 import MainButton from "../MainButton";
 import FormSelect from "../form/FormSelect";
-import { getData , postData} from "../../services/api";
-import useGlobalContext from "../../hooks/useGlobalContext";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [dropdownOptions, setDropdownOptions] = useState<{ value: string; label: string }[]>([]);
-  const { user: globalUser } = useGlobalContext();
+  const [images, setImages] = useState<File[]>([]);
 
-  const  handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const requestBody = {
-      userId: globalUser?.userId, 
-      issueTypeId: parseInt(issueType), 
-      description: description,
-    };
-    try {
-      const response = await postData("Issues/report", requestBody);
-      console.log("Issue reported successfully:", response);
-
-      setIssueType("");
-      setDescription("");
-    } catch (error) {
-      console.error("Failed to report issue:", error);
-    }
+    console.log({ issueType, description, images });
   };
 
-
-  useEffect(() => {
-    async function fetchIssueTypes() {
-      const response = await getData<{ id: number; name: string }[]>("issues/types");
-      if (response) {
-        const options = response.map((issue) => ({
-          value: issue.id.toString(),
-          label: issue.name,
-        }));
-        setDropdownOptions(options);
-      }
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const fileArray = Array.from(e.target.files);
+      setImages((prevImages) => [...prevImages, ...fileArray]);
     }
-
-    fetchIssueTypes();
-  }, []);
-
+  };
+  const dropdownOptions = [
+          { value: "bug", label: "Bug" },
+          { value: "feature", label: "Feature Request" },
+          { value: "support", label: "Support Request" },
+          { value: "other", label: "Other" },
+        ];
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full items-center p-5 text-sm font-medium bg-white rounded-2xl"
+      className="flex gap-2.5 items-center px-5 py-5 text-sm font-medium bg-white rounded-2xl"
     >
+      <section className="flex flex-col self-stretch pb-2 my-auto min-w-60 w-[315px]">
         <div>
           <FormSelect
             label="Type of Issue"
             value={issueType}
-            onChange={(e) => setIssueType(e.target.value)}
-            options={dropdownOptions}
-            required
-            />
+            onChange={(e) => setIssueType(e.target.value)} options={dropdownOptions}          />
 
           <FormInput
             label="Description of Issue"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Write a detailed description"
-            required
           />
         </div>
 
-     
+        <label className="self-start mt-8 text-neutral-500">
+          Upload Images (optional)
+        </label>
+
+        <div className="relative">
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+            aria-label="Upload images"
+          />
+          <button
+            type="button"
+            className="gap-2.5 self-start px-3.5 py-2 mt-2.5 text-black whitespace-nowrap bg-violet-300 rounded-3xl min-h-[30px]"
+          >
+            Upload
+          </button>
+        </div>
 
         <MainButton
           type="submit"
@@ -76,6 +72,7 @@ const IssueReportForm: React.FC = () => {
         >
           Submit
         </MainButton>
+      </section>
     </form>
   );
 };

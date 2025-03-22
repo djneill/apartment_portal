@@ -3,13 +3,17 @@ import GuestProfileIcon from "./GuestProfileIcon";
 import { Guest } from "../../Types";
 import CountdownTimer from "../CountdownTimer";
 
-export default function CurrentGuestTable({ activeGuests }: { activeGuests: Guest[] }) {
+export default function CurrentGuestTable({
+  activeGuests,
+}: {
+  activeGuests: Guest[];
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const displayedGuests = isExpanded ? activeGuests : activeGuests.slice(0, 3);
 
   const mapGuests = displayedGuests.map((guest, index) => {
-    const name = guest.firstName + " " + guest.lastName
+    const name = guest.firstName + " " + guest.lastName;
 
     return (
       <tr key={index} className="p-10 ">
@@ -52,17 +56,7 @@ export default function CurrentGuestTable({ activeGuests }: { activeGuests: Gues
               </th>
             </tr>
           </thead>
-          <tbody>
-            {activeGuests.length === 0 ? (
-              <tr>
-                <td colSpan={3} className="text-center py-4">
-                  No guests found
-                </td>
-              </tr>
-            ) : (
-              mapGuests
-            )}
-          </tbody>
+          <tbody>{mapGuests}</tbody>
         </table>
       </div>
     </div>

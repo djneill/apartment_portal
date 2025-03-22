@@ -13,7 +13,7 @@ using System.Security.Claims;
 namespace apartment_portal_api.Controllers;
 
 [Route("[controller]")] // /users
-[ApiController]
+[ApiController, Authorize]
 public class UsersController(
     IUnitOfWork unitOfWork,
     UserManager<ApplicationUser> userManager,
@@ -21,17 +21,14 @@ public class UsersController(
     : ControllerBase
 {
     [HttpGet("CurrentUser")]
-    [Authorize]
     public async Task<IActionResult> GetCurrentUser()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
 
-        int.TryParse(userClaim.Value, out int userId);
+        if (!int.TryParse(userClaim.Value, out int userId))
+            return Unauthorized();
 
         var user = await unitOfWork.UserRepository.GetAsync(userId);
 
@@ -40,16 +37,13 @@ public class UsersController(
         return Ok(response);
     }
 
-
     [HttpGet]
-    // Uncomment next line to add auth
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await unitOfWork.UserRepository.GetUsers();
 
-        ICollection<ApplicationUser> tenants = [];
-
+        ICollection<ApplicationUser> tenants = new List<ApplicationUser>();
         foreach (var user in users)
         {
             bool isTenant = await userManager.IsInRoleAsync(user, "Tenant");
@@ -61,9 +55,12 @@ public class UsersController(
         return Ok(response);
     }
 
-    [HttpGet("{id}")] // /users/12
+    [HttpGet("{id}"),] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
+        var isUserOrAdmin = IsUserOrAdmin(id);
+        if (isUserOrAdmin is not null) return isUserOrAdmin;
+
         var user = await unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
@@ -106,30 +103,21 @@ public class UsersController(
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
 
         int adminId = int.Parse(userClaim.Value);
 
         if (!EmailValidator.ValidateEmail(request.Email))
-        {
             return BadRequest(new { message = "Invalid email format." });
-        }
 
         var existingUser = await userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
-        {
             return BadRequest(new { message = "A user with this email already exists." });
-        }
 
         var unit = (await unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
         if (unit is null)
-        {
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
-        }
 
         var newUser = mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
@@ -140,9 +128,7 @@ public class UsersController(
         var result = await userManager.CreateAsync(newUser, request.Password);
 
         if (!result.Succeeded)
-        {
             return BadRequest(result.Errors);
-        }
 
         await userManager.AddToRoleAsync(newUser, "Tenant");
 
@@ -172,8 +158,6 @@ public class UsersController(
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    // Uncomment line below when turning on auth
-    [Authorize]
     [HttpGet("roles")]
     public async Task<ActionResult<ICollection<string>>> GetRoles()
     {
@@ -192,6 +176,24 @@ public class UsersController(
 
         var roles = await userManager.GetRolesAsync(user);
 
-        return Ok(roles);
+        return null;
+    }
+
+    private ActionResult? IsUserOrAdmin(int requestUserId)
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+        {
+            return Unauthorized();
+        }
+
+        bool isAdmin = User.IsInRole("Admin");
+
+        if (!isAdmin && userClaim.Value != requestUserId.ToString())
+        {
+            return Forbid();
+        }
+
+        return null;
     }
 }

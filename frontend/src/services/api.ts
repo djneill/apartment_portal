@@ -3,7 +3,7 @@ import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API;
 //we can add the header for the bearer token here
 const axiosInstance = axios.create({
-  baseURL: `${BASE_URL}`,
+  baseURL: `${BASE_URL}/`,
   headers: {
     accept: "application/json",
     "Content-Type": "application/json",
@@ -42,8 +42,7 @@ export const deleteData = async <T>(endpoint: string): Promise<T> => {
 };
 
 // PATCH
-export const patchData = async <T>(endpoint: string,
-  payload: unknown): Promise<T> => {
-  const response = await axiosInstance.patch<T>(endpoint, payload);
+export const patchData = async <T>(endpoint: string): Promise<T> => {
+  const response = await axiosInstance.patch<T>(endpoint);
   return response.data;
 };

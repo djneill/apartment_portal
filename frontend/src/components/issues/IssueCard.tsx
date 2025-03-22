@@ -6,7 +6,6 @@ interface IssueCardProps {
   title: string;
   isNew?: boolean;
   disabled?: boolean;
-  type: string;
   onClick?: () => void;
 }
 
@@ -14,7 +13,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
   date,
   title,
   isNew = false,
-  type="",
   disabled = false,
   onClick,
 }) => {
@@ -44,11 +42,9 @@ const IssueCard: React.FC<IssueCardProps> = ({
         </button>
       </div>
 
-      <div className="mt-4 text-sm font-semibold">{type}</div>
+      <div className="mt-4 text-sm font-semibold">Issue Type</div>
 
-      <h3 className="mt-1 text-2xl truncate" title={title}>
-        {title}
-      </h3>
+      <h3 className="mt-1 text-2xl">{title}</h3>
     </article>
   );
 };
