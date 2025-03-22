@@ -2,7 +2,7 @@ import { Routes, Route, redirect } from "react-router-dom";
 import Login from "./pages/shared/Login";
 
 import UserProfile from "./components/UserProfile";
-import ReportIssue from "./pages/guest/ReportIssue";
+import ReportIssue from "./pages/tenant/ReportIssue";
 import "./App.css";
 import Layout from "./components/Layout";
 import { TenantDashboard } from "./pages";
@@ -10,13 +10,14 @@ import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from "./pages/shared/Error";
 import { useEffect, useState } from "react";
-import { CurrentUserResponseType } from "./Types";
+import { CurrentUserResponseType } from "./types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
 import AdminTenantList from "./pages/AdminTenantList";
 import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
+import AdminReportIssuesPage from "./pages/admin/ViewReportIssues";
 
 
 function App() {
@@ -63,7 +64,7 @@ function App() {
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
         <Route path="/admin/manageTenant" element={<AdminManageTenant />} />
         <Route path="/users/:id" element={<UserProfile />} />
-        <Route path="/issues" element={<ReportIssue />} />
+        <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>

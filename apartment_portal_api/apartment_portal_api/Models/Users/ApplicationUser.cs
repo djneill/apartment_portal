@@ -33,30 +33,30 @@ public partial class ApplicationUser : IdentityUser<int>
 
     public virtual Status Status { get; set; } = null!;
 
-    public virtual ICollection<Guest> Guests { get; set; } = new List<Guest>();
+    public virtual ICollection<Guest> Guests { get; set; } = [];
 
-    public virtual ICollection<Issue> Issues { get; set; } = new List<Issue>();
+    public virtual ICollection<Issue> Issues { get; set; } = [];
 
 
 
     // List of all UnitUsers that the current ApplicationUser is a part of. (Tenants can have multiple units)
-    public virtual ICollection<UnitUser> UnitUserUsers { get; set; } = new List<UnitUser>();
+    public virtual ICollection<UnitUser> UnitUserUsers { get; set; } = [];
 
 
     // List of all Users created by the current user
-    public virtual ICollection<ApplicationUser> InverseCreatedByNavigation { get; set; } = new List<ApplicationUser>();
+    public virtual ICollection<ApplicationUser> InverseCreatedByNavigation { get; set; } = [];
 
 
     // List of all Users modified by the current user
-    public virtual ICollection<ApplicationUser> InverseModifiedByNavigation { get; set; } = new List<ApplicationUser>();
+    public virtual ICollection<ApplicationUser> InverseModifiedByNavigation { get; set; } = [];
 
 
     // List of all UnitUsers created by the current user 
-    public virtual ICollection<UnitUser> UnitUserCreatedByNavigations { get; set; } = new List<UnitUser>();
+    public virtual ICollection<UnitUser> UnitUserCreatedByNavigations { get; set; } = [];
 
 
     // List of all UnitUsers created by the current user
-    public virtual ICollection<UnitUser> UnitUserModifiedByNavigations { get; set; } = new List<UnitUser>();
+    public virtual ICollection<UnitUser> UnitUserModifiedByNavigations { get; set; } = [];
 
 
 }
