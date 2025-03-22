@@ -1,6 +1,6 @@
 export default function LeaseCountdown() {
   return (
-    <div className="w-full bg-black font-heading rounded-2xl p-5">
+    <div className="w-full bg-black font-heading rounded-2xl p-5 md:w-1/2">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-white">Lease Countdown</h1>
         <button className="bg-white text-black rounded-full px-4 py-2 font-semibold text-sm">Send Notification</button>
