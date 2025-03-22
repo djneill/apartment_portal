@@ -41,3 +41,11 @@ export type ApiIssue ={
     };
   };
 }
+export interface Issue {
+  id: number;
+  date: string;
+  title: string;
+  isNew: boolean;
+  disabled: boolean;
+  type: string;
+}
