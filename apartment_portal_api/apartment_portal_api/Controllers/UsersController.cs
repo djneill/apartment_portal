@@ -13,6 +13,7 @@ namespace apartment_portal_api.Controllers;
 
 [Route("[controller]")] // /users
 [ApiController]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -30,49 +31,46 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("CurrentUser")]
-    [Authorize]
     public async Task<IActionResult> GetCurrentUser()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
 
-        int.TryParse(userClaim.Value, out int userId);
+        if (!int.TryParse(userClaim.Value, out int userId))
+            return Unauthorized();
 
         var user = await _unitOfWork.UserRepository.GetAsync(userId);
-
         var response = _mapper.Map<GetUsersResponse>(user);
-
         return Ok(response);
     }
 
-
     [HttpGet]
-    // Uncomment next line to add auth
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _unitOfWork.UserRepository.GetUsers();
 
-        ICollection<ApplicationUser> tenants = [];
-
+        ICollection<ApplicationUser> tenants = new List<ApplicationUser>();
         foreach (var user in users)
         {
             bool isTenant = await _userManager.IsInRoleAsync(user, "Tenant");
-            if (isTenant) tenants.Add(user);
+            if (isTenant)
+                tenants.Add(user);
         }
 
         var response = _mapper.Map<ICollection<GetUsersResponse>>(tenants);
-
         return Ok(response);
     }
 
     [HttpGet("{id}")] // /users/12
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
+        // Enforce that non-admins can only access their own record.
+        var authResult = IsUserOrAdmin(id);
+        if (authResult is not null)
+            return authResult;
+
         var user = await _unitOfWork.UserRepository.GetAsync(
             u => u.Id == id,
             $"{nameof(ApplicationUser.UnitUserUsers)}.{nameof(UnitUser.Unit)}"
@@ -112,41 +110,26 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
-    // Uncomment next line for auth
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromBody] RegistrationForm request)
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userClaim is null)
-        {
             return Unauthorized();
-        }
 
-        bool isAdmin = User.IsInRole("Admin");
-        if (!isAdmin)
-        {
-            return Forbid();
-        }
-
+        // Since this endpoint is restricted to Admins, we assume the caller is an admin.
         int adminId = int.Parse(userClaim.Value);
 
         if (!EmailValidator.ValidateEmail(request.Email))
-        {
             return BadRequest(new { message = "Invalid email format." });
-        }
 
         var existingUser = await _userManager.FindByEmailAsync(request.Email);
         if (existingUser != null)
-        {
             return BadRequest(new { message = "A user with this email already exists." });
-        }
 
         var unit = (await _unitOfWork.UnitRepository.GetAsync(u => u.Number == request.UnitNumber)).FirstOrDefault();
         if (unit is null)
-        {
             return BadRequest(new { message = $"Unit with number {request.UnitNumber} does not exist." });
-        }
 
         var newUser = _mapper.Map<ApplicationUser>(request);
         newUser.UserName = request.Email;
@@ -157,11 +140,8 @@ public class UsersController : ControllerBase
         newUser.StatusId = 1;
 
         var result = await _userManager.CreateAsync(newUser, request.Password);
-
         if (!result.Succeeded)
-        {
             return BadRequest(result.Errors);
-        }
 
         await _userManager.AddToRoleAsync(newUser, "Tenant");
 
@@ -180,26 +160,40 @@ public class UsersController : ControllerBase
         return Ok(new { message = "User created successfully!", userId = newUser.Id });
     }
 
-    // Uncomment line below when turning on auth
-    [Authorize]
     [HttpGet("roles")]
+    [Authorize]
     public async Task<ActionResult<ICollection<string>>> GetRoles()
     {
         var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        if (userClaim is null)
+            return Unauthorized();
 
+        if (!int.TryParse(userClaim.Value, out int userId))
+            return Unauthorized();
+
+        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+        if (user is null)
+            return BadRequest();
+
+        var roles = await _userManager.GetRolesAsync(user);
+        return Ok(roles);
+    }
+
+    private ActionResult? IsUserOrAdmin(int requestUserId)
+    {
+        var userClaim = User.FindFirst(ClaimTypes.NameIdentifier);
         if (userClaim is null)
         {
             return Unauthorized();
         }
 
-        int.TryParse(userClaim.Value, out int userId);
+        bool isAdmin = User.IsInRole("Admin");
 
-        var user = await _unitOfWork.UserRepository.GetAsync(userId);
+        if (!isAdmin && userClaim.Value != requestUserId.ToString())
+        {
+            return Forbid();
+        }
 
-        if (user is null) return BadRequest();
-
-        var roles = await _userManager.GetRolesAsync(user);
-
-        return Ok(roles);
+        return null;
     }
 }
