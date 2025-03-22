@@ -27,3 +27,7 @@ dist-ssr
 # Ignore SSL certificates
 localhost.pem
 localhost-key.pem
+install-key.pem
+install.pem
+localhost-key.pem
+localhost.pem
