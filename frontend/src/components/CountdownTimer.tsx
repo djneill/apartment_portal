@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react"
-import { TimerProps } from "../Types"
+import { useEffect, useState } from "react";
+import { TimerProps } from "../types";
 
 export const CountdownTimer = ({ expiration, className }: TimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft())
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   function calculateTimeLeft() {
-    const currentTime = new Date().getTime()
-    const expirationTime = new Date(expiration).getTime()
-    const difference = expirationTime - currentTime
+    const currentTime = new Date().getTime();
+    const expirationTime = new Date(expiration).getTime();
+    const difference = expirationTime - currentTime;
 
     if (difference <= 0) {
-      return { hours: 0, minutes: 0 }
+      return { hours: 0, minutes: 0 };
     }
 
     return {
@@ -31,7 +31,7 @@ export const CountdownTimer = ({ expiration, className }: TimerProps) => {
     <div className={className}>
       {timeLeft.hours}h {timeLeft.minutes}m
     </div>
-  )
+  );
 };
 
-export default CountdownTimer
+export default CountdownTimer;

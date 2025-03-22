@@ -10,7 +10,7 @@ import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from "./pages/shared/Error";
 import { useEffect, useState } from "react";
-import { CurrentUserResponseType } from "./Types";
+import { CurrentUserResponseType } from "./types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";

@@ -1,9 +1,15 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
-import { Plus } from 'lucide-react';
-import { Guest } from "../../Types";
+import { Plus } from "lucide-react";
+import { Guest } from "../../types";
 
-export const PreviousGuests = ({ inactiveGuests, setEditGuest }: { inactiveGuests: Guest[], setEditGuest: (guest: Guest) => void }) => {
+export const PreviousGuests = ({
+  inactiveGuests,
+  setEditGuest,
+}: {
+  inactiveGuests: Guest[];
+  setEditGuest: (guest: Guest) => void;
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   function PlusOverlay() {
@@ -14,31 +20,41 @@ export const PreviousGuests = ({ inactiveGuests, setEditGuest }: { inactiveGuest
     );
   }
 
-  const displayPrevGuests = isExpanded ? inactiveGuests : inactiveGuests.slice(0, 8)
+  const displayPrevGuests = isExpanded
+    ? inactiveGuests
+    : inactiveGuests.slice(0, 8);
 
   const mapPreviousGuests = displayPrevGuests.map((guest, index) => {
     const name = `${guest.firstName} ${guest.lastName}`;
     return (
       <div key={index} className="flex flex-col items-center space-y-2 ">
-        <div className="relative inline-block cursor-pointer" onClick={() => setEditGuest(guest)}>
+        <div
+          className="relative inline-block cursor-pointer"
+          onClick={() => setEditGuest(guest)}
+        >
           <GuestProfileIcon size={65} iconSize={40} />
           <PlusOverlay />
         </div>
         <p className="text-sm">
-          {name.split(' ').map((part, index, arr) =>
-            index === arr.length - 1 ? part.charAt(0) + '.' : part
-          ).join(' ')}
+          {name
+            .split(" ")
+            .map((part, index, arr) =>
+              index === arr.length - 1 ? part.charAt(0) + "." : part
+            )
+            .join(" ")}
         </p>
       </div>
-    )
-  })
-
+    );
+  });
 
   return (
     <>
       <div className="flex justify-between mb-4">
         <h2 className="font-bold text-[#686868]">Previous Guests</h2>
-        <p className="font-bold cursor-pointer" onClick={() => setIsExpanded(prev => !prev)}>
+        <p
+          className="font-bold cursor-pointer"
+          onClick={() => setIsExpanded((prev) => !prev)}
+        >
           {isExpanded ? "View less" : "View all"}
         </p>
       </div>
@@ -48,9 +64,8 @@ export const PreviousGuests = ({ inactiveGuests, setEditGuest }: { inactiveGuest
           {mapPreviousGuests}
         </div>
       </div>
-
     </>
-  )
-}
+  );
+};
 
-export default PreviousGuests
+export default PreviousGuests;

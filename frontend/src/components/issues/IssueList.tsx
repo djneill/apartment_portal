@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { ApiIssue, Issue } from "../../Types";
-
+import { ApiIssue, Issue } from "../../types";
 
 const IssuesList: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -16,28 +15,30 @@ const IssuesList: React.FC = () => {
       if (!globalUser?.userId) return;
 
       try {
-        const data = await getData<ApiIssue[]>(`Issues?userId=${globalUser.userId}`);
+        const data = await getData<ApiIssue[]>(
+          `Issues?userId=${globalUser.userId}`
+        );
         const mappedIssues = data.map((issue: any) => {
           const currentDate = new Date();
 
           const issueDate = new Date(issue.createdOn);
-          
+
           const timeDifference = currentDate.getTime() - issueDate.getTime();
-          
+
           const daysDifference = timeDifference / (1000 * 3600 * 24);
           //if the issue is from today or within the last 3 days
           const isNew = daysDifference <= 3;
-  
+
           return {
             id: issue.id,
             date: issueDate.toLocaleDateString(),
             title: issue.description,
             type: issue.issueType.name,
-            isNew: isNew, 
+            isNew: isNew,
             disabled: issue.status.id !== 1,
           };
         });
-      setIssues(mappedIssues);
+        setIssues(mappedIssues);
       } catch (err) {
         setError("Failed to load issues");
       } finally {
