@@ -5,9 +5,10 @@ import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../Types";
 
 
-const IssuesList: React.FC = () => {
+
+const IssuesListAdmin: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { user: globalUser } = useGlobalContext();
   console.log(globalUser);
@@ -16,28 +17,28 @@ const IssuesList: React.FC = () => {
       if (!globalUser?.userId) return;
 
       try {
-        const data = await getData<ApiIssue[]>(`Issues?userId=${globalUser.userId}`);
+        const data = await getData<ApiIssue[]>(`Issues`);
         const mappedIssues = data.map((issue: any) => {
-          const currentDate = new Date();
+            const currentDate = new Date();
 
-          const issueDate = new Date(issue.createdOn);
-          
-          const timeDifference = currentDate.getTime() - issueDate.getTime();
-          
-          const daysDifference = timeDifference / (1000 * 3600 * 24);
-          //if the issue is from today or within the last 3 days
-          const isNew = daysDifference <= 3;
-  
-          return {
-            id: issue.id,
-            date: issueDate.toLocaleDateString(),
-            title: issue.description,
-            type: issue.issueType.name,
-            isNew: isNew, 
-            disabled: issue.status.id !== 1,
-          };
-        });
-      setIssues(mappedIssues);
+            const issueDate = new Date(issue.createdOn);
+            
+            const timeDifference = currentDate.getTime() - issueDate.getTime();
+            
+            const daysDifference = timeDifference / (1000 * 3600 * 24);
+            
+            const isNew = daysDifference <= 3;
+    
+            return {
+              id: issue.id,
+              date: issueDate.toLocaleDateString(),
+              title: issue.description,
+              type: issue.issueType.name,
+              isNew: isNew, 
+              disabled: issue.status.id !== 1,
+            };
+          });
+        setIssues(mappedIssues);
       } catch (err) {
         setError("Failed to load issues");
       } finally {
@@ -110,4 +111,4 @@ const IssuesList: React.FC = () => {
   );
 };
 
-export default IssuesList;
+export default IssuesListAdmin;

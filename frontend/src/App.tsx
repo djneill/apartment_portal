@@ -2,7 +2,7 @@ import { Routes, Route, redirect } from "react-router-dom";
 import Login from "./pages/shared/Login";
 
 import UserProfile from "./components/UserProfile";
-import ReportIssue from "./pages/guest/ReportIssue";
+import ReportIssue from "./pages/tenant/ReportIssue";
 import "./App.css";
 import Layout from "./components/Layout";
 import { TenantDashboard } from "./pages";
@@ -16,6 +16,7 @@ import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
 import AdminTenantList from "./pages/AdminTenantList";
 import AiInsights from "./pages/AiInsights";
+import AdminReportIssuesPage from "./pages/admin/ViewReportIssues";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -60,7 +61,7 @@ function App() {
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
         <Route path="/users/:id" element={<UserProfile />} />
-        <Route path="/issues" element={<ReportIssue />} />
+        <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
