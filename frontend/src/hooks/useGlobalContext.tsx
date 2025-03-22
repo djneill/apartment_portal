@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { User } from "../Types";
+import { User } from "../types";
 
 type GlobalContextType = {
   user: User | null;

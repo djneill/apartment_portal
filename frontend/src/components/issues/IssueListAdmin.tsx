@@ -4,7 +4,7 @@ import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../types";
 
-const IssuesList: React.FC = () => {
+const IssuesListAdmin: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,9 +15,7 @@ const IssuesList: React.FC = () => {
       if (!globalUser?.userId) return;
 
       try {
-        const data = await getData<ApiIssue[]>(
-          `Issues?userId=${globalUser.userId}`
-        );
+        const data = await getData<ApiIssue[]>(`Issues`);
         const mappedIssues = data.map((issue: any) => {
           const currentDate = new Date();
 
@@ -26,7 +24,7 @@ const IssuesList: React.FC = () => {
           const timeDifference = currentDate.getTime() - issueDate.getTime();
 
           const daysDifference = timeDifference / (1000 * 3600 * 24);
-          //if the issue is from today or within the last 3 days
+
           const isNew = daysDifference <= 3;
 
           return {
@@ -58,31 +56,13 @@ const IssuesList: React.FC = () => {
     console.log(`Clicked on issue ${issueId}`);
   };
 
-  const formatDate = (isoDate: string) => {
-    const issueDate = new Date(isoDate)
-
-    const month = (issueDate.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
-    const day = issueDate.getDate().toString().padStart(2, "0");
-    const year = issueDate.getFullYear();
-
-    return `${month}/${day}/${year}`;
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  const renderIssues = issues.map((issue) => {
-    const formattedDate = formatDate(issue.createdOn)
-
-    const isNew = issue.status.name === "Active" ? true : false
-
-    return (
-      <IssueCard
-        key={issue.id}
-        date={formattedDate}
-        title={issue.description}
-        isNew={isNew}
-        onClick={() => !isNew && handleIssueClick(issue.id)}
-      />
-    )
-  })
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <section className="">
@@ -90,9 +70,9 @@ const IssuesList: React.FC = () => {
         <h2 className="text-sm font-bold text-stone-500">Latest Issues</h2>
         <button
           className="text-sm font-bold text-neutral-700 cursor-pointer"
-          onClick={() => setViewAllIssues(prev => !prev)}
+          onClick={handleViewAll}
         >
-          {viewAllIssues ? "View Less" : "View all"}
+          View all
         </button>
       </div>
 
@@ -125,10 +105,9 @@ const IssuesList: React.FC = () => {
             />
           ))}
         </div>
-
       </div>
-    </section >
+    </section>
   );
 };
 
-export default IssuesList;
+export default IssuesListAdmin;

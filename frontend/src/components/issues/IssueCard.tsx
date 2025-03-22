@@ -5,6 +5,8 @@ interface IssueCardProps {
   date: string;
   title: string;
   isNew?: boolean;
+  disabled?: boolean;
+  type: string;
   onClick?: () => void;
 }
 
@@ -12,6 +14,8 @@ const IssueCard: React.FC<IssueCardProps> = ({
   date,
   title,
   isNew = false,
+  type = "",
+  disabled = false,
   onClick,
 }) => {
 
@@ -32,8 +36,8 @@ const IssueCard: React.FC<IssueCardProps> = ({
         </div>
 
         <button
-          className={`flex justify-center items-center w-10 h-10 bg-white border border-black rounded-[100px] ${!isNew ? "opacity-50 cursor-not-allowed border-dashed" : "cursor-pointer"
-            } `}
+          className={`flex justify-center items-center w-10 h-10 bg-white border border-black border-solid rounded-[100px] ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            }`}
           onClick={onClick}
           disabled={isNew}
         >
@@ -41,9 +45,11 @@ const IssueCard: React.FC<IssueCardProps> = ({
         </button>
       </div>
 
-      <div className="mt-4 text-sm font-semibold">Issue Type</div>
+      <div className="mt-4 text-sm font-semibold">{type}</div>
 
-      <h3 className="mt-1 text-2xl line-clamp-1">{title}</h3>
+      <h3 className="mt-1 text-2xl truncate" title={title}>
+        {title}
+      </h3>
     </article>
   );
 };

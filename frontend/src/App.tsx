@@ -10,14 +10,14 @@ import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from "./pages/shared/Error";
 import { useEffect, useState } from "react";
-import { CurrentUserResponseType } from "./Types";
+import { CurrentUserResponseType } from "./types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
 import AdminTenantList from "./pages/AdminTenantList";
 import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
-
+import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -64,7 +64,7 @@ function App() {
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
         <Route path="/admin/manageTenant" element={<AdminManageTenant />} />
         <Route path="/users/:id" element={<UserProfile />} />
-        <Route path="/issues" element={<ReportIssue />} />
+        <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
