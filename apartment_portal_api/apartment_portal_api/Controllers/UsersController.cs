@@ -12,13 +12,12 @@ using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
-[Route("[controller]")] // /users
-[ApiController, Authorize]
+[Authorize]
 public class UsersController(
     IUnitOfWork unitOfWork,
     UserManager<ApplicationUser> userManager,
     IMapper mapper)
-    : ControllerBase
+    : BaseApiController
 {
     [HttpGet("CurrentUser")]
     public async Task<IActionResult> GetCurrentUser()
@@ -176,7 +175,7 @@ public class UsersController(
 
         var roles = await userManager.GetRolesAsync(user);
 
-        return null;
+        return Ok(roles);
     }
 
     private ActionResult? IsUserOrAdmin(int requestUserId)

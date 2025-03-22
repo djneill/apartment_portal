@@ -8,10 +8,8 @@ using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
 [Authorize]
-public class PackageController : ControllerBase
+public class PackageController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -52,7 +50,7 @@ public class PackageController : ControllerBase
         return Ok(packageDto);
     }
 
-    [HttpGet("/Packages")]
+    [HttpGet]
     public async Task<ActionResult<ICollection<PackageGetResponse>>> Get(int userId = 0, int statusId = 0)
     {
         var currentUserIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

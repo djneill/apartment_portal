@@ -10,9 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
-[ApiController]
-[Route("[controller]"), Authorize]
-public class NotificationController(IUnitOfWork unitOfWork) : ControllerBase
+[Authorize]
+public class NotificationController(IUnitOfWork unitOfWork) : BaseApiController
 {
     [HttpGet("latest")]
     public async Task<ActionResult<ICollection<NotificationDTO>>> GetLatestNotifications([FromQuery] int userId = 0)

@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using apartment_portal_api.Abstractions;
-using apartment_portal_api.DTOs;
 using apartment_portal_api.Models.Issues;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
     [Authorize]
-    public class IssuesController : ControllerBase
+    public class IssuesController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;

@@ -6,10 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
-[ApiController]
-[Route("[controller]")]
 [Authorize]
-public class StatusController : ControllerBase
+public class StatusController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -30,7 +28,7 @@ public class StatusController : ControllerBase
         return Ok(statusDTO);
     }
 
-    [HttpGet("/Statuses")]
+    [HttpGet]
     public async Task<ActionResult<ICollection<StatusDTO>>> Get()
     {
         var statuses = await _unitOfWork.StatusRepository.GetAsync();

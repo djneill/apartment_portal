@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 namespace apartment_portal_api.Controllers;
 
 [ApiController]
-[Route("[controller]"), Authorize]
-public class GuestController : ControllerBase
+[Authorize]
+public class GuestController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

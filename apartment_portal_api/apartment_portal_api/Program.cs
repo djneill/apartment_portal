@@ -2,7 +2,6 @@ using apartment_portal_api.Abstractions;
 using apartment_portal_api.Data;
 using apartment_portal_api.Models.Users;
 using apartment_portal_api.DTOs;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -63,10 +62,18 @@ public class Program
         var app = builder.Build();
 
         app.UseCors(allowedOrigins);
+        
+        
         app.UseAuthentication();
         app.UseAuthorization();
-        app.MapIdentityApi<ApplicationUser>();
+
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+
+        app.MapGroup("api").MapIdentityApi<ApplicationUser>();
         app.MapControllers();
+
+        app.MapFallbackToController("Index", "Fallback");
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -75,7 +82,7 @@ public class Program
             app.UseSwaggerUI();
         }        
 
-        app.MapPost("/logout", async (SignInManager<ApplicationUser> signInManager) =>
+        app.MapPost("/api/logout", async (SignInManager<ApplicationUser> signInManager) =>
             {
                 await signInManager.SignOutAsync();
                 return Results.Ok();

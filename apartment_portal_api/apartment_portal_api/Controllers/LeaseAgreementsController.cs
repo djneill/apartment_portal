@@ -8,8 +8,8 @@ using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
-[ApiController, Route("[controller]"), Authorize]
-public class LeaseAgreementsController : ControllerBase
+[Authorize]
+public class LeaseAgreementsController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;

@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace apartment_portal_api.Controllers;
 
-[Route("[controller]")]
-[ApiController]
 [Authorize(Roles = "Admin")]
-public class InsightsController : ControllerBase
+public class InsightsController : BaseApiController
 {
     private IUnitOfWork _unitOfWork;
     private IMapper _mapper;

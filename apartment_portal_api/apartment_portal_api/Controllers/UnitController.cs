@@ -8,10 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace apartment_portal_api.Controllers;
 
-[ApiController]
 [Authorize]
-[Route("[controller]")]
-public class UnitController : ControllerBase
+public class UnitController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -40,7 +38,7 @@ public class UnitController : ControllerBase
     }
 
     // Non-admin users see only units they are associated with; admins see all.
-    [HttpGet("/Units")]
+    [HttpGet]
     public async Task<ActionResult<ICollection<UnitDTO>>> Get()
     {
         var units = await _unitOfWork.UnitRepository.GetAsync();
