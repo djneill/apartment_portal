@@ -54,9 +54,9 @@ const TenantDashboard = () => {
           setUser((prev) =>
             prev
               ? {
-                  ...prev,
-                  unit: userData.unit,
-                }
+                ...prev,
+                unit: userData.unit,
+              }
               : null
           );
         } catch (error) {
