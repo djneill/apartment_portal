@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import IssueCard from "./IssueCard";
 import { Issue } from "../../pages/AdminDashboard";
-import { useNavigate } from "react-router-dom";
 
 interface IssuesListProps {
   issues: Issue[];
@@ -9,9 +8,6 @@ interface IssuesListProps {
 
 const IssuesList: React.FC<IssuesListProps> = ({ issues }) => {
   const [viewAllIssues, setViewAllIssues] = useState(false)
-  const navigate = useNavigate()
-
-
 
   const handleIssueClick = (issueId: number) => {
     console.log(`Clicked on issue ${issueId}`);
