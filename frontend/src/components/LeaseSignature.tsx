@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface SignatureFieldProps {
   fullName: string;
+  isSigned: boolean;
+  setIsSigned: React.Dispatch<React.SetStateAction<boolean>>;
+
 }
 
-const LeaseSignature: React.FC<SignatureFieldProps> = ({ fullName }) => {
-  const [signed, setSigned] = useState(false);
+const LeaseSignature: React.FC<SignatureFieldProps> = ({ fullName, isSigned, setIsSigned }) => {
 
   const handleClick = () => {
-    if (!signed) {
-      setSigned(true);
+    if (!isSigned) {
+      setIsSigned(true);
     }
   };
 
@@ -19,7 +21,7 @@ const LeaseSignature: React.FC<SignatureFieldProps> = ({ fullName }) => {
         onClick={handleClick}
         className="border-b-2 border-black w-full cursor-pointer pb-1"
       >
-        {signed ? (
+        {isSigned ? (
           <span
             style={{ fontFamily: '"Great Vibes", cursive' }}
             className="text-2xl"
