@@ -84,3 +84,18 @@ export interface Issue {
   disabled: boolean;
   type: string;
 }
+
+export interface PackagesResponse {
+  message?: string;
+  data: Packages[];
+}
+
+export interface Packages {
+  id: number;
+  lockerNumber: number;
+  code: number;
+  status: {
+    id: number;
+    name: string;
+  };
+}

@@ -62,7 +62,7 @@ function App() {
       <Route element={<Layout usersRole={"Admin"} />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
-        <Route path="/admin/manageTenant" element={<AdminManageTenant />} />
+        <Route path="/admin/manageTenant/:id" element={<AdminManageTenant />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
