@@ -105,5 +105,26 @@ namespace apartment_portal_api.Controllers
             
             return CreatedAtAction(nameof(GetIssueById), new { id = newIssue.Id }, new { message = "Issue reported successfully!", issueId = newIssue.Id });
         }
+
+        [HttpPatch("{id:int}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult> UpdateIssue(int id, IssuePatchRequest request)
+        {
+            if (id != request.Id) return BadRequest();
+
+            var statusResponse = await _unitOfWork.StatusRepository.GetAsync(s => s.Name == "Inactive");
+            var status = statusResponse.FirstOrDefault();
+
+            if (status is null) return BadRequest();
+
+            var issue = await _unitOfWork.IssueRepository.GetAsync(id);
+            if (issue is null) return NotFound();
+
+            issue.StatusId = request.IsComplete ? status.Id : issue.StatusId;
+            _unitOfWork.IssueRepository.Update(issue);
+            await _unitOfWork.SaveAsync();
+
+            return Ok();
+        }
+
     }
 }
