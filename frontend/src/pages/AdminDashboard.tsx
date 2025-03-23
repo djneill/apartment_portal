@@ -90,7 +90,11 @@ export default function AdminDashboard() {
       label: "Manage Issues",
       to: "/",
     },
-    { icon: <UserRoundPlus size={38} />, label: "Register Tenant", to: "/" },
+    {
+      icon: <UserRoundPlus size={38} />,
+      label: "Register Tenant",
+      to: "/admin/registertenant",
+    },
     { icon: <Lock size={38} />, label: "Security", to: "/" },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
@@ -138,7 +142,9 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}
+            className={`flex w-full overflow-scroll space-x-3 py-2 ${
+              viewAllInsights ? "flex-col  space-y-2 " : ""
+            }`}
           >
             {renderInsights}
           </div>

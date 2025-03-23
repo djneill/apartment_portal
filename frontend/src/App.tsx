@@ -1,6 +1,5 @@
 import { Routes, Route, redirect } from "react-router-dom";
 import Login from "./pages/shared/Login";
-
 import UserProfile from "./components/UserProfile";
 import ReportIssue from "./pages/guest/ReportIssue";
 import "./App.css";
@@ -19,6 +18,7 @@ import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
 import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
 import ManageLease from "./pages/ManageLease";
+import RegisterTenant from "./pages/RegisterTenant";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -66,6 +66,7 @@ function App() {
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
+        <Route path="/admin/registertenant" element={<RegisterTenant />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
