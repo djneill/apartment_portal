@@ -51,7 +51,6 @@ const PackageCard = ({ packageCount = 0, userId }:PackageCardProps) => {
     setIsLoading(true);
     try {
       const data = await getData<PackageData[]>(`Package?userId=${finalUserId}`);
-      console.log("Package data", data)
       setPackageData(data);
     } catch (error) {
       console.error("Error fetching package data:", error);

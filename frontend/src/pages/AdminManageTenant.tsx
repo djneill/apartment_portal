@@ -9,7 +9,6 @@ import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import { useEffect, useState } from "react";
 import { getData } from "../services/api";
 import axios from "axios";
-// import useGlobalContext from "../hooks/useGlobalContext";
 
 export default function AdminManageTenant() {
   const { id } = useParams<Record<string, string | undefined>>();
@@ -61,7 +60,6 @@ export default function AdminManageTenant() {
     const fetchPackages = async () => {
       try {
         const response = await getData<Packages[]>(`Package/?userId=${id}&statusId=6`);
-        console.log("API response:", response);
         setPackages(response);
       } catch (error) {
         console.error("Error fetching package data:", error);
@@ -92,14 +90,14 @@ export default function AdminManageTenant() {
           </div>
         </div>
 
-        <LeaseCountdown />
+        <LeaseCountdown userId={Number(id)}/>
 
 
       </div>
 
       <PackageCard packageCount={packageCount} userId={Number(id)} />
 
-      <IssuesList />
+      <IssuesList userId={Number(id)}/>
 
 
       <CurrentGuestTable 

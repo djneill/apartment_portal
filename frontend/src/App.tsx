@@ -71,7 +71,7 @@ function App() {
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
-        <Route path="/manage" element={<AdminManageTenant />} />
+        {/* <Route path="/manage" element={<AdminManageTenant />} /> */}
         <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route path="/error" element={<ErrorPage />} />

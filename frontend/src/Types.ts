@@ -99,3 +99,19 @@ export interface Packages {
     name: string;
   };
 }
+
+export interface Lease {
+  id: number;
+  startDate: string,
+  endDate: string,
+  signedOn: string,
+  link: string,
+  unitUser: {
+    userId: number,
+    unitId: number,
+  },
+  status: {
+    id: number,
+    name: string
+  }
+}
