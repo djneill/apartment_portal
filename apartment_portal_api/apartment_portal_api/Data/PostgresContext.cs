@@ -155,6 +155,7 @@ public partial class PostgresContext : IdentityDbContext<ApplicationUser, Identi
             entity.Property(e => e.Title).HasColumnName("title");
             entity.Property(e => e.Summary).HasColumnName("summary");
             entity.Property(e => e.Suggestion).HasColumnName("suggestion");
+            entity.Property(e => e.ActionTaken).HasColumnName("actionTaken");
             entity.Property(e => e.CreatedOn)
                 .HasDefaultValueSql("(now() AT TIME ZONE 'utc'::text)")
                 .HasColumnName("createdOn");

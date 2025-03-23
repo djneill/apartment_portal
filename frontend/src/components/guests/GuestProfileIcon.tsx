@@ -1,5 +1,5 @@
-import React from 'react';
-import { UserRound } from 'lucide-react';
+import React from "react";
+import { UserRound } from "lucide-react";
 
 interface GuestProfileIconProps {
   size?: number;

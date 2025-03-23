@@ -54,10 +54,10 @@ const TenantDashboard = () => {
           setUser((prev) =>
             prev
               ? {
-                ...prev,
-                unit: userData.unit,
-              }
-              : null
+                  ...prev,
+                  unit: userData.unit,
+                }
+              : null,
           );
         } catch (error) {
           console.error("Error fetching user details:", error);
@@ -71,12 +71,12 @@ const TenantDashboard = () => {
   useEffect(() => {
     (async () => {
       const data = await getData<Notifications[]>(
-        `notification/latest?userId=${user?.userId}`
+        `notification/latest?userId=${user?.userId}`,
       );
       setNotifications(data);
 
       const packagesAvailable = data.filter(
-        (notification) => notification.type === "Package"
+        (notification) => notification.type === "Package",
       ).length;
 
       setPackageCount(packagesAvailable);
@@ -107,7 +107,7 @@ const TenantDashboard = () => {
       to: "",
       onClick: () => setIsLockModalOpen(true),
     },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "" },
+    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/manageLease" },
   ];
 
   const guests = ["Dennis G.", "David O.", "Felipe A."];

@@ -34,7 +34,7 @@ const AdminTenantList = () => {
       try {
         const tenants = await getData<Tenant[]>("/users");
         const activeTenants = tenants.filter(
-          (tenant) => tenant.status.name === "Active"
+          (tenant) => tenant.status.name === "Active",
         );
 
         setTenants(activeTenants);
@@ -59,14 +59,14 @@ const AdminTenantList = () => {
   const filteredTenants = tenants.filter((tenant) =>
     `${tenant.firstName} ${tenant.lastName}`
       .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+      .includes(searchTerm.toLowerCase()),
   );
 
   const indexOfLastTenant = currentPage * tenantsPerPage;
   const indexOfFirstTenant = indexOfLastTenant - tenantsPerPage;
   const currentTenants = filteredTenants.slice(
     indexOfFirstTenant,
-    indexOfLastTenant
+    indexOfLastTenant,
   );
   const totalPages = Math.ceil(filteredTenants.length / tenantsPerPage);
 
@@ -115,7 +115,7 @@ const AdminTenantList = () => {
 
             {/* Manage Button */}
             <MainButton
-              onClick={() => navigate(`/adminmanagetenant/${tenant.id}`)}
+              onClick={() => navigate(`/admin/manageTenant/${tenant.id}`)}
               className="bg-black text-white px-4 py-1.5 rounded-full text-sm ml-auto"
             >
               Manage
@@ -149,7 +149,7 @@ const AdminTenantList = () => {
               >
                 {page}
               </button>
-            )
+            ),
           )}
 
           {/* Next Button */}

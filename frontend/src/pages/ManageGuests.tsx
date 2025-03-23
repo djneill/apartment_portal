@@ -3,7 +3,7 @@ import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import GuestForm from "../components/guests/GuestForm";
 import PreviousGuests from "../components/guests/PreviousGuests";
 import { getData, postData, patchData } from "../services/api";
-import { Guest, GuestRequest } from "../types";
+import { Guest, GuestRequest } from "../Types";
 import useGlobalContext from "../hooks/useGlobalContext";
 
 export default function ManageGuests() {

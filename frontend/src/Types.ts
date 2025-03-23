@@ -84,3 +84,34 @@ export interface Issue {
   disabled: boolean;
   type: string;
 }
+
+export interface PackagesResponse {
+  message?: string;
+  data: Packages[];
+}
+
+export interface Packages {
+  id: number;
+  lockerNumber: number;
+  code: number;
+  status: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface Lease {
+  id: number;
+  startDate: string,
+  endDate: string,
+  signedOn: string,
+  link: string,
+  unitUser: {
+    userId: number,
+    unitId: number,
+  },
+  status: {
+    id: number,
+    name: string
+  }
+}

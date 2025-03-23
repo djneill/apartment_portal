@@ -1,7 +1,7 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
 import { Plus } from "lucide-react";
-import { Guest } from "../../types";
+import { Guest } from "../../Types";
 
 export const PreviousGuests = ({
   inactiveGuests,

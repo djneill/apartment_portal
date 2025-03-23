@@ -19,14 +19,17 @@ const FormDateInput = ({
   className = "",
   placeholder,
   minDate = "1900-01-01",
+  maxDate = new Date().toISOString().split("T")[0],
   ...props
 }: FormDateInputProps) => {
   const validateDate = (date: string) => {
     const parsedDate = new Date(date);
     const min = new Date(minDate);
+    //const max = new Date(maxDate);
 
-    if (parsedDate.toString() === "Invalid Date") return "Invalid date format";
     if (parsedDate < min) return "Date must be after 1900";
+    if (parsedDate.toString() === "Invalid Date") return "Invalid date format";
+    //if (parsedDate > max) return "Date cannot be in the future";
     return null;
   };
 

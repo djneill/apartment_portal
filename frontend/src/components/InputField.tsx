@@ -5,8 +5,8 @@ interface InputFieldProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
-  icon: React.ReactNode; 
-  rightIcon?: React.ReactNode; 
+  icon: React.ReactNode;
+  rightIcon?: React.ReactNode;
   onRightIconClick?: () => void;
   className?: string;
 }
@@ -25,7 +25,7 @@ const InputField: React.FC<InputFieldProps> = ({
     <div
       className={`flex gap-3 items-center px-2.5 py-3.5 whitespace-nowrap rounded-xl  ${className}`}
     >
-      <div className="w-4 h-4">{icon}</div> 
+      <div className="w-4 h-4">{icon}</div>
 
       <input
         type={type}
@@ -41,7 +41,7 @@ const InputField: React.FC<InputFieldProps> = ({
           onClick={onRightIconClick}
           className="flex items-center justify-center w-4 h-4"
         >
-          {rightIcon} 
+          {rightIcon}
         </button>
       )}
     </div>

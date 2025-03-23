@@ -7,7 +7,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { getUserRoles, login } from "../../services/auth";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { CurrentUserResponseType } from "../../types";
+import { CurrentUserResponseType } from "../../Types";
 
 function Login() {
   const [username, setUsername] = useState("");
