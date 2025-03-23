@@ -15,8 +15,8 @@ const ManageLease: React.FC = () => {
   const imageUrl = "../../public/lease-snapshot.jpg";
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-6">
-      <h1 className="mt-12 mb-4 font-heading font-medium text-3xl">
+    <div className="w-full min-h-screen p-5 md:p-6">
+      <h1 className="mt-20  mb-5 font-heading font-medium text-3xl">
         {" "}
         Manage Lease
       </h1>
