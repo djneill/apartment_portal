@@ -5,6 +5,8 @@ import {
   FormSelect,
   FormPhoneInput,
   FormDateInput,
+  FormEmailInput,
+  FormPasswordInput,
 } from "../components/form";
 
 const FormDemo = () => {
@@ -59,6 +61,19 @@ const FormDemo = () => {
               { value: "type2", label: "Type 2" },
               { value: "type3", label: "Type 3" },
             ]}
+          />
+          <FormEmailInput
+            label="Email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={(value) => handleChange("email", value)}
+          />
+
+          <FormPasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={(value) => handleChange("password", value)}
           />
         </Card>
       </div>

@@ -115,7 +115,7 @@ const AdminTenantList = () => {
 
             {/* Manage Button */}
             <MainButton
-              onClick={() => navigate(`/adminmanagetenant/${tenant.id}`)}
+              onClick={() => navigate(`/admin/manageTenant/${tenant.id}`)}
               className="bg-black text-white px-4 py-1.5 rounded-full text-sm ml-auto"
             >
               Manage

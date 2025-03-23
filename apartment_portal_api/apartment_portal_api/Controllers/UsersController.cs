@@ -12,6 +12,7 @@ using System.Security.Claims;
 
 namespace apartment_portal_api.Controllers;
 
+
 [Authorize]
 public class UsersController(
     IUnitOfWork unitOfWork,
