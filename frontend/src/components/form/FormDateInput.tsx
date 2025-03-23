@@ -19,7 +19,7 @@ const FormDateInput = ({
   className = "",
   placeholder,
   minDate = "1900-01-01",
-  maxDate = new Date().toISOString().split("T")[0],
+  //maxDate = new Date().toISOString().split("T")[0],
   ...props
 }: FormDateInputProps) => {
   const validateDate = (date: string) => {
