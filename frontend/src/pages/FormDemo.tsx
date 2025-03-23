@@ -62,7 +62,6 @@ const FormDemo = () => {
               { value: "type3", label: "Type 3" },
             ]}
           />
-
           <FormEmailInput
             label="Email"
             placeholder="Enter your email"

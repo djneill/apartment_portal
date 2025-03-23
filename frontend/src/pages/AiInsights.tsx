@@ -83,10 +83,10 @@ const InsightsPage = () => {
 
       const updatedInsights = {
         currentInsights: insights.currentInsights.map((insight) =>
-          insight.id === selectedInsight.id ? updatedInsight : insight
+          insight.id === selectedInsight.id ? updatedInsight : insight,
         ),
         pastInsights: insights.pastInsights.map((insight) =>
-          insight.id === selectedInsight.id ? updatedInsight : insight
+          insight.id === selectedInsight.id ? updatedInsight : insight,
         ),
       };
 

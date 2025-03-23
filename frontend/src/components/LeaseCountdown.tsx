@@ -74,7 +74,9 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
     <div className="w-full bg-black font-heading rounded-2xl p-5 md:w-1/2">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-white">Lease Countdown</h1>
-        <button className="bg-white text-black rounded-full px-4 py-2 font-semibold text-sm">Send Notification</button>
+        <button className="bg-white text-black rounded-full px-4 py-2 font-semibold text-sm cursor-pointer">
+          Send Notification
+        </button>
       </div>
       <div className="flex text-white items-center space-x-5">
         <div className="flex flex-col items-center">
@@ -95,7 +97,7 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
           <p className="text-xl">{timeLeft.seconds}</p>
           <p className="text-[#919397] text-sm">Seconds</p>
         </div>
-
       </div>
-    </div>)
+    </div>
+  );
 }

@@ -13,7 +13,6 @@
   --font-body: "Roboto", "sans-serif";
 }
 
-
 @layer base {
   body {
     @apply bg-background;

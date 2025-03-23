@@ -16,7 +16,7 @@ export const login = async (email: string, password: string) => {
           "Content-Type": "application/json",
         },
         withCredentials: true,
-      }
+      },
     );
 
     return response;

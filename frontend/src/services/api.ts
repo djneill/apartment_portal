@@ -20,7 +20,7 @@ export const getData = async <T>(endpoint: string): Promise<T> => {
 // POST
 export const postData = async <T>(
   endpoint: string,
-  payload: unknown
+  payload: unknown,
 ): Promise<T> => {
   const response = await axiosInstance.post<T>(endpoint, payload);
   return response.data;
@@ -29,7 +29,7 @@ export const postData = async <T>(
 // PUT
 export const putData = async <T>(
   endpoint: string,
-  payload: unknown
+  payload: unknown,
 ): Promise<T> => {
   const response = await axiosInstance.put<T>(endpoint, payload);
   return response.data;
@@ -44,7 +44,7 @@ export const deleteData = async <T>(endpoint: string): Promise<T> => {
 // PATCH
 export const patchData = async <T>(
   endpoint: string,
-  payload: unknown
+  payload: unknown,
 ): Promise<T> => {
   const response = await axiosInstance.patch<T>(endpoint, payload);
   return response.data;

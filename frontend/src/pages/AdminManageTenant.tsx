@@ -73,13 +73,11 @@ export default function AdminManageTenant() {
 
     const packageCount = packages?.length || 0;
 
-
   return (
     <div className="px-4 mt-14 font-heading min-h-screen space-y-6">
-      <button className="rounded-full w-12 h-12 bg-[#d9d9d9] flex items-center justify-center absolute top-12 left-5" onClick={goBack}>
-        <ArrowLeft size={30} color="#000000" />
-      </button>
-      <h1 className="text-center text-2xl font-heading md:text-left md:text-3xl">Manage Tenant</h1>
+      <h1 className="text-center text-2xl font-heading md:text-left md:text-3xl">
+        Manage Tenant
+      </h1>
 
       <div className="md:flex space-y-6 md:space-x-4">
         <div className="flex space-x-4 items-center md:w-1/2">
@@ -91,19 +89,15 @@ export default function AdminManageTenant() {
         </div>
 
         <LeaseCountdown userId={Number(id)}/>
-
-
       </div>
 
       <PackageCard packageCount={packageCount} userId={Number(id)} />
 
       <IssuesList userId={Number(id)}/>
 
-
       <CurrentGuestTable 
       activeGuests={guests?.activeGuests || []}
        />
-
     </div>
-  )
+  );
 }
