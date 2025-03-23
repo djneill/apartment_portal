@@ -4,7 +4,6 @@ import Card from "../components/Card";
 import Modal from "../components/Modal";
 import { FormTextArea } from "../components/form";
 import { getData } from "../services/api";
-// import useGlobalContext from "../hooks/useGlobalContext";
 
 interface Status {
   id: number;
@@ -37,7 +36,6 @@ const InsightsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAllPastInsights, setShowAllPastInsights] =
     useState<boolean>(false);
-  // const { user } = useGlobalContext();
 
   useEffect(() => {
     const fetchInsights = async () => {
@@ -82,8 +80,6 @@ const InsightsPage = () => {
         },
         actionTaken,
       };
-
-      // await updateData(`Insights/${selectedInsight.id}`, updatedInsight);
 
       const updatedInsights = {
         currentInsights: insights.currentInsights.map((insight) =>
@@ -163,7 +159,7 @@ const InsightsPage = () => {
           Recent Suggestions
         </h2>
         <button
-          className="text-purple-500 text-sm"
+          className="text-accent text-sm"
           onClick={toggleShowAllPastInsights}
         >
           {showAllPastInsights ? "Show less" : "View all"}
