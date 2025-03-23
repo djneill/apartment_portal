@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getData } from "../services/api";
-import { Lease } from "../types";
+import { Lease } from "../Types";
 import useGlobalContext from "../hooks/useGlobalContext";
 
 interface LeaseCountdownProps {
@@ -26,8 +26,12 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
 
     const fetchData = async () => {
       try {
-        const response = await getData<Lease[]>(`LeaseAgreements?userId=${finalUserId}`);
-        const activeLease = response.find(lease => lease.status?.name === "Active");
+        const response = await getData<Lease[]>(
+          `LeaseAgreements?userId=${finalUserId}`
+        );
+        const activeLease = response.find(
+          (lease) => lease.status?.name === "Active"
+        );
 
         if (activeLease?.endDate) {
           const parsedEnd = new Date(activeLease.endDate);
@@ -35,14 +39,13 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
         } else {
           console.warn("No active lease found");
         }
-        }
-       catch (error) {
+      } catch (error) {
         console.error("Error fetching lease data:", error);
       }
     };
 
     fetchData();
-  }, [finalUserId])
+  }, [finalUserId]);
 
   useEffect(() => {
     if (!endDate) return;
@@ -69,7 +72,7 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
 
     return () => clearInterval(interval);
   }, [endDate]);
-  
+
   return (
     <div className="w-full bg-black font-heading rounded-2xl p-5 md:w-1/2">
       <div className="flex items-center justify-between mb-4">
@@ -89,11 +92,13 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
           <p className="text-xl">{timeLeft.hours}</p>
           <p className="text-[#919397] text-sm">Hours</p>
         </div>
-        <div className="border-l-1 h-5 border-white "></div><div className="flex flex-col items-center">
+        <div className="border-l-1 h-5 border-white "></div>
+        <div className="flex flex-col items-center">
           <p className="text-xl">{timeLeft.minutes}</p>
           <p className="text-[#919397] text-sm">Minutes</p>
         </div>
-        <div className="border-l-1 h-5 border-white "></div><div className="flex flex-col items-center">
+        <div className="border-l-1 h-5 border-white "></div>
+        <div className="flex flex-col items-center">
           <p className="text-xl">{timeLeft.seconds}</p>
           <p className="text-[#919397] text-sm">Seconds</p>
         </div>

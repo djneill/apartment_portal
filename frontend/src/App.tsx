@@ -10,7 +10,7 @@ import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from "./pages/shared/Error";
 import { useEffect, useState } from "react";
-import { CurrentUserResponseType } from "./types";
+import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
@@ -27,8 +27,9 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const currentUserResponse =
-          await getData<CurrentUserResponseType>("users/currentuser");
+        const currentUserResponse = await getData<CurrentUserResponseType>(
+          "users/currentuser"
+        );
 
         if (!currentUserResponse.id) {
           setIsLoading(false);

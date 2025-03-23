@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { ApiIssue, Issue } from "../../types";
+import { ApiIssue, Issue } from "../../Types";
 
 interface IssuesListProps {
   userId?: number;
 }
 
-const IssuesList: React.FC<IssuesListProps> = ({userId}) => {
+const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ChevronUp } from "lucide-react";
 import { FormInput, FormPhoneInput, FormSelect } from "../form";
-import { GuestRequest, Guest } from "../../types";
+import { GuestRequest, Guest } from "../../Types";
 
 interface GuestFormProps {
   onSubmit: (data: GuestRequest) => void;

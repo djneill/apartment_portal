@@ -1,7 +1,7 @@
 import { useState } from "react";
 import GuestProfileIcon from "./GuestProfileIcon";
 import { Plus } from "lucide-react";
-import { Guest } from "../../types";
+import { Guest } from "../../Types";
 
 export const PreviousGuests = ({
   inactiveGuests,
@@ -39,7 +39,7 @@ export const PreviousGuests = ({
           {name
             .split(" ")
             .map((part, index, arr) =>
-              index === arr.length - 1 ? part.charAt(0) + "." : part,
+              index === arr.length - 1 ? part.charAt(0) + "." : part
             )
             .join(" ")}
         </p>
