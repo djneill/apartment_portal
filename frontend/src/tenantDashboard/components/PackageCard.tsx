@@ -27,7 +27,7 @@ interface PackageCardProps {
   userId?: number;
 }
 
-const PackageCard = ({ packageCount = 0, userId }:PackageCardProps) => {
+const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
   const [clicks, setClicks] = useState(0);
   const [showSbPackage, setShowSbPackage] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -50,7 +50,9 @@ const PackageCard = ({ packageCount = 0, userId }:PackageCardProps) => {
 
     setIsLoading(true);
     try {
-      const data = await getData<PackageData[]>(`Package?userId=${finalUserId}`);
+      const data = await getData<PackageData[]>(
+        `Package?userId=${finalUserId}`
+      );
       setPackageData(data);
     } catch (error) {
       console.error("Error fetching package data:", error);
@@ -63,7 +65,6 @@ const PackageCard = ({ packageCount = 0, userId }:PackageCardProps) => {
     if (finalUserId && packageCount > 0) {
       fetchPackageData();
     }
-
   }, [finalUserId, packageCount]);
 
   const handleOpenModal = () => {
@@ -102,20 +103,17 @@ const PackageCard = ({ packageCount = 0, userId }:PackageCardProps) => {
   const arrivedPackage = packageData?.find(
     (pkg) => pkg.status.name === "Arrived"
   );
-  
-  const lockerDisplay = arrivedPackage
-    ? arrivedPackage.lockerNumber
-    : "OFC";
 
+  const lockerDisplay = arrivedPackage ? arrivedPackage.lockerNumber : "OFC";
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">Packages</h3>
+      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">
+        Packages
+      </h3>
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
-          <span className="text-md font-bold">
-          Locker #{lockerDisplay}
-          </span>
+          <span className="text-md font-bold">Locker #{lockerDisplay}</span>
           <div
             className="bg-primary rounded-full p-[4px] cursor-pointer"
             onClick={handleOpenModal}
