@@ -33,9 +33,8 @@ const IssueReportForm: React.FC = () => {
 
   useEffect(() => {
     async function fetchIssueTypes() {
-      const response = await getData<{ id: number; name: string }[]>(
-        "issues/types"
-      );
+      const response =
+        await getData<{ id: number; name: string }[]>("issues/types");
       if (response) {
         const options = response.map((issue) => ({
           value: issue.id.toString(),

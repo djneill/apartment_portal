@@ -17,7 +17,7 @@ interface Notifications {
   date: string;
   message: string;
   type: string;
-};
+}
 
 interface Status {
   id: number;
@@ -37,7 +37,6 @@ interface InsightResponse {
   currentInsights: Insight[];
   pastInsights: Insight[];
 }
-
 
 export default function AdminDashboard() {
   const { user } = useGlobalContext();
@@ -68,8 +67,9 @@ export default function AdminDashboard() {
   const renderInsights = insights.map((insight) => (
     <div
       key={insight.id}
-      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${viewAllInsights ? "w-full" : "w-72"
-        }`}
+      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${
+        viewAllInsights ? "w-full" : "w-72"
+      }`}
       style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
     >
       <p className="font-semibold mb-1">{insight.title}</p>
@@ -95,7 +95,6 @@ export default function AdminDashboard() {
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
 
-
   return (
     <div className="min-h-screen p-5 md:p-10">
       <div className="space-y-6 mt-14 ">
@@ -103,7 +102,7 @@ export default function AdminDashboard() {
           <h1 className="font-normal text-2xl font-heading">
             Welcome, {user?.firstName}
           </h1>
-        </header >
+        </header>
         <HeroCard
           title="Notifications"
           count={notifications.length}
@@ -138,13 +137,15 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <div className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}>
+          <div
+            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""}`}
+          >
             {renderInsights}
           </div>
         </div>
 
         <IssuesListAdmin />
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

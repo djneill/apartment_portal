@@ -7,7 +7,7 @@ import useGlobalContext from "../hooks/useGlobalContext";
 const MainLayout = ({ usersRole }: { usersRole: string }) => {
   const { user } = useGlobalContext();
 
-  const location = useLocation()
+  const location = useLocation();
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
@@ -21,9 +21,8 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
   if (user?.roles?.includes("Tenant") && usersRole !== "Tenant")
     return <Navigate to="/tenantdashboard" replace />;
 
-
   //disable the menu btn on specific routes
-  const disabledRoutes = ["/admin/manageTenant",];
+  const disabledRoutes = ["/admin/manageTenant"];
   const showMenuButton = !disabledRoutes.includes(location.pathname);
 
   return (
@@ -38,15 +37,16 @@ const MainLayout = ({ usersRole }: { usersRole: string }) => {
 
       {/* Menu Button */}
 
-      {showMenuButton &&
+      {showMenuButton && (
         <button
           onClick={toggleSidebar}
-          className={`fixed pt-6 rounded-lg z-50 md:hidden ${isSidebarVisible ? "text-white" : "text-primary"
-            } ml-4`}
+          className={`fixed pt-6 rounded-lg z-50 md:hidden ${
+            isSidebarVisible ? "text-white" : "text-primary"
+          } ml-4`}
         >
           <Menu size={32} />
         </button>
-      }
+      )}
 
       {/* Sidebar */}
       <aside

@@ -39,7 +39,7 @@ export const PreviousGuests = ({
           {name
             .split(" ")
             .map((part, index, arr) =>
-              index === arr.length - 1 ? part.charAt(0) + "." : part
+              index === arr.length - 1 ? part.charAt(0) + "." : part,
             )
             .join(" ")}
         </p>

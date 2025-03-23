@@ -1,2 +1,2 @@
-export { default as FormDemo } from './FormDemo';
-export { default as TenantDashboard } from './TenantDashboard';
+export { default as FormDemo } from "./FormDemo";
+export { default as TenantDashboard } from "./TenantDashboard";

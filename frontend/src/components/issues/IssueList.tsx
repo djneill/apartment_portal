@@ -16,7 +16,7 @@ const IssuesList: React.FC = () => {
 
       try {
         const data = await getData<ApiIssue[]>(
-          `Issues?userId=${globalUser.userId}`
+          `Issues?userId=${globalUser.userId}`,
         );
         const mappedIssues = data.map((issue: any) => {
           const currentDate = new Date();

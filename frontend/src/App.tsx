@@ -18,6 +18,7 @@ import AdminTenantList from "./pages/AdminTenantList";
 import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
 import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
+import ManageLease from "./pages/ManageLease";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -26,9 +27,8 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const currentUserResponse = await getData<CurrentUserResponseType>(
-          "users/currentuser"
-        );
+        const currentUserResponse =
+          await getData<CurrentUserResponseType>("users/currentuser");
 
         if (!currentUserResponse.id) {
           setIsLoading(false);
@@ -56,7 +56,6 @@ function App() {
 
   if (isLoading) return <h1>Loading App...</h1>;
 
-
   return (
     <Routes>
       <Route element={<Layout usersRole={"Admin"} />}>
@@ -72,6 +71,7 @@ function App() {
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
         <Route path="/manage" element={<AdminManageTenant />} />
+        <Route path="/manageLease" element={<ManageLease />} />
         <Route path="/aiinsights" element={<AiInsights />} />
       </Route>
       <Route path="/error" element={<ErrorPage />} />

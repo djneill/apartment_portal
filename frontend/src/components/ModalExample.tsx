@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import Modal from './Modal';
-import MainButton from './MainButton';
+import { useState } from "react";
+import Modal from "./Modal";
+import MainButton from "./MainButton";
 
 const ModalExample = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,11 +12,7 @@ const ModalExample = () => {
     <div className="p-6">
       <MainButton onClick={openModal}>Open Modal</MainButton>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        title="Example Modal"
-      >
+      <Modal isOpen={isModalOpen} onClose={closeModal} title="Example Modal">
         <div className="space-y-4">
           <p className="text-gray-700">
             This is an example modal dialog window.

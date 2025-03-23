@@ -35,4 +35,3 @@ export const CountdownTimer = ({ expiration, className }: TimerProps) => {
 };
 
 export default CountdownTimer;
-
