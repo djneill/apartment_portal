@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /apartment_portal_api/apartment_portal_api/appsettings.Development.json
+
+
+.DS_Store
