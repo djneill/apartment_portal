@@ -5,6 +5,7 @@ import PreviousGuests from "../components/guests/PreviousGuests";
 import { getData, postData, patchData } from "../services/api";
 import { Guest, GuestRequest } from "../Types";
 import useGlobalContext from "../hooks/useGlobalContext";
+import Skeleton from "../components/Skeleton";
 
 export default function ManageGuests() {
   const [guests, setGuests] = useState<{
@@ -12,10 +13,11 @@ export default function ManageGuests() {
     inactiveGuests: Guest[];
   } | null>(null);
   const [editGuest, setEditGuest] = useState<Guest | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { user } = useGlobalContext();
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchGuests = async () => {
       if (!user?.userId) {
         console.error("User not logged in");
@@ -35,6 +37,8 @@ export default function ManageGuests() {
         setGuests({ activeGuests, inactiveGuests });
       } catch (error) {
         console.error("Error fetching guests:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchGuests();
@@ -94,6 +98,10 @@ export default function ManageGuests() {
     } catch (error) {
       console.error("Error submitting guest:", error);
     }
+  }
+
+  if (isLoading) {
+    return <Skeleton />;
   }
 
   return (

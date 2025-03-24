@@ -4,6 +4,7 @@ import Card from "../components/Card";
 import Modal from "../components/Modal";
 import { FormTextArea } from "../components/form";
 import { getData, patchData } from "../services/api";
+import Skeleton from "../components/Skeleton";
 
 interface Status {
   id: number;
@@ -118,7 +119,7 @@ const InsightsPage = () => {
     : insights.pastInsights.slice(0, 3);
 
   if (isLoading) {
-    return <div className="p-4">Loading insights...</div>;
+    return <Skeleton />;
   }
 
   return (

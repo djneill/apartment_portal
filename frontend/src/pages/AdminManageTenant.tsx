@@ -8,6 +8,7 @@ import CurrentGuestTable from "../components/guests/CurrentGuestTable";
 import { useEffect, useState } from "react";
 import { getData } from "../services/api";
 import axios from "axios";
+import Skeleton from "../components/Skeleton";
 
 export default function AdminManageTenant() {
   const { id } = useParams<Record<string, string | undefined>>();
@@ -16,6 +17,7 @@ export default function AdminManageTenant() {
   } | null>(null);
   const [tenant, setTenant] = useState<User | null>(null);
   const [packages, setPackages] = useState<Packages[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // const navigate = useNavigate();
 
@@ -25,6 +27,7 @@ export default function AdminManageTenant() {
 
   useEffect(() => {
     const fetchGuests = async () => {
+      setIsLoading(true);
       try {
         const response = await getData<Guest[]>(
           `/Guest?userId=${id}&active=true`
@@ -66,6 +69,8 @@ export default function AdminManageTenant() {
         setPackages(response);
       } catch (error) {
         console.error("Error fetching package data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -75,6 +80,10 @@ export default function AdminManageTenant() {
   }, [id]);
 
   const packageCount = packages?.length || 0;
+
+  if (isLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <div className="px-4 mt-14 font-heading min-h-screen space-y-6">
