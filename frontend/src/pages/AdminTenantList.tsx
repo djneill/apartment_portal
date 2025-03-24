@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileImage } from "../tenantDashboard/components";
 import MainButton from "../components/MainButton";
 import { Search } from "lucide-react";
+import Skeleton from "../components/Skeleton";
 
 interface Tenant {
   id: number;
@@ -34,7 +35,7 @@ const AdminTenantList = () => {
       try {
         const tenants = await getData<Tenant[]>("/users");
         const activeTenants = tenants.filter(
-          (tenant) => tenant.status.name === "Active",
+          (tenant) => tenant.status.name === "Active"
         );
 
         setTenants(activeTenants);
@@ -53,20 +54,20 @@ const AdminTenantList = () => {
     return <p>Access Denied</p>;
   }
 
-  if (loading) return <p>Loading tenants...</p>;
+  if (loading) return <Skeleton />;
   if (error) return <p>{error}</p>;
 
   const filteredTenants = tenants.filter((tenant) =>
     `${tenant.firstName} ${tenant.lastName}`
       .toLowerCase()
-      .includes(searchTerm.toLowerCase()),
+      .includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastTenant = currentPage * tenantsPerPage;
   const indexOfFirstTenant = indexOfLastTenant - tenantsPerPage;
   const currentTenants = filteredTenants.slice(
     indexOfFirstTenant,
-    indexOfLastTenant,
+    indexOfLastTenant
   );
   const totalPages = Math.ceil(filteredTenants.length / tenantsPerPage);
 
@@ -149,7 +150,7 @@ const AdminTenantList = () => {
               >
                 {page}
               </button>
-            ),
+            )
           )}
 
           {/* Next Button */}

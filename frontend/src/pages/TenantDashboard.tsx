@@ -11,6 +11,7 @@ import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "../components/Skeleton";
 
 type Notifications = {
   date: string;
@@ -41,47 +42,45 @@ const TenantDashboard = () => {
   const [isLockModalOpen, setIsLockModalOpen] = useState(false);
   const { user, setUser } = useGlobalContext();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchUserDetails = async () => {
-      if (user?.userId) {
-        try {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (user?.userId) {
           const userData = await getData<UserWithUnit>(`Users/${user.userId}`);
           if (userData.unit?.unitNumber) {
             setUnitNumber(userData.unit.unitNumber);
           }
-
           setUser((prev) =>
             prev
               ? {
                   ...prev,
                   unit: userData.unit,
                 }
-              : null,
+              : null
           );
-        } catch (error) {
-          console.error("Error fetching user details:", error);
         }
+
+        const data = await getData<Notifications[]>(
+          `notification/latest?userId=${user?.userId}`
+        );
+        setNotifications(data);
+
+        const packagesAvailable = data.filter(
+          (notification) => notification.type === "Package"
+        ).length;
+        setPackageCount(packagesAvailable);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchUserDetails();
+    fetchData();
   }, [user?.userId, setUser]);
-
-  useEffect(() => {
-    (async () => {
-      const data = await getData<Notifications[]>(
-        `notification/latest?userId=${user?.userId}`,
-      );
-      setNotifications(data);
-
-      const packagesAvailable = data.filter(
-        (notification) => notification.type === "Package",
-      ).length;
-
-      setPackageCount(packagesAvailable);
-    })();
-  }, [user?.userId]);
 
   const handleNotificationClick = (index: number) => {
     const notification = notifications[index];
@@ -114,6 +113,10 @@ const TenantDashboard = () => {
   const handleViewAllGuests = () => {
     console.log("View all guests");
   };
+
+  if (isLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-background">

@@ -63,7 +63,7 @@ const SideNavbar = () => {
     { icon: <Home size={20} />, label: "Dashboard", to: "/tenantdashboard" },
     { icon: <Users size={20} />, label: "Manage Guests", to: "/guests" },
     {
-      icon: <TriangleAlert size={38} />,
+      icon: <TriangleAlert size={20} />,
       label: "Report Issue",
       to: "/reportissue",
     },
