@@ -1,25 +1,27 @@
 import { Routes, Route, redirect } from "react-router-dom";
-import Login from "./pages/shared/Login";
 import UserProfile from "./components/UserProfile";
 import ReportIssue from "./pages/guest/ReportIssue";
 import "./App.css";
 import Layout from "./components/Layout";
-import { TenantDashboard } from "./pages";
-import ManageGuests from "./pages/ManageGuests";
-import AdminDashboard from "./pages/AdminDashboard";
-import ErrorPage from "./pages/shared/Error";
+import {
+  TenantDashboard,
+  ManageGuests,
+  ManageLease,
+  AdminDashboard,
+  AdminReportIssuesPage,
+  AdminTenantList,
+  AiInsights,
+  Login,
+  ErrorPage,
+  AdminManageTenant,
+  IssueDetail,
+  RegisterTenant,
+} from "./pages";
 import { useEffect, useState } from "react";
 import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
-import AdminTenantList from "./pages/AdminTenantList";
-import AdminManageTenant from "./pages/AdminManageTenant";
-import AiInsights from "./pages/AiInsights";
-import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
-import IssueDetail from "./pages/shared/IsssueDetail";
-import ManageLease from "./pages/ManageLease";
-import RegisterTenant from "./pages/RegisterTenant";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -79,8 +81,7 @@ function App() {
         <Route path="/aiinsights" element={<AiInsights />} />
         <Route path="/reportissue/:id" element={<IssueDetail />} />
       </Route>
-      <Route element={<Layout usersRole={"Tenant"} />}>
-      </Route>
+      <Route element={<Layout usersRole={"Tenant"} />}></Route>
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/" element={<Login />} />
       <Route path="*" element={<ErrorPage />} />

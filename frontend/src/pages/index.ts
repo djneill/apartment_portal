@@ -1,2 +1,15 @@
 export { default as FormDemo } from "./FormDemo";
 export { default as TenantDashboard } from "./TenantDashboard";
+export { default as ErrorPage } from "./shared/Error";
+export { default as Home } from "./shared/Home";
+export { default as IssueDetail } from "./shared/IsssueDetail";
+export { default as Login } from "./shared/Login";
+export { default as AdminDashboard } from "./AdminDashboard";
+export { default as AdminManageTenant } from "./AdminManageTenant";
+export { default as AdminTenantList } from "./AdminTenantList";
+export { default as AiInsights } from "./AiInsights";
+export { default as ManageGuests } from "./ManageGuests";
+export { default as ManageLease } from "./ManageLease";
+export { default as RegisterTenant } from "./RegisterTenant";
+export { default as ReportIssue } from "./guest/ReportIssue";
+export { default as AdminReportIssuesPage } from "./admin/AdminReportIssuesPage";
