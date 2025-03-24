@@ -118,3 +118,18 @@ export interface Lease {
     name: string
   }
 }
+
+export type ToastType = "success" | "error" | "info" | "warning";
+
+export interface ToastOptions {
+  type?: ToastType;
+  duration?: number;
+}
+
+export interface Toast {
+  id: number;
+  message: string;
+  type: ToastType;
+  duration: number;
+}
+
