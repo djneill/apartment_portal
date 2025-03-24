@@ -1,7 +1,11 @@
-import { User } from "../types";
+import { User } from "../Types";
 import FormInput from "../components/form/FormInput";
 import FormPhoneInput from "../components/form/FormPhoneInput";
-import { FormDateInput } from "../components/form";
+import {
+  FormDateInput,
+  FormEmailInput,
+  FormPasswordInput,
+} from "../components/form";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { postData } from "../services/api";
 import { useState } from "react";
@@ -37,10 +41,8 @@ const RegisterTenant = () => {
   }
 
   const handleChange = (key: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: "" }));
   };
 
   const validate = () => {
@@ -100,8 +102,30 @@ const RegisterTenant = () => {
         endDate: "",
         unitNumber: "",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error registering tenant:", error);
+      const errorData = error.response?.data;
+
+      if (Array.isArray(errorData)) {
+        const passwordErrors = errorData
+          .map((e: { description: string }) => e.description)
+          .join(" ");
+
+        setErrors((prev) => ({
+          ...prev,
+          password: passwordErrors,
+        }));
+      } else if (errorData?.message) {
+        const message = errorData.message;
+
+        if (message.toLowerCase().includes("unit")) {
+          setErrors((prev) => ({ ...prev, unitNumber: message }));
+        } else if (message.toLowerCase().includes("email")) {
+          setErrors((prev) => ({ ...prev, email: message }));
+        } else {
+          setErrors((prev) => ({ ...prev, password: message }));
+        }
+      }
     }
   };
 
@@ -152,23 +176,22 @@ const RegisterTenant = () => {
             className="border-b-gray-300"
           />
 
-          <FormInput
+          <FormEmailInput
             label="Email"
             value={formData.email}
-            onChange={(e) => handleChange("email", e.target.value)}
+            onChange={(value) => handleChange("email", value)}
             error={errors.email}
             placeholder="Enter email"
             required
             className="border-b-gray-300"
           />
 
-          <FormInput
+          <FormPasswordInput
             label="Password"
             value={formData.password}
-            onChange={(e) => handleChange("password", e.target.value)}
+            onChange={(value) => handleChange("password", value)}
             error={errors.password}
             placeholder="Enter password"
-            required
             className="border-b-gray-300"
           />
 
@@ -192,7 +215,7 @@ const RegisterTenant = () => {
             label="Unit Number"
             value={formData.unitNumber}
             onChange={(e) => handleChange("unitNumber", e.target.value)}
-            error={errors.password}
+            error={errors.unitNumber}
             placeholder="Enter unit number"
             required
             className="border-b-gray-300"
