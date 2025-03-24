@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useGlobalContext from "../hooks/useGlobalContext";
 import LeasePreview from "../components/LeasePreview";
 import { ExternalLinkIcon } from "lucide-react";
 import MainButton from "../components/MainButton";
 import Modal from "../components/Modal";
 import LeaseSignature from "../components/LeaseSignature";
-import { getData } from "../services/api";
+import { getData, patchData } from "../services/api";
 
 
 interface LeaseStatus {
@@ -35,30 +35,45 @@ const ManageLease: React.FC = () => {
   const { user } = useGlobalContext();
   const fullName = user?.firstName + " " + user?.lastName;
 
-  const pdfUrl = "../../public/LEASE RENEWAL AGREEMENT.pdf";
-  const imageUrl = "../../public/lease-snapshot.jpg";
+  const pdfUrl = "/LEASE RENEWAL AGREEMENT.pdf";
+  const imageUrl = "/lease-snapshot.jpg";
 
-  const fetchLeaseAgreements = async () => {
+  const fetchLeaseAgreements = useCallback(async () => {
     if (!user?.userId) {
       console.error("User not logged in");
       return;
     }
+    try {
+      const response: Lease[] = await getData(`LeaseAgreements?userId=${user.userId}`);
+      if (response.length) {
+        setLeaseAgreement(response[response.length - 1]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, [user]);
+
+  const updateLeaseAgreement = async (leaseAgreement: Lease) => {
+    const todayDate = new Date().toISOString().slice(0, 10)
+
+    const newEnd = new Date();
+    newEnd.setFullYear(newEnd.getFullYear() + 1);
+    const newEndDate = newEnd.toISOString().slice(0, 10);
+
+    const payload = {
+      id: leaseAgreement.id,
+      signedOn: todayDate,
+      startDate: todayDate,
+      endDate: newEndDate,
+      statusId: 1,
+    }
 
     try {
-      const response: Lease[] = await getData(
-        `LeaseAgreements?userId=${user?.userId}`,
-      );
-      console.log(response, response[response.length - 1])
-      setLeaseAgreement(response[response.length - 1])
+      await patchData(`LeaseAgreements/${leaseAgreement.id}`, payload)
+      console.log('Lease agreement updated with payload:', payload);
     } catch (error) {
       console.error(error)
     }
-  }
-
-  const updateLeaseAgreement = async (leaseAgreement: Lease) => {
-    //TODO: ask how long for renewal?
-    const todayDate = new Date().toISOString().slice(0, 10)
-    console.log(todayDate, leaseAgreement, isSigned)
 
   }
 
@@ -71,7 +86,7 @@ const ManageLease: React.FC = () => {
 
   useEffect(() => {
     fetchLeaseAgreements()
-  }, [])
+  }, [fetchLeaseAgreements])
 
 
   return (
