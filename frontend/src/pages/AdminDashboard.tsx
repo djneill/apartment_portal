@@ -87,7 +87,7 @@ export default function AdminDashboard() {
     {
       icon: <TriangleAlert size={38} />,
       label: "Manage Issues",
-      to: "/",
+      to: "/issues",
     },
     {
       icon: <UserRoundPlus size={38} />,

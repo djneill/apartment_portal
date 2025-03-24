@@ -96,9 +96,8 @@ const AdminTenantList = () => {
         {currentTenants.map((tenant, index) => (
           <div
             key={tenant.id}
-            className={`flex items-center justify-between p-4 ${
-              index % 2 === 0 ? "bg-white" : "bg-gray-100"
-            }`}
+            className={`flex items-center justify-between p-4 ${index % 2 === 0 ? "bg-white" : "bg-[#F0F4F3]"
+              }`}
           >
             {/* Tenant Info */}
             <div className="flex items-center space-x-3 flex-grow">
@@ -141,11 +140,10 @@ const AdminTenantList = () => {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`w-8 h-8 flex items-center justify-center rounded-full font-medium ${
-                  currentPage === page
+                className={`w-8 h-8 flex items-center justify-center rounded-full font-medium ${currentPage === page
                     ? "bg-black text-white"
                     : "text-gray-600 hover:text-black"
-                }`}
+                  }`}
               >
                 {page}
               </button>
