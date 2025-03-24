@@ -3,6 +3,8 @@ import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../Types";
+import Modal from "../../components/Modal";
+import { User, Calendar, FileText } from "lucide-react"; 
 
 interface IssuesListProps {
   userId?: number;
@@ -14,6 +16,9 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
   const [error, setError] = useState<string | null>(null);
   const { user: globalUser } = useGlobalContext();
   const finalUserId = userId ?? globalUser?.userId;
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+
   useEffect(() => {
     const fetchIssues = async () => {
       if (!finalUserId) return;
@@ -24,15 +29,11 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
         );
         const mappedIssues = data.map((issue: ApiIssue) => {
           const currentDate = new Date();
-
           const issueDate = new Date(issue.createdOn);
-
           const timeDifference = currentDate.getTime() - issueDate.getTime();
-
           const daysDifference = timeDifference / (1000 * 3600 * 24);
-          //if the issue is from today or within the last 3 days
           const isNew = daysDifference <= 3;
-
+          const status = issue.status.name === "Active" ? "Created" : "Resolved";
           return {
             id: issue.id,
             date: issueDate.toLocaleDateString(),
@@ -40,6 +41,9 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
             type: issue.issueType.name,
             isNew: isNew,
             disabled: issue.status.id !== 1,
+            status: status,
+            created: issue.createdOn,
+            user: `${issue.user.firstName} ${issue.user.lastName}`,
           };
         });
         setIssues(mappedIssues);
@@ -59,7 +63,16 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
   };
 
   const handleIssueClick = (issueId: number) => {
-    console.log(`Clicked on issue ${issueId}`);
+    const issue = issues.find((issue) => issue.id === issueId);
+    if (issue) {
+      setSelectedIssue(issue);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedIssue(null);
   };
 
   if (loading) {
@@ -91,12 +104,13 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
             title={issue.title}
             type={issue.type}
             isNew={issue.isNew}
-            disabled={issue.disabled}
+            status={issue.status}
             onClick={() => !issue.disabled && handleIssueClick(issue.id)}
           />
         ))}
       </div>
 
+      {/* Scrollable Container for Mobile */}
       <div className="md:hidden overflow-x-auto whitespace-nowrap scroll-smooth bg-background">
         <div className="inline-flex gap-5">
           {issues.map((issue) => (
@@ -106,12 +120,69 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
               title={issue.title}
               type={issue.type}
               isNew={issue.isNew}
-              disabled={issue.disabled}
+              status={issue.status}
               onClick={() => !issue.disabled && handleIssueClick(issue.id)}
             />
           ))}
         </div>
       </div>
+
+      {selectedIssue && (
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          <h2 className="text-xl font-semibold mb-4">{selectedIssue.type}</h2>
+
+          <div className="flex items-center mb-4">
+            <div
+              className={`p-3 mr-2 text-center text-xs rounded-full w-24 ${
+                selectedIssue.status === "Resolved"
+                  ? "bg-green-100 text-green-800"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {selectedIssue.status}
+            </div>
+            {selectedIssue.isNew && (
+              <div className="p-3 text-xs text-white bg-orange-300 rounded-full w-24 text-center">
+                New Issue
+              </div>
+            )}
+          </div>
+
+          {/* Details Section with Icon */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="w-5 h-5 text-gray-600" />
+              <h3 className="font-semibold">Details:</h3>
+            </div>
+            <p className="pl-7">{selectedIssue.title}</p>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Calendar className="w-5 h-5 text-gray-600" />
+              <h3 className="font-semibold">Created on:</h3>
+            </div>
+            <p className="pl-7">{selectedIssue.date}</p>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-2">
+              <User className="w-5 h-5 text-gray-600" />
+              <h3 className="font-semibold">Created by:</h3>
+            </div>
+            <p className="pl-7">{selectedIssue.user}</p>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <button
+              className="bg-gray-200 text-gray-800 px-8 py-2 rounded-full"
+              onClick={handleCloseModal}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      )}
     </section>
   );
 };
