@@ -1,7 +1,6 @@
 import {
   TriangleAlert,
   UserRoundPlus,
-  Lock,
   FilePen,
   ArrowRight,
 } from "lucide-react";
@@ -95,7 +94,6 @@ export default function AdminDashboard() {
       label: "Register Tenant",
       to: "/admin/registertenant",
     },
-    { icon: <Lock size={38} />, label: "Security", to: "/" },
     { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
   ];
 
@@ -115,7 +113,7 @@ export default function AdminDashboard() {
           onViewAllClick={() => console.log("View all clicked")}
         />
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           {quickActions.map((action, index) => (
             <QuickIconButton
               key={index}

@@ -96,7 +96,7 @@ export default function AdminManageTenant() {
         <LeaseCountdown userId={Number(id)} />
       </div>
 
-      <PackageCard packageCount={packageCount} userId={Number(id)} />
+      <PackageCard packageCount={packageCount} userId={Number(id)} unitNumber={tenant?.unit?.unitNumber} unitId={tenant?.unit?.id}/>
 
       <IssuesList userId={Number(id)} />
 
