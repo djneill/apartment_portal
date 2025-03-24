@@ -3,7 +3,7 @@ import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData, patchData } from "../../services/api";
 import { ApiIssue, Issue } from "../../Types";
-import Modal from "../../components/Modal"; 
+import Modal from "../../components/Modal";
 import { User, Calendar, FileText } from "lucide-react"; // Import the required icons
 
 const IssuesListAdmin: React.FC = () => {
@@ -26,7 +26,8 @@ const IssuesListAdmin: React.FC = () => {
           const timeDifference = currentDate.getTime() - issueDate.getTime();
           const daysDifference = timeDifference / (1000 * 3600 * 24);
           const isNew = daysDifference <= 3;
-          const status = issue.status.name === "Active" ? "Created" : "Resolved";
+          const status =
+            issue.status.name === "Active" ? "Created" : "Resolved";
           return {
             id: issue.id,
             date: issueDate.toLocaleDateString(),
@@ -34,7 +35,7 @@ const IssuesListAdmin: React.FC = () => {
             type: issue.issueType.name,
             isNew: isNew,
             disabled: issue.status.id !== 1,
-            status: status, 
+            status: status,
             created: issue.createdOn,
             user: `${issue.user.firstName} ${issue.user.lastName}`,
           };
@@ -80,8 +81,8 @@ const IssuesListAdmin: React.FC = () => {
         prevIssues.map((issue) =>
           issue.id === selectedIssue.id
             ? { ...issue, status: "Resolved", disabled: true }
-            : issue
-        )
+            : issue,
+        ),
       );
       setIsModalOpen(false);
       setSelectedIssue(null);
@@ -170,7 +171,8 @@ const IssuesListAdmin: React.FC = () => {
               <FileText className="w-5 h-5 text-gray-600" />
               <h3 className="font-semibold">Details:</h3>
             </div>
-            <p className="pl-7">{selectedIssue.title}</p> {/* Add padding to align text with the icon */}
+            <p className="pl-7">{selectedIssue.title}</p>{" "}
+            {/* Add padding to align text with the icon */}
           </div>
 
           {/* Created On Section with Icon */}
@@ -179,7 +181,8 @@ const IssuesListAdmin: React.FC = () => {
               <Calendar className="w-5 h-5 text-gray-600" />
               <h3 className="font-semibold">Created on:</h3>
             </div>
-            <p className="pl-7">{selectedIssue.date}</p> {/* Add padding to align text with the icon */}
+            <p className="pl-7">{selectedIssue.date}</p>{" "}
+            {/* Add padding to align text with the icon */}
           </div>
 
           {/* Created By Section with Icon */}
@@ -188,15 +191,16 @@ const IssuesListAdmin: React.FC = () => {
               <User className="w-5 h-5 text-gray-600" />
               <h3 className="font-semibold">Created by:</h3>
             </div>
-            <p className="pl-7">{selectedIssue.user}</p> {/* Add padding to align text with the icon */}
+            <p className="pl-7">{selectedIssue.user}</p>{" "}
+            {/* Add padding to align text with the icon */}
           </div>
-     
+
           <div className="flex justify-end mt-4">
             <button
-                className="bg-green-200 text-black px-8 py-2 rounded-full"
-                onClick={fixIssue}
-              >
-                Mark as Resolved
+              className="bg-green-200 text-black px-8 py-2 rounded-full"
+              onClick={fixIssue}
+            >
+              Mark as Resolved
             </button>
             <button
               className="bg-gray-200 text-gray-800 px-8 py-2 rounded-full"
@@ -206,7 +210,7 @@ const IssuesListAdmin: React.FC = () => {
             </button>
           </div>
         </Modal>
-)}
+      )}
     </section>
   );
 };

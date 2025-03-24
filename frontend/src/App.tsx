@@ -16,7 +16,7 @@ import {
   AdminManageTenant,
   IssueDetail,
   RegisterTenant,
-  AdminManageLease
+  AdminManageLease,
 } from "./pages";
 import { useEffect, useState } from "react";
 import { CurrentUserResponseType } from "./Types";
@@ -31,9 +31,8 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const currentUserResponse = await getData<CurrentUserResponseType>(
-          "users/currentuser"
-        );
+        const currentUserResponse =
+          await getData<CurrentUserResponseType>("users/currentuser");
 
         if (!currentUserResponse.id) {
           setIsLoading(false);

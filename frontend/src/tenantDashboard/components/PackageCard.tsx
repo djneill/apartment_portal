@@ -51,7 +51,7 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
     setIsLoading(true);
     try {
       const data = await getData<PackageData[]>(
-        `Package?userId=${finalUserId}`
+        `Package?userId=${finalUserId}`,
       );
       setPackageData(data);
     } catch (error) {
@@ -101,7 +101,7 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
   }, [clicks, hideSbPackage]);
 
   const arrivedPackage = packageData?.find(
-    (pkg) => pkg.status.name === "Arrived"
+    (pkg) => pkg.status.name === "Arrived",
   );
 
   const lockerDisplay = arrivedPackage ? arrivedPackage.lockerNumber : "OFC";

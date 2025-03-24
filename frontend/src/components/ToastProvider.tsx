@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useContext,
-} from "react"
+} from "react";
 import { ToastOptions, Toast } from "../Types";
 import ToastContainer from "./ToastContainer";
 
@@ -26,7 +26,6 @@ export const useToast = () => {
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const addToast = useCallback(
@@ -36,7 +35,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
       const { type = "info", duration = 3000 } = options;
-
 
       const id = Date.now();
       const newToast: Toast = { id, message, type, duration };
@@ -49,7 +47,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
         setToasts((prev) => prev.filter((toast) => toast.id !== id));
       }, duration);
     },
-    []
+    [],
   );
 
   // Remove a toast manually.
@@ -57,13 +55,11 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
-  //memoize the  
-  const contextValue = useMemo(() => ({ addToast, removeToast }), [
-    addToast,
-    removeToast,
-  ]);
-
-
+  //memoize the
+  const contextValue = useMemo(
+    () => ({ addToast, removeToast }),
+    [addToast, removeToast],
+  );
 
   return (
     <ToastContext.Provider value={contextValue}>
@@ -72,5 +68,5 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
       <ToastContainer toasts={toasts} removeToast={removeToast} />
     </ToastContext.Provider>
   );
-}
-export default ToastProvider
+};
+export default ToastProvider;

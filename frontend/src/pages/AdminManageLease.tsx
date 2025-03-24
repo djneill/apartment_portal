@@ -36,8 +36,12 @@ export const AdminManageLease = () => {
         const today = new Date();
         // Sort by the absolute difference between endDate and today
         const sortedLeaseAgreements = data.sort((a, b) => {
-          const diffA = Math.abs(new Date(a.endDate).getTime() - today.getTime());
-          const diffB = Math.abs(new Date(b.endDate).getTime() - today.getTime());
+          const diffA = Math.abs(
+            new Date(a.endDate).getTime() - today.getTime(),
+          );
+          const diffB = Math.abs(
+            new Date(b.endDate).getTime() - today.getTime(),
+          );
           return diffA - diffB;
         });
         setLeaseAgreements(sortedLeaseAgreements);
@@ -56,12 +60,15 @@ export const AdminManageLease = () => {
   if (error) return <p>{error}</p>;
 
   const filteredAgreements = leaseAgreements.filter((agreement) =>
-    agreement.endDate.toLowerCase().includes(searchTerm.toLowerCase())
+    agreement.endDate.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const indexOfLastAgreement = currentPage * agreementsPerPage;
   const indexOfFirstAgreement = indexOfLastAgreement - agreementsPerPage;
-  const currentAgreements = filteredAgreements.slice(indexOfFirstAgreement, indexOfLastAgreement);
+  const currentAgreements = filteredAgreements.slice(
+    indexOfFirstAgreement,
+    indexOfLastAgreement,
+  );
   const totalPages = Math.ceil(filteredAgreements.length / agreementsPerPage);
 
   return (
@@ -90,19 +97,26 @@ export const AdminManageLease = () => {
         {currentAgreements.map((agreement, index) => (
           <div
             key={agreement.id}
-            className={`flex items-center justify-between p-4 ${index % 2 === 0 ? "bg-white" : "bg-[#F0F4F3]"
-              }`}
+            className={`flex items-center justify-between p-4 ${
+              index % 2 === 0 ? "bg-white" : "bg-[#F0F4F3]"
+            }`}
           >
             {/* Agreement Info */}
             <div>
               <p className="font-medium text-lg">Lease #{agreement.id}</p>
-              <p className="text-gray-500 text-sm">End Date: {agreement.endDate}</p>
-              <p className="text-gray-500 text-sm">Status: {agreement.status.name}</p>
+              <p className="text-gray-500 text-sm">
+                End Date: {agreement.endDate}
+              </p>
+              <p className="text-gray-500 text-sm">
+                Status: {agreement.status.name}
+              </p>
             </div>
 
             {/* Manage Button */}
             <MainButton
-              onClick={() => navigate(`/admin/manageTenant/${agreement.unitUser.userId}`)}
+              onClick={() =>
+                navigate(`/admin/manageTenant/${agreement.unitUser.userId}`)
+              }
               className="bg-black text-white px-4 py-1.5 rounded-full text-sm !m-0"
             >
               Manage
@@ -122,21 +136,26 @@ export const AdminManageLease = () => {
             Previous
           </button>
 
-          {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`w-8 h-8 flex items-center justify-center rounded-full font-medium ${currentPage === page
-                ? "bg-black text-white"
-                : "text-gray-600 hover:text-black"
+          {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+            (page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-8 h-8 flex items-center justify-center rounded-full font-medium ${
+                  currentPage === page
+                    ? "bg-black text-white"
+                    : "text-gray-600 hover:text-black"
                 }`}
-            >
-              {page}
-            </button>
-          ))}
+              >
+                {page}
+              </button>
+            ),
+          )}
 
           <button
-            onClick={() => setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))}
+            onClick={() =>
+              setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev))
+            }
             disabled={currentPage >= totalPages}
             className="text-gray-500 hover:text-black disabled:opacity-50"
           >
@@ -146,6 +165,6 @@ export const AdminManageLease = () => {
       )}
     </div>
   );
-}
+};
 
-export default AdminManageLease
+export default AdminManageLease;

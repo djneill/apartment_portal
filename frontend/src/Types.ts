@@ -105,18 +105,18 @@ export interface Packages {
 
 export interface Lease {
   id: number;
-  startDate: string,
-  endDate: string,
-  signedOn: string,
-  link: string,
+  startDate: string;
+  endDate: string;
+  signedOn: string;
+  link: string;
   unitUser: {
-    userId: number,
-    unitId: number,
-  },
+    userId: number;
+    unitId: number;
+  };
   status: {
-    id: number,
-    name: string
-  }
+    id: number;
+    name: string;
+  };
 }
 
 export type ToastType = "success" | "error" | "info" | "warning";
@@ -132,4 +132,3 @@ export interface Toast {
   type: ToastType;
   duration: number;
 }
-

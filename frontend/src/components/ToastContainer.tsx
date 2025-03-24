@@ -11,7 +11,7 @@ interface ToastItemProps {
   onClose: () => void;
 }
 
-//renders toast 
+//renders toast
 const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
   let bgColor = "bg-blue-500";
   if (toast.type === "success") bgColor = "bg-green-500";
@@ -28,7 +28,10 @@ const ToastItem: React.FC<ToastItemProps> = ({ toast, onClose }) => {
   );
 };
 
-const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeToast }) => {
+const ToastContainer: React.FC<ToastContainerProps> = ({
+  toasts,
+  removeToast,
+}) => {
   //render toast outside of main dom hierarchy
   const portalElement =
     document.getElementById("toast-root") || createPortalRoot(); //if portal root doesn't exist create it
@@ -36,14 +39,18 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, removeToast }) 
   return ReactDOM.createPortal(
     <div className="fixed top-4 right-4 space-y-2 z-50">
       {toasts.map((toast) => (
-        <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
+        <ToastItem
+          key={toast.id}
+          toast={toast}
+          onClose={() => removeToast(toast.id)}
+        />
       ))}
     </div>,
-    portalElement
+    portalElement,
   );
 };
 
-//creates a div so the toast can attach to it 
+//creates a div so the toast can attach to it
 function createPortalRoot(): HTMLElement {
   const root = document.createElement("div");
   root.id = "toast-root";
