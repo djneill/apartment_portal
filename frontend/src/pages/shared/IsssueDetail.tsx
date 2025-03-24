@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getData } from "../../services/api";
-import { ApiIssue } from "../../types";
+import { ApiIssue } from "../../Types";
 import { AlertCircle, Bug, Calendar, User } from "lucide-react";
 
 const IssueDetail: React.FC = () => {
