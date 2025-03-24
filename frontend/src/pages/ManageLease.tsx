@@ -7,7 +7,6 @@ import Modal from "../components/Modal";
 import LeaseSignature from "../components/LeaseSignature";
 import { getData, patchData } from "../services/api";
 
-
 interface LeaseStatus {
   id: number;
   name: string;
@@ -29,8 +28,8 @@ interface Lease {
 }
 
 const ManageLease: React.FC = () => {
-  const [leaseAgreement, setLeaseAgreement] = useState<Lease>()
-  const [isSigned, setIsSigned] = useState<boolean>(false)
+  const [leaseAgreement, setLeaseAgreement] = useState<Lease>();
+  const [isSigned, setIsSigned] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { user } = useGlobalContext();
   const fullName = user?.firstName + " " + user?.lastName;
@@ -44,7 +43,9 @@ const ManageLease: React.FC = () => {
       return;
     }
     try {
-      const response: Lease[] = await getData(`LeaseAgreements?userId=${user.userId}`);
+      const response: Lease[] = await getData(
+        `LeaseAgreements?userId=${user.userId}`,
+      );
       if (response.length) {
         setLeaseAgreement(response[response.length - 1]);
       }
@@ -54,7 +55,7 @@ const ManageLease: React.FC = () => {
   }, [user]);
 
   const updateLeaseAgreement = async (leaseAgreement: Lease) => {
-    const todayDate = new Date().toISOString().slice(0, 10)
+    const todayDate = new Date().toISOString().slice(0, 10);
 
     const newEnd = new Date();
     newEnd.setFullYear(newEnd.getFullYear() + 1);
@@ -66,28 +67,26 @@ const ManageLease: React.FC = () => {
       startDate: todayDate,
       endDate: newEndDate,
       statusId: 1,
-    }
+    };
 
     try {
-      await patchData(`LeaseAgreements/${leaseAgreement.id}`, payload)
-      console.log('Lease agreement updated with payload:', payload);
+      await patchData(`LeaseAgreements/${leaseAgreement.id}`, payload);
+      console.log("Lease agreement updated with payload:", payload);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
-  }
+  };
 
   const handleConfirmation = () => {
     if (leaseAgreement && isSigned) {
-      setIsModalOpen(false)
-      updateLeaseAgreement(leaseAgreement)
+      setIsModalOpen(false);
+      updateLeaseAgreement(leaseAgreement);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchLeaseAgreements()
-  }, [fetchLeaseAgreements])
-
+    fetchLeaseAgreements();
+  }, [fetchLeaseAgreements]);
 
   return (
     <div className="w-full min-h-screen p-5 md:p-6">
@@ -137,7 +136,11 @@ const ManageLease: React.FC = () => {
             advisor prior to signing.
           </p>
 
-          <LeaseSignature fullName={fullName} isSigned={isSigned} setIsSigned={setIsSigned} />
+          <LeaseSignature
+            fullName={fullName}
+            isSigned={isSigned}
+            setIsSigned={setIsSigned}
+          />
 
           <MainButton
             onClick={handleConfirmation}

@@ -23,14 +23,14 @@ export default function ManageGuests() {
       }
       try {
         const response = await getData<Guest[]>(
-          `/Guest?userId=${user?.userId}`
+          `/Guest?userId=${user?.userId}`,
         );
 
         const activeGuests = response.filter(
-          (guest) => guest.expiration > new Date().toISOString()
+          (guest) => guest.expiration > new Date().toISOString(),
         );
         const inactiveGuests = response.filter(
-          (guest) => guest.expiration <= new Date().toISOString()
+          (guest) => guest.expiration <= new Date().toISOString(),
         );
         setGuests({ activeGuests, inactiveGuests });
       } catch (error) {
@@ -54,14 +54,14 @@ export default function ManageGuests() {
         });
 
         const updatedGuests = await getData<Guest[]>(
-          `/Guest?userId=${user?.userId}`
+          `/Guest?userId=${user?.userId}`,
         );
 
         const activeGuests = updatedGuests.filter(
-          (guest) => new Date(guest.expiration) > new Date()
+          (guest) => new Date(guest.expiration) > new Date(),
         );
         const inactiveGuests = updatedGuests.filter(
-          (guest) => new Date(guest.expiration) <= new Date()
+          (guest) => new Date(guest.expiration) <= new Date(),
         );
 
         setGuests({ activeGuests, inactiveGuests });
@@ -71,7 +71,7 @@ export default function ManageGuests() {
           userId: user?.userId,
         });
         const response = await getData<Guest[]>(
-          `/Guest?userId=${user?.userId}`
+          `/Guest?userId=${user?.userId}`,
         );
         console.log("API Response:", response);
 
@@ -81,10 +81,10 @@ export default function ManageGuests() {
         }
         const activeGuests = response.filter(
           (guest) =>
-            guest.expiration && new Date(guest.expiration) >= new Date()
+            guest.expiration && new Date(guest.expiration) >= new Date(),
         );
         const inactiveGuests = response.filter(
-          (guest) => new Date(guest.expiration) < new Date()
+          (guest) => new Date(guest.expiration) < new Date(),
         );
         setGuests({
           activeGuests: [...activeGuests, newGuest],

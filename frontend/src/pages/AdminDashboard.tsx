@@ -67,8 +67,9 @@ export default function AdminDashboard() {
   const renderInsights = insights.map((insight) => (
     <div
       key={insight.id}
-      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${viewAllInsights ? "w-full" : "w-72"
-        }`}
+      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${
+        viewAllInsights ? "w-full" : "w-72"
+      }`}
       style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
     >
       <p className="font-semibold mb-1">{insight.title}</p>
@@ -95,7 +96,11 @@ export default function AdminDashboard() {
       to: "/admin/registertenant",
     },
     { icon: <Lock size={38} />, label: "Security", to: "/" },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/admin/manageLease" },
+    {
+      icon: <FilePen size={38} />,
+      label: "Manage Lease",
+      to: "/admin/manageLease",
+    },
   ];
 
   return (
@@ -141,8 +146,9 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""
-              }`}
+            className={`flex w-full overflow-scroll space-x-3 py-2 ${
+              viewAllInsights ? "flex-col  space-y-2 " : ""
+            }`}
           >
             {renderInsights}
           </div>

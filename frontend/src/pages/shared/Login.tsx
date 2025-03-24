@@ -34,9 +34,8 @@ function Login() {
         return;
       }
 
-      const currentUserResponse = await getData<CurrentUserResponseType>(
-        "users/currentuser"
-      );
+      const currentUserResponse =
+        await getData<CurrentUserResponseType>("users/currentuser");
 
       const roles = await getUserRoles();
       console.log("Roles:", roles);

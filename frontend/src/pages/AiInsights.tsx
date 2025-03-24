@@ -91,12 +91,12 @@ const InsightsPage = () => {
 
       const updatedInsights = {
         currentInsights: insights.currentInsights.filter(
-          (insight) => insight.id !== selectedInsight.id
+          (insight) => insight.id !== selectedInsight.id,
         ),
         pastInsights: [
           updatedInsight,
           ...insights.pastInsights.filter(
-            (insight) => insight.id !== selectedInsight.id
+            (insight) => insight.id !== selectedInsight.id,
           ),
         ],
       };

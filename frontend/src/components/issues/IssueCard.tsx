@@ -15,7 +15,7 @@ const IssueCard: React.FC<IssueCardProps> = ({
   title,
   isNew = false,
   type = "",
-  status ,
+  status,
   onClick,
 }) => {
   return (
@@ -28,17 +28,20 @@ const IssueCard: React.FC<IssueCardProps> = ({
             {date}
           </div>
 
-        {isNew && ( 
-            <div className={`p-3 text-xs bg-blue-100 text-blue-800 rounded-full w-24 text-center`}>
-             New Issue
+          {isNew && (
+            <div
+              className={`p-3 text-xs bg-blue-100 text-blue-800 rounded-full w-24 text-center`}
+            >
+              New Issue
             </div>
-        )}
-         {status=="Resolved" && ( 
-            <div className={`p-3 text-xs  bg-green-100 text-green-800 rounded-full w-24 text-center`}>
-             Resolved
-          </div>
-        )}
-          
+          )}
+          {status == "Resolved" && (
+            <div
+              className={`p-3 text-xs  bg-green-100 text-green-800 rounded-full w-24 text-center`}
+            >
+              Resolved
+            </div>
+          )}
         </div>
 
         <button

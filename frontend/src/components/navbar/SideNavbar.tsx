@@ -50,7 +50,11 @@ const SideNavbar = () => {
       label: "Manage Tenants",
       to: "/admin/tenantlist",
     },
-    { icon: <TriangleAlert size={20} />, label: "Manage Issues", to: "/issues" },
+    {
+      icon: <TriangleAlert size={20} />,
+      label: "Manage Issues",
+      to: "/issues",
+    },
     { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 

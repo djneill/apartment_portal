@@ -4,11 +4,13 @@ interface SignatureFieldProps {
   fullName: string;
   isSigned: boolean;
   setIsSigned: React.Dispatch<React.SetStateAction<boolean>>;
-
 }
 
-const LeaseSignature: React.FC<SignatureFieldProps> = ({ fullName, isSigned, setIsSigned }) => {
-
+const LeaseSignature: React.FC<SignatureFieldProps> = ({
+  fullName,
+  isSigned,
+  setIsSigned,
+}) => {
   const handleClick = () => {
     if (!isSigned) {
       setIsSigned(true);

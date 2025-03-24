@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { getData } from "../services/api";
 import { Lease } from "../Types";
 import useGlobalContext from "../hooks/useGlobalContext";
+import { useToast } from "./ToastProvider";
 
 interface LeaseCountdownProps {
   userId?: number;
 }
 
 export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
+  const { addToast } = useToast();
+
+  const handleClick = () => {
+    addToast("Tenant has been sent a notification!", {
+      type: "info",
+      duration: 3000,
+    });
+  };
+
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -27,10 +37,10 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
     const fetchData = async () => {
       try {
         const response = await getData<Lease[]>(
-          `LeaseAgreements?userId=${finalUserId}`
+          `LeaseAgreements?userId=${finalUserId}`,
         );
         const activeLease = response.find(
-          (lease) => lease.status?.name === "Active"
+          (lease) => lease.status?.name === "Active",
         );
 
         if (activeLease?.endDate) {
@@ -77,7 +87,10 @@ export default function LeaseCountdown({ userId }: LeaseCountdownProps) {
     <div className="w-full bg-black font-heading rounded-2xl p-5 md:w-1/2">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-white">Lease Countdown</h1>
-        <button className="bg-white text-black rounded-full px-4 py-2 font-semibold text-sm cursor-pointer">
+        <button
+          className="bg-white text-black rounded-full px-4 py-2 font-semibold text-sm cursor-pointer"
+          onClick={handleClick}
+        >
           Send Notification
         </button>
       </div>

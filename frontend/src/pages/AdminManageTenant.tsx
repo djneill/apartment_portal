@@ -27,7 +27,7 @@ export default function AdminManageTenant() {
     const fetchGuests = async () => {
       try {
         const response = await getData<Guest[]>(
-          `/Guest?userId=${id}&active=true`
+          `/Guest?userId=${id}&active=true`,
         );
 
         const activeGuests = response;
@@ -46,7 +46,7 @@ export default function AdminManageTenant() {
     const fetchUser = async () => {
       try {
         const response = await getData<{ user: User; unit: User["unit"] }>(
-          `/Users/${id}`
+          `/Users/${id}`,
         );
         const userWithUnit: User = {
           ...response.user,
@@ -61,7 +61,7 @@ export default function AdminManageTenant() {
     const fetchPackages = async () => {
       try {
         const response = await getData<Packages[]>(
-          `Package/?userId=${id}&statusId=6`
+          `Package/?userId=${id}&statusId=6`,
         );
         setPackages(response);
       } catch (error) {

@@ -4,7 +4,7 @@ import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../Types";
 import Modal from "../../components/Modal";
-import { User, Calendar, FileText } from "lucide-react"; 
+import { User, Calendar, FileText } from "lucide-react";
 
 interface IssuesListProps {
   userId?: number;
@@ -25,7 +25,7 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
 
       try {
         const data = await getData<ApiIssue[]>(
-          `Issues?userId=${finalUserId}&recordRetrievalCount=10&statusId=0&orderByDesc=true`
+          `Issues?userId=${finalUserId}&recordRetrievalCount=10&statusId=0&orderByDesc=true`,
         );
         const mappedIssues = data.map((issue: ApiIssue) => {
           const currentDate = new Date();
@@ -33,7 +33,8 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
           const timeDifference = currentDate.getTime() - issueDate.getTime();
           const daysDifference = timeDifference / (1000 * 3600 * 24);
           const isNew = daysDifference <= 3;
-          const status = issue.status.name === "Active" ? "Created" : "Resolved";
+          const status =
+            issue.status.name === "Active" ? "Created" : "Resolved";
           return {
             id: issue.id,
             date: issueDate.toLocaleDateString(),
