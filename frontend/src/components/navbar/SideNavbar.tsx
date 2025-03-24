@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Users,
-  AlertCircle,
+  TriangleAlert,
   Brain,
   // Moon,
   // Settings,
@@ -50,7 +50,7 @@ const SideNavbar = () => {
       label: "Manage Tenants",
       to: "/admin/tenantlist",
     },
-    { icon: <AlertCircle size={20} />, label: "Manage Issues", to: "/issues" },
+    { icon: <TriangleAlert size={20} />, label: "Manage Issues", to: "/issues" },
     { icon: <Brain size={20} />, label: "AI Insights", to: "/aiinsights" },
   ];
 
@@ -59,7 +59,7 @@ const SideNavbar = () => {
     { icon: <Home size={20} />, label: "Dashboard", to: "/tenantdashboard" },
     { icon: <Users size={20} />, label: "Manage Guests", to: "/guests" },
     {
-      icon: <AlertCircle size={20} />,
+      icon: <TriangleAlert size={38} />,
       label: "Report Issue",
       to: "/reportissue",
     },
