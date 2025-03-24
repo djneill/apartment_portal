@@ -16,6 +16,7 @@ import {
   AdminManageTenant,
   IssueDetail,
   RegisterTenant,
+  AdminManageLease
 } from "./pages";
 import { useEffect, useState } from "react";
 import { CurrentUserResponseType } from "./Types";
@@ -71,6 +72,7 @@ function App() {
         <Route path="/aiinsights" element={<AiInsights />} />
         <Route path="/issues/:id" element={<IssueDetail />} />
         <Route path="/admin/registertenant" element={<RegisterTenant />} />
+        <Route path="/admin/manageLease" element={<AdminManageLease />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
