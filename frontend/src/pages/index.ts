@@ -13,3 +13,4 @@ export { default as ManageLease } from "./ManageLease";
 export { default as RegisterTenant } from "./RegisterTenant";
 export { default as ReportIssue } from "./guest/ReportIssue";
 export { default as AdminReportIssuesPage } from "./admin/AdminReportIssuesPage";
+export { default as AdminManageLease } from "./AdminManageLease.tsx";
