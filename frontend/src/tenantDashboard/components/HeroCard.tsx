@@ -57,7 +57,7 @@ const HeroCard = ({
               {notification.type === "Issue" && onActionClick && (
                 <button
                   onClick={() => onActionClick(index)}
-                  className="text-white hover:text-white transition-colors text-normal px-2 py-1 bg-accent rounded-2xl"
+                  className="text-white hover:text-white cursor-pointer transition-colors text-normal px-2 py-1 bg-accent rounded-2xl"
                 >
                   View
                 </button>
