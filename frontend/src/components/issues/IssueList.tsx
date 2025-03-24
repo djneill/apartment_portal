@@ -105,7 +105,7 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
             type={issue.type}
             isNew={issue.isNew}
             status={issue.status}
-            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+            onClick={() => handleIssueClick(issue.id)}
           />
         ))}
       </div>
@@ -121,7 +121,7 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
               type={issue.type}
               isNew={issue.isNew}
               status={issue.status}
-              onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+              onClick={() => handleIssueClick(issue.id)}
             />
           ))}
         </div>
@@ -142,7 +142,7 @@ const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
               {selectedIssue.status}
             </div>
             {selectedIssue.isNew && (
-              <div className="p-3 text-xs text-white bg-orange-300 rounded-full w-24 text-center">
+              <div className="p-3 text-xs bg-blue-100 text-blue-800 rounded-full w-24 text-center">
                 New Issue
               </div>
             )}
