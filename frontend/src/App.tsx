@@ -18,6 +18,7 @@ import AdminTenantList from "./pages/AdminTenantList";
 import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
 import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
+import IssueDetail from "./pages/shared/IsssueDetail";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -66,6 +67,7 @@ function App() {
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
+        <Route path="/issues/:id" element={<IssueDetail />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
@@ -73,6 +75,9 @@ function App() {
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
         <Route path="/manage" element={<AdminManageTenant />} />
         <Route path="/aiinsights" element={<AiInsights />} />
+        <Route path="/reportissue/:id" element={<IssueDetail />} />
+      </Route>
+      <Route element={<Layout usersRole={"Tenant"} />}>
       </Route>
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/" element={<Login />} />

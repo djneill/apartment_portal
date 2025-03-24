@@ -3,13 +3,15 @@ import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
 import { ApiIssue, Issue } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 const IssuesListAdmin: React.FC = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { user: globalUser } = useGlobalContext();
-  console.log(globalUser);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchIssues = async () => {
       if (!globalUser?.userId) return;
@@ -51,10 +53,10 @@ const IssuesListAdmin: React.FC = () => {
   const handleViewAll = () => {
     console.log("Navigate to all issues page");
   };
-
   const handleIssueClick = (issueId: number) => {
-    console.log(`Clicked on issue ${issueId}`);
+    navigate(`/issues/${issueId}`);
   };
+
 
   if (loading) {
     return <div>Loading...</div>;
@@ -86,7 +88,7 @@ const IssuesListAdmin: React.FC = () => {
             type={issue.type}
             isNew={issue.isNew}
             disabled={issue.disabled}
-            onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+            onClick={() => handleIssueClick(issue.id)}
           />
         ))}
       </div>
@@ -101,7 +103,7 @@ const IssuesListAdmin: React.FC = () => {
               type={issue.type}
               isNew={issue.isNew}
               disabled={issue.disabled}
-              onClick={() => !issue.disabled && handleIssueClick(issue.id)}
+              onClick={() =>  handleIssueClick(issue.id)}
             />
           ))}
         </div>

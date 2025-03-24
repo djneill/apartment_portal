@@ -24,12 +24,12 @@ const IssueCard: React.FC<IssueCardProps> = ({
       {/* Flex container for date, New Issue badge, and arrow button */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-1 ">
-          <div className="p-3  text-xs text-center text-white bg-black rounded-full w-24">
+          <div className="p-3  text-xs text-center text-white bg-primary rounded-full w-24">
             {date}
           </div>
 
 
-          <div className={`p-3 text-xs text-white ${isNew ? "bg-orange-400" : "bg-primary"} rounded-full w-24 text-center`}>
+          <div className={`p-3 text-xs text-white ${isNew ? "bg-orange-300" : "bg-green-600"} rounded-full w-24 text-center`}>
             {isNew ? "New Issue" : "Resolved"}
           </div>
 
@@ -39,7 +39,6 @@ const IssueCard: React.FC<IssueCardProps> = ({
           className={`flex justify-center items-center w-10 h-10 bg-white border border-black border-solid rounded-[100px] ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
             }`}
           onClick={onClick}
-          disabled={isNew}
         >
           <ArrowUpRight />
         </button>
