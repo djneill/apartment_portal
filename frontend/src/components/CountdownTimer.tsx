@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TimerProps } from "../types";
+import { TimerProps } from "../Types";
 
 export const CountdownTimer = ({ expiration, className }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -35,4 +35,3 @@ export const CountdownTimer = ({ expiration, className }: TimerProps) => {
 };
 
 export default CountdownTimer;
-

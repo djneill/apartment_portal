@@ -1,6 +1,5 @@
 import { Routes, Route, redirect } from "react-router-dom";
 import Login from "./pages/shared/Login";
-
 import UserProfile from "./components/UserProfile";
 import ReportIssue from "./pages/guest/ReportIssue";
 import "./App.css";
@@ -10,7 +9,7 @@ import ManageGuests from "./pages/ManageGuests";
 import AdminDashboard from "./pages/AdminDashboard";
 import ErrorPage from "./pages/shared/Error";
 import { useEffect, useState } from "react";
-import { CurrentUserResponseType } from "./types";
+import { CurrentUserResponseType } from "./Types";
 import { getData } from "./services/api";
 import useGlobalContext from "./hooks/useGlobalContext";
 import { getUserRoles } from "./services/auth";
@@ -19,6 +18,8 @@ import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
 import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
 import IssueDetail from "./pages/shared/IsssueDetail";
+import ManageLease from "./pages/ManageLease";
+import RegisterTenant from "./pages/RegisterTenant";
 
 function App() {
   const { setUser } = useGlobalContext();
@@ -57,23 +58,24 @@ function App() {
 
   if (isLoading) return <h1>Loading App...</h1>;
 
-
   return (
     <Routes>
       <Route element={<Layout usersRole={"Admin"} />}>
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/admin/tenantlist" element={<AdminTenantList />} />
-        <Route path="/admin/manageTenant" element={<AdminManageTenant />} />
+        <Route path="/admin/manageTenant/:id" element={<AdminManageTenant />} />
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
         <Route path="/issues/:id" element={<IssueDetail />} />
+        <Route path="/admin/registertenant" element={<RegisterTenant />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
         <Route path="/guests" element={<ManageGuests />} />
         <Route path="/reportissue" element={<ReportIssue />} />
         <Route path="/tenantdashboard" element={<TenantDashboard />} />
         <Route path="/manage" element={<AdminManageTenant />} />
+        <Route path="/manageLease" element={<ManageLease />} />
         <Route path="/aiinsights" element={<AiInsights />} />
         <Route path="/reportissue/:id" element={<IssueDetail />} />
       </Route>

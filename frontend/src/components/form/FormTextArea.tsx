@@ -1,18 +1,20 @@
-import { InputHTMLAttributes } from "react";
+import { TextareaHTMLAttributes } from "react";
 
-interface FormInputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface FormTextAreaProps
+  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
+  rows?: number;
 }
 
-const FormInput = ({
+const FormTextArea = ({
   label,
   error,
-  type = "text",
   className = "",
   id,
+  rows = 4,
   ...props
-}: FormInputProps) => {
+}: FormTextAreaProps) => {
   const inputId =
     id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
@@ -23,17 +25,18 @@ const FormInput = ({
           {label}
         </label>
       )}
-      <input
+      <textarea
         id={inputId}
-        type={type}
+        rows={rows}
         className={`
                     w-full 
-                    px-0 
+                    px-3
                     py-2 
                     bg-transparent 
                     text-black 
-                    border-b 
+                    border 
                     border-primary 
+                    rounded
                     focus:outline-none 
                     focus:border-primary 
                     placeholder:text-secondary 
@@ -45,4 +48,4 @@ const FormInput = ({
   );
 };
 
-export default FormInput;
+export default FormTextArea;

@@ -53,4 +53,26 @@ public class InsightsController : BaseApiController
 
         return Ok(res);
     }
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> UpdateInsight(int id, InsightPatchRequest request)
+    {
+        if (id != request.Id)
+            return BadRequest();
+        
+        var insight = await _unitOfWork.InsightRepository.GetAsync(id);
+        if (insight is null) return NotFound();
+
+        var statusResponse = await _unitOfWork.InsightStatusRepository.GetAsync(s => s.Name == "Resolved");
+        var status = statusResponse.FirstOrDefault();
+        if (status is null) return BadRequest("Something went wrong");
+
+        insight.ActionTaken = request.ActionTaken;
+        insight.InsightStatusId = request.IsComplete ? status.Id : insight.InsightStatusId;
+
+        _unitOfWork.InsightRepository.Update(insight);
+        await _unitOfWork.SaveAsync();
+
+        return Ok();
+    }
 }

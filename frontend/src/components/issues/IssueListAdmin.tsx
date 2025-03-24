@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { ApiIssue, Issue } from "../../types";
+import { ApiIssue, Issue } from "../../Types";
 import { useNavigate } from "react-router-dom";
 
 const IssuesListAdmin: React.FC = () => {

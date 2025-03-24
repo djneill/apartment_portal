@@ -22,14 +22,20 @@ interface PackageData {
   };
 }
 
-const PackageCard = ({ packageCount = 0 }) => {
+interface PackageCardProps {
+  packageCount?: number;
+  userId?: number;
+}
+
+const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
   const [clicks, setClicks] = useState(0);
   const [showSbPackage, setShowSbPackage] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [packageData, setPackageData] = useState<PackageData | null>(null);
+  const [packageData, setPackageData] = useState<PackageData[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [codeRevealed, setCodeRevealed] = useState(false);
   const { user } = useGlobalContext();
+  const finalUserId = userId ?? user?.userId;
 
   const hideSbPackage = useCallback(() => {
     setShowSbPackage(false);
@@ -37,14 +43,16 @@ const PackageCard = ({ packageCount = 0 }) => {
   }, []);
 
   const fetchPackageData = async () => {
-    if (!user?.userId) {
+    if (!finalUserId) {
       console.error("User ID not available");
       return;
     }
 
     setIsLoading(true);
     try {
-      const data = await getData<PackageData>(`Package/${user.userId}`);
+      const data = await getData<PackageData[]>(
+        `Package?userId=${finalUserId}`
+      );
       setPackageData(data);
     } catch (error) {
       console.error("Error fetching package data:", error);
@@ -54,11 +62,10 @@ const PackageCard = ({ packageCount = 0 }) => {
   };
 
   useEffect(() => {
-    if (user?.userId && packageCount > 0) {
+    if (finalUserId && packageCount > 0) {
       fetchPackageData();
     }
-
-  }, [user?.userId, packageCount]);
+  }, [finalUserId, packageCount]);
 
   const handleOpenModal = () => {
     if (!packageData) {
@@ -93,14 +100,20 @@ const PackageCard = ({ packageCount = 0 }) => {
     };
   }, [clicks, hideSbPackage]);
 
+  const arrivedPackage = packageData?.find(
+    (pkg) => pkg.status.name === "Arrived"
+  );
+
+  const lockerDisplay = arrivedPackage ? arrivedPackage.lockerNumber : "OFC";
+
   return (
     <div>
-      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">Packages</h3>
+      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">
+        Packages
+      </h3>
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
-          <span className="text-md font-bold">
-            Locker #{packageData?.lockerNumber || "OFC"}
-          </span>
+          <span className="text-md font-bold">Locker #{lockerDisplay}</span>
           <div
             className="bg-primary rounded-full p-[4px] cursor-pointer"
             onClick={handleOpenModal}
@@ -130,13 +143,13 @@ const PackageCard = ({ packageCount = 0 }) => {
         ) : packageData ? (
           <div className="flex flex-col items-center text-center">
             <h2 className="text-2xl font-heading font-semibold mb-6">
-              Locker #{packageData.lockerNumber || "OFC"}
+              Locker #{lockerDisplay}
             </h2>
 
             {codeRevealed ? (
               <div className="w-full mb-4">
                 <div className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold">
-                  {packageData.code}
+                  {arrivedPackage?.code}
                 </div>
               </div>
             ) : (

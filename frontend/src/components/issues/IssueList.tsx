@@ -2,23 +2,27 @@ import React, { useState, useEffect } from "react";
 import IssueCard from "./IssueCard";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { getData } from "../../services/api";
-import { ApiIssue, Issue } from "../../types";
+import { ApiIssue, Issue } from "../../Types";
 
-const IssuesList: React.FC = () => {
+interface IssuesListProps {
+  userId?: number;
+}
+
+const IssuesList: React.FC<IssuesListProps> = ({ userId }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { user: globalUser } = useGlobalContext();
-  console.log(globalUser);
+  const finalUserId = userId ?? globalUser?.userId;
   useEffect(() => {
     const fetchIssues = async () => {
-      if (!globalUser?.userId) return;
+      if (!finalUserId) return;
 
       try {
         const data = await getData<ApiIssue[]>(
-          `Issues?userId=${globalUser.userId}`
+          `Issues?userId=${finalUserId}&recordRetrievalCount=10&statusId=0&orderByDesc=true`
         );
-        const mappedIssues = data.map((issue: any) => {
+        const mappedIssues = data.map((issue: ApiIssue) => {
           const currentDate = new Date();
 
           const issueDate = new Date(issue.createdOn);
@@ -48,7 +52,7 @@ const IssuesList: React.FC = () => {
     };
 
     fetchIssues();
-  }, [globalUser]);
+  }, [finalUserId]);
 
   const handleViewAll = () => {
     console.log("Navigate to all issues page");

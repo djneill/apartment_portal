@@ -1,69 +1,84 @@
-import { useState } from 'react';
-import Card from '../components/Card';
+import { useState } from "react";
+import Card from "../components/Card";
 import {
-    FormInput,
-    FormSelect,
-    FormPhoneInput,
-    FormDateInput,
-} from '../components/form';
+  FormInput,
+  FormSelect,
+  FormPhoneInput,
+  FormDateInput,
+  FormEmailInput,
+  FormPasswordInput,
+} from "../components/form";
 
 const FormDemo = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        password: '',
-        date: '',
-        type: '',
-        description: '',
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    date: "",
+    type: "",
+    description: "",
+  });
 
-    const handleChange = (field: string, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-    };
+  const handleChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-    return (
-        <div className="min-h-screen bg-background p-8">
-            <div className="w-full mx-auto space-y-8">
-                <h1 className="text-2xl text-center font-bold mb-8">Form Components</h1>
+  return (
+    <div className="min-h-screen bg-background p-8">
+      <div className="w-full mx-auto space-y-8">
+        <h1 className="text-2xl text-center font-bold mb-8">Form Components</h1>
 
-                <Card className="p-8">
-                    <h2 className="text-2xl font-semibold mb-6">Basic Form Fields</h2>
+        <Card className="p-8">
+          <h2 className="text-2xl font-semibold mb-6">Basic Form Fields</h2>
 
-                    <FormInput
-                        label="Name"
-                        placeholder="Enter your name"
-                        value={formData.name}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                    />
+          <FormInput
+            label="Name"
+            placeholder="Enter your name"
+            value={formData.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+          />
 
-                    <FormPhoneInput
-                        label="Phone"
-                        value={formData.phone}
-                        onChange={(value) => handleChange('phone', value)}
-                    />
+          <FormPhoneInput
+            label="Phone"
+            value={formData.phone}
+            onChange={(value) => handleChange("phone", value)}
+          />
 
-                    <FormDateInput
-                        label="Date"
-                        value={formData.date}
-                        onChange={(value) => handleChange('date', value)}
-                    />
+          <FormDateInput
+            label="Date"
+            value={formData.date}
+            onChange={(value) => handleChange("date", value)}
+          />
 
-                    <FormSelect
-                        label="Select Service"
-                        value={formData.type}
-                        onChange={(e) => handleChange('type', e.target.value)}
-                        options={[
-                            { value: '', label: 'Select type' },
-                            { value: 'type1', label: 'Type 1' },
-                            { value: 'type2', label: 'Type 2' },
-                            { value: 'type3', label: 'Type 3' },
-                        ]}
-                    />
-                </Card>
-            </div>
-        </div >
-    );
+          <FormSelect
+            label="Select Service"
+            value={formData.type}
+            onChange={(e) => handleChange("type", e.target.value)}
+            options={[
+              { value: "", label: "Select type" },
+              { value: "type1", label: "Type 1" },
+              { value: "type2", label: "Type 2" },
+              { value: "type3", label: "Type 3" },
+            ]}
+          />
+          <FormEmailInput
+            label="Email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={(value) => handleChange("email", value)}
+          />
+
+          <FormPasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            value={formData.password}
+            onChange={(value) => handleChange("password", value)}
+          />
+        </Card>
+      </div>
+    </div>
+  );
 };
 
 export default FormDemo;

@@ -25,10 +25,7 @@ function ErrorPage() {
         </p>
 
         {/* Button */}
-        <SignInButton
-          onClick={() => navigate("/")}
-          text="Return to Login"
-        />
+        <SignInButton onClick={() => navigate("/")} text="Return to Login" />
       </div>
     </main>
   );
