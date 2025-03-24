@@ -5,8 +5,8 @@ interface IssueCardProps {
   date: string;
   title: string;
   isNew?: boolean;
-  disabled?: boolean;
   type: string;
+  status: string;
   onClick?: () => void;
 }
 
@@ -15,33 +15,35 @@ const IssueCard: React.FC<IssueCardProps> = ({
   title,
   isNew = false,
   type = "",
-  disabled = false,
+  status ,
   onClick,
 }) => {
   return (
     <article
-      className={`relative p-4 bg-white rounded-3xl shadow-[0_4px_8px_rgba(0,0,0,0.15)] border border-black  min-w-72 ${!isNew ? "border-dashed" : ""}`}
+      className={`relative p-4 bg-white rounded-3xl shadow-[0_4px_8px_rgba(0,0,0,0.15)] border border-black  min-w-72 `}
     >
-      {/* Flex container for date, New Issue badge, and arrow button */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-1 ">
-          <div className="p-3  text-xs text-center text-white bg-black rounded-full w-24">
+          <div className="p-3  text-xs text-center text-white bg-primary rounded-full w-24">
             {date}
           </div>
 
-          <div
-            className={`p-3 text-xs text-white ${isNew ? "bg-orange-400" : "bg-primary"} rounded-full w-24 text-center`}
-          >
-            {isNew ? "New Issue" : "Resolved"}
+        {isNew && ( 
+            <div className={`p-3 text-xs bg-blue-100 text-blue-800 rounded-full w-24 text-center`}>
+             New Issue
+            </div>
+        )}
+         {status=="Resolved" && ( 
+            <div className={`p-3 text-xs  bg-green-100 text-green-800 rounded-full w-24 text-center`}>
+             Resolved
           </div>
+        )}
+          
         </div>
 
         <button
-          className={`flex justify-center items-center w-10 h-10 bg-white border border-black border-solid rounded-[100px] ${
-            disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-          }`}
+          className={`flex justify-center items-center w-10 h-10 bg-white border border-black border-solid rounded-[100px]      cursor-pointer       `}
           onClick={onClick}
-          disabled={isNew}
         >
           <ArrowUpRight />
         </button>

@@ -17,6 +17,7 @@ import AdminTenantList from "./pages/AdminTenantList";
 import AdminManageTenant from "./pages/AdminManageTenant";
 import AiInsights from "./pages/AiInsights";
 import AdminReportIssuesPage from "./pages/admin/AdminReportIssuesPage";
+import IssueDetail from "./pages/shared/IsssueDetail";
 import ManageLease from "./pages/ManageLease";
 import RegisterTenant from "./pages/RegisterTenant";
 
@@ -66,6 +67,7 @@ function App() {
         <Route path="/users/:id" element={<UserProfile />} />
         <Route path="/issues" element={<AdminReportIssuesPage />} />
         <Route path="/aiinsights" element={<AiInsights />} />
+        <Route path="/issues/:id" element={<IssueDetail />} />
         <Route path="/admin/registertenant" element={<RegisterTenant />} />
       </Route>
       <Route element={<Layout usersRole={"Tenant"} />}>
@@ -75,6 +77,9 @@ function App() {
         <Route path="/manage" element={<AdminManageTenant />} />
         <Route path="/manageLease" element={<ManageLease />} />
         <Route path="/aiinsights" element={<AiInsights />} />
+        <Route path="/reportissue/:id" element={<IssueDetail />} />
+      </Route>
+      <Route element={<Layout usersRole={"Tenant"} />}>
       </Route>
       <Route path="/error" element={<ErrorPage />} />
       <Route path="/" element={<Login />} />

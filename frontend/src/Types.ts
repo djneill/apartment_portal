@@ -83,6 +83,9 @@ export interface Issue {
   isNew: boolean;
   disabled: boolean;
   type: string;
+  status: string;
+  created: string;
+  user: string;
 }
 
 export interface PackagesResponse {
