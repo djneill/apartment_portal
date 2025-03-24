@@ -5,6 +5,7 @@ import Card from "../../components/Card";
 import Modal from "../../components/Modal";
 import { getData, postData } from "../../services/api";
 import useGlobalContext from "../../hooks/useGlobalContext";
+import { Packages } from "../../Types";
 
 interface PackageData {
   id: number;
@@ -23,13 +24,18 @@ interface PackageData {
 }
 
 interface PackageCardProps {
+  hideTitle?: boolean;
   packageCount?: number;
   userId?: number;
   unitNumber?: string;
   unitId?: number;
+  lockerNumberProp?: number;
+  packages?: Packages[];
+  onViewAll?: () => void;
+  refetchPackages?: () => void;
 }
 
-const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber }: PackageCardProps) => {
+const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumberProp, packages, refetchPackages }: PackageCardProps) => {
   const [clicks, setClicks] = useState(0);
   const [showSbPackage, setShowSbPackage] = useState(false);
   const [showViewCodeModal, setShowViewCodeModal] = useState(false);
@@ -39,6 +45,7 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber }: PackageCa
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [codeRevealed, setCodeRevealed] = useState(false);
+  
   const { user } = useGlobalContext();
   const finalUserId = userId ?? user?.userId;
 
@@ -84,6 +91,10 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber }: PackageCa
       console.log("Submitting:", payload);
 
       await postData("/Package", payload);
+
+      if (refetchPackages) {
+        refetchPackages();
+      }
   
       setLockerNumber("");
       setShowAddPackageModal(false);
@@ -136,13 +147,25 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber }: PackageCa
     (pkg) => pkg.status.name === "Arrived"
   );
 
-  const lockerDisplay = arrivedPackage ? arrivedPackage.lockerNumber : "OFC";
+  const arrivedPackages = packages?.filter(
+    (pkg) => pkg.status.name === "Arrived"
+  );
+
+  const lockerDisplay = lockerNumberProp ?? arrivedPackage?.lockerNumber ?? "OFC";
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">
-        Packages
-      </h3>
+      {/* {!hideTitle && (
+        <div className="flex justify-between items-center mb-4 font-heading text-sm font-semibold">
+        <h2 className=" text-dark-gray">Current Guests</h2>
+        <button
+          onClick={onViewAll}
+          className="text-primary cursor-pointer hover:text-secondary/80 transition-colors"
+        >
+          View all
+        </button>
+      </div>
+      )} */}
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
           <span className="text-md font-bold">Locker #{lockerDisplay}</span>
@@ -189,12 +212,21 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber }: PackageCa
             </h2>
 
             {codeRevealed ? (
-              <div className="w-full mb-4">
-                <div className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold">
-                  {arrivedPackage?.code}
-                </div>
-              </div>
-            ) : (
+  <div className="w-full mb-4 space-y-2">
+    {arrivedPackages?.length ? (
+      arrivedPackages.map((pkg) => (
+        <div
+          key={pkg.id}
+          className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold"
+        >
+          {pkg.code}
+        </div>
+      ))
+    ) : (
+      <p>No arrived packages in this locker.</p>
+    )}
+  </div>
+) : (
               <button
                 onClick={handleRevealCode}
                 className="w-full bg-primary cursor-pointer text-white py-3 px-6 rounded-4xl mb-4 text-xl font-heading font-semibold"

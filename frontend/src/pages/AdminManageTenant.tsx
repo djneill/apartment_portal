@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom";
 import GuestProfileIcon from "../components/guests/GuestProfileIcon";
 import LeaseCountdown from "../components/LeaseCountdown";
-import { PackageCard } from "../tenantDashboard/components";
+// import { PackageCard } from "../tenantDashboard/components";
 import IssuesList from "../components/issues/IssueList";
 import { Guest, Packages, User } from "../Types";
 import CurrentGuestTable from "../components/guests/CurrentGuestTable";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getData } from "../services/api";
 import axios from "axios";
+import PackageList from "../tenantDashboard/components/PackageList";
 
 export default function AdminManageTenant() {
   const { id } = useParams<Record<string, string | undefined>>();
@@ -16,12 +17,6 @@ export default function AdminManageTenant() {
   } | null>(null);
   const [tenant, setTenant] = useState<User | null>(null);
   const [packages, setPackages] = useState<Packages[] | null>(null);
-
-  // const navigate = useNavigate();
-
-  // const goBack = () => {
-  //   navigate(-1);
-  // };
 
   useEffect(() => {
     const fetchGuests = async () => {
@@ -58,23 +53,26 @@ export default function AdminManageTenant() {
         console.error("Error fetching user details:", error);
       }
     };
-    const fetchPackages = async () => {
-      try {
-        const response = await getData<Packages[]>(
-          `Package/?userId=${id}&statusId=6`
-        );
-        setPackages(response);
-      } catch (error) {
-        console.error("Error fetching package data:", error);
-      }
-    };
+    
 
     fetchUser();
-    fetchPackages();
     fetchGuests();
   }, [id]);
 
-  const packageCount = packages?.length || 0;
+  const fetchPackages = useCallback(async () => {
+    try {
+      const response = await getData<Packages[]>(
+        `Package/?userId=${id}&statusId=6`
+      );
+      setPackages(response);
+    } catch (error) {
+      console.error("Error fetching package data:", error);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchPackages();
+  }, [fetchPackages]);
 
   return (
     <div className="px-4 mt-14 font-heading min-h-screen space-y-6">
@@ -96,7 +94,17 @@ export default function AdminManageTenant() {
         <LeaseCountdown userId={Number(id)} />
       </div>
 
-      <PackageCard packageCount={packageCount} userId={Number(id)} unitNumber={tenant?.unit?.unitNumber} unitId={tenant?.unit?.id}/>
+{packages && (
+  <PackageList
+  packages={packages}
+  userId={Number(id)}
+  unitNumber={tenant?.unit?.unitNumber}
+  unitId={tenant?.unit?.id}
+  refetchPackages={fetchPackages}
+/>
+)}
+
+
 
       <IssuesList userId={Number(id)} />
 

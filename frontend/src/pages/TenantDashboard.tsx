@@ -3,7 +3,6 @@ import {
   HeroCard,
   QuickIconButton,
   CurrentGuest,
-  PackageCard,
   ThermostatCard,
   LockControlModal,
 } from "../tenantDashboard/components";
@@ -11,6 +10,8 @@ import { getData } from "../services/api";
 import { TriangleAlert, UserRoundPlus, Lock, FilePen } from "lucide-react";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { useNavigate } from "react-router-dom";
+import { Packages } from "../Types";
+import PackageList from "../tenantDashboard/components/PackageList";
 
 type Notifications = {
   date: string;
@@ -36,7 +37,7 @@ type UserWithUnit = {
 
 const TenantDashboard = () => {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
-  const [packageCount, setPackageCount] = useState(0);
+  const [packages, setPackages] = useState<Packages[] | null>(null);
   const [unitNumber, setUnitNumber] = useState("");
   const [isLockModalOpen, setIsLockModalOpen] = useState(false);
   const { user, setUser } = useGlobalContext();
@@ -74,12 +75,6 @@ const TenantDashboard = () => {
         `notification/latest?userId=${user?.userId}`,
       );
       setNotifications(data);
-
-      const packagesAvailable = data.filter(
-        (notification) => notification.type === "Package",
-      ).length;
-
-      setPackageCount(packagesAvailable);
     })();
   }, [user?.userId]);
 
@@ -89,6 +84,21 @@ const TenantDashboard = () => {
       navigate("/reportissue");
     }
   };
+  
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const response = await getData<Packages[]>(
+          `Package/?userId=${user?.userId}&statusId=6`
+        );
+        setPackages(response);
+      } catch (error) {
+        console.error("Error fetching package data:", error);
+      }
+    };
+    fetchPackages();
+  }, [user?.userId]);
 
   const quickActions = [
     {
@@ -150,7 +160,14 @@ const TenantDashboard = () => {
         <CurrentGuest guests={guests} onViewAll={handleViewAllGuests} />
 
         <div className="grid grid-cols-2 gap-4">
-          <PackageCard packageCount={packageCount} />
+        {packages && (
+  <PackageList
+    packages={packages}
+    userId={Number(user?.userId)}
+    unitNumber={user?.unit?.unitNumber}
+    unitId={user?.unit?.id}
+  />
+)}
           <ThermostatCard />
         </div>
       </div>
