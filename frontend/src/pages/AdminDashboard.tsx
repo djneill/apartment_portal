@@ -87,14 +87,18 @@ export default function AdminDashboard() {
     {
       icon: <TriangleAlert size={38} />,
       label: "Manage Issues",
-      to: "/",
+      to: "/issues",
     },
     {
       icon: <UserRoundPlus size={38} />,
       label: "Register Tenant",
       to: "/admin/registertenant",
     },
-    { icon: <FilePen size={38} />, label: "Manage Lease", to: "/" },
+    {
+      icon: <FilePen size={38} />,
+      label: "Manage Lease",
+      to: "/admin/manageLease",
+    },
   ];
 
   return (

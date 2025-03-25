@@ -3,7 +3,8 @@ import { TriangleAlert, AlertCircle } from "lucide-react";
 import Card from "../components/Card";
 import Modal from "../components/Modal";
 import { FormTextArea } from "../components/form";
-import { getData } from "../services/api";
+import { getData, patchData } from "../services/api";
+import Skeleton from "../components/Skeleton";
 
 interface Status {
   id: number;
@@ -72,22 +73,33 @@ const InsightsPage = () => {
     if (!selectedInsight) return;
 
     try {
-      const updatedInsight = {
+      const payload = {
+        id: selectedInsight.id,
+        actionTaken: actionTaken,
+        isComplete: true,
+      };
+
+      await patchData<undefined>(`Insights/${selectedInsight.id}`, payload);
+
+      const updatedInsight: Insight = {
         ...selectedInsight,
         status: {
           id: 2,
           name: "Resolved",
         },
-        actionTaken,
+        actionTaken: actionTaken,
       };
 
       const updatedInsights = {
-        currentInsights: insights.currentInsights.map((insight) =>
-          insight.id === selectedInsight.id ? updatedInsight : insight,
+        currentInsights: insights.currentInsights.filter(
+          (insight) => insight.id !== selectedInsight.id,
         ),
-        pastInsights: insights.pastInsights.map((insight) =>
-          insight.id === selectedInsight.id ? updatedInsight : insight,
-        ),
+        pastInsights: [
+          updatedInsight,
+          ...insights.pastInsights.filter(
+            (insight) => insight.id !== selectedInsight.id,
+          ),
+        ],
       };
 
       setInsights(updatedInsights);
@@ -107,7 +119,7 @@ const InsightsPage = () => {
     : insights.pastInsights.slice(0, 3);
 
   if (isLoading) {
-    return <div className="p-4">Loading insights...</div>;
+    return <Skeleton />;
   }
 
   return (
@@ -193,7 +205,11 @@ const InsightsPage = () => {
       )}
 
       {selectedInsight && (
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <Modal
+          key={selectedInsight.id}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        >
           <h2 className="text-xl font-semibold mb-4">
             {selectedInsight.title}
           </h2>

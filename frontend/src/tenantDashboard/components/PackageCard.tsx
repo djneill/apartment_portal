@@ -63,7 +63,7 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
     setIsLoading(true);
     try {
       const data = await getData<PackageData[]>(
-        `Package?userId=${finalUserId}`
+        `Package?userId=${finalUserId}`,
       );
       setPackageData(data);
     } catch (error) {
@@ -144,7 +144,7 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
   }, [clicks, hideSbPackage]);
 
   const arrivedPackage = packageData?.find(
-    (pkg) => pkg.status.name === "Arrived"
+    (pkg) => pkg.status.name === "Arrived",
   );
 
   const arrivedPackages = packages?.filter(

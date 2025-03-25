@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getData } from "../services/api";
 import axios from "axios";
 import PackageList from "../tenantDashboard/components/PackageList";
+import Skeleton from "../components/Skeleton";
 
 export default function AdminManageTenant() {
   const { id } = useParams<Record<string, string | undefined>>();
@@ -17,9 +18,17 @@ export default function AdminManageTenant() {
   } | null>(null);
   const [tenant, setTenant] = useState<User | null>(null);
   const [packages, setPackages] = useState<Packages[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // const navigate = useNavigate();
+
+  // const goBack = () => {
+  //   navigate(-1);
+  // };
 
   useEffect(() => {
     const fetchGuests = async () => {
+      setIsLoading(true);
       try {
         const response = await getData<Guest[]>(
           `/Guest?userId=${id}&active=true`
@@ -53,7 +62,6 @@ export default function AdminManageTenant() {
         console.error("Error fetching user details:", error);
       }
     };
-    
 
     fetchUser();
     fetchGuests();
@@ -67,12 +75,18 @@ export default function AdminManageTenant() {
       setPackages(response);
     } catch (error) {
       console.error("Error fetching package data:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [id]);
 
   useEffect(() => {
     fetchPackages();
   }, [fetchPackages]);
+
+  if (isLoading) {
+    return <Skeleton />;
+  }
 
   return (
     <div className="px-4 mt-14 font-heading min-h-screen space-y-6">
@@ -94,17 +108,15 @@ export default function AdminManageTenant() {
         <LeaseCountdown userId={Number(id)} />
       </div>
 
-{packages && (
-  <PackageList
-  packages={packages}
-  userId={Number(id)}
-  unitNumber={tenant?.unit?.unitNumber}
-  unitId={tenant?.unit?.id}
-  refetchPackages={fetchPackages}
-/>
-)}
-
-
+      {packages && (
+        <PackageList
+          packages={packages}
+          userId={Number(id)}
+          unitNumber={tenant?.unit?.unitNumber}
+          unitId={tenant?.unit?.id}
+          refetchPackages={fetchPackages}
+        />
+      )}
 
       <IssuesList userId={Number(id)} />
 
