@@ -6,6 +6,7 @@ import Modal from "../../components/Modal";
 import { getData, postData } from "../../services/api";
 import useGlobalContext from "../../hooks/useGlobalContext";
 import { Packages } from "../../Types";
+import { useToast } from "../../components/ToastProvider";
 
 interface PackageData {
   id: number;
@@ -45,9 +46,11 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [codeRevealed, setCodeRevealed] = useState(false);
-  
+
   const { user } = useGlobalContext();
   const finalUserId = userId ?? user?.userId;
+
+  const { addToast } = useToast()
 
   const hideSbPackage = useCallback(() => {
     setShowSbPackage(false);
@@ -88,23 +91,32 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
         lockerNumber: Number(lockerNumber),
         statusId: 6,
       }
-      console.log("Submitting:", payload);
 
       await postData("/Package", payload);
 
       if (refetchPackages) {
         refetchPackages();
       }
-  
+
       setLockerNumber("");
       setShowAddPackageModal(false);
+
+      addToast("Package added", {
+        type: "success",
+        duration: 3000,
+      });
+
     } catch (error) {
       console.error("Error adding package:", error);
+      addToast("Error adding package", {
+        type: "error",
+        duration: 3000,
+      });
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
 
   const handleOpenViewCodeModal = () => {
     if (!packageData) {
@@ -169,22 +181,22 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
           <span className="text-md font-bold">Locker #{lockerDisplay}</span>
-          
-            {user?.roles?.includes("Admin") ? (
-              <div
+
+          {user?.roles?.includes("Admin") ? (
+            <div
               className="bg-primary rounded-full p-[4px] cursor-pointer"
               onClick={handleOpenAddPackageModal}
             >
               <PackagePlus className="text-white" />
-              </div>
-            ) : (              
-              <div
-            className="bg-primary rounded-full p-[4px] cursor-pointer"
-            onClick={handleOpenViewCodeModal}
-          >
-            <ArrowUpRight className="text-white" />
-          </div>
-            )}
+            </div>
+          ) : (
+            <div
+              className="bg-primary rounded-full p-[4px] cursor-pointer"
+              onClick={handleOpenViewCodeModal}
+            >
+              <ArrowUpRight className="text-white" />
+            </div>
+          )}
         </div>
         <div className="text-black text-xs py-3">
           <span
@@ -212,21 +224,21 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
             </h2>
 
             {codeRevealed ? (
-  <div className="w-full mb-4 space-y-2">
-    {arrivedPackages?.length ? (
-      arrivedPackages.map((pkg) => (
-        <div
-          key={pkg.id}
-          className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold"
-        >
-          {pkg.code}
-        </div>
-      ))
-    ) : (
-      <p>No arrived packages in this locker.</p>
-    )}
-  </div>
-) : (
+              <div className="w-full mb-4 space-y-2">
+                {arrivedPackages?.length ? (
+                  arrivedPackages.map((pkg) => (
+                    <div
+                      key={pkg.id}
+                      className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold"
+                    >
+                      {pkg.code}
+                    </div>
+                  ))
+                ) : (
+                  <p>No arrived packages in this locker.</p>
+                )}
+              </div>
+            ) : (
               <button
                 onClick={handleRevealCode}
                 className="w-full bg-primary cursor-pointer text-white py-3 px-6 rounded-4xl mb-4 text-xl font-heading font-semibold"
@@ -243,47 +255,47 @@ const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumbe
       </Modal>
 
       <Modal
-  isOpen={showAddPackageModal}
-  onClose={() => setShowAddPackageModal(false)}
-  title="Add Package"
->
-  <div>
-    <label className="block text-sm font-medium mb-1">Locker Number</label>
-    <input
-      type="text"
-      value={lockerNumber}
-      onChange={(e) => setLockerNumber(e.target.value)}
-      placeholder="e.g. #A12"
-      className="w-full mb-4 border-b-1 outline-none text-sm py-2"
-    />
+        isOpen={showAddPackageModal}
+        onClose={() => setShowAddPackageModal(false)}
+        title="Add Package"
+      >
+        <div>
+          <label className="block text-sm font-medium mb-1">Locker Number</label>
+          <input
+            type="text"
+            value={lockerNumber}
+            onChange={(e) => setLockerNumber(e.target.value)}
+            placeholder="e.g. #A12"
+            className="w-full mb-4 border-b-1 outline-none text-sm py-2"
+          />
 
-    <label className="block text-sm font-medium mb-1">Unit Number</label>
-    <input
-      type="text"
-      value={unitNumber ?? ""}
-      readOnly
-      placeholder="e.g. 204"
-      className="w-full mb-4 border-b-1 outline-none text-sm py-2"
-    />
+          <label className="block text-sm font-medium mb-1">Unit Number</label>
+          <input
+            type="text"
+            value={unitNumber ?? ""}
+            readOnly
+            placeholder="e.g. 204"
+            className="w-full mb-4 border-b-1 outline-none text-sm py-2"
+          />
 
-    <label className="block text-sm font-medium mb-1">Status</label>
-    <select
-      className="w-full mb-4 border-b-2 outline-none text-sm py-2"
-      defaultValue="Arrived"
-      disabled
-    >
-    <option value="Arrived">Arrived</option>
-    </select>
+          <label className="block text-sm font-medium mb-1">Status</label>
+          <select
+            className="w-full mb-4 border-b-2 outline-none text-sm py-2"
+            defaultValue="Arrived"
+            disabled
+          >
+            <option value="Arrived">Arrived</option>
+          </select>
 
-    <button
-  onClick={handleAddPackage}
-  className="w-full bg-neutral-800 text-white py-3 px-6 cursor-pointer rounded-full mt-2 text-sm font-semibold"
-  disabled={isSubmitting || !lockerNumber}
->
-  {isSubmitting ? "Adding..." : "Add Package"}
-</button>
-  </div>
-</Modal>
+          <button
+            onClick={handleAddPackage}
+            className="w-full bg-neutral-800 text-white py-3 px-6 cursor-pointer rounded-full mt-2 text-sm font-semibold"
+            disabled={isSubmitting || !lockerNumber}
+          >
+            {isSubmitting ? "Adding..." : "Add Package"}
+          </button>
+        </div>
+      </Modal>
 
       {showSbPackage && (
         <div

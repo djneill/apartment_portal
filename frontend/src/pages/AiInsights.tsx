@@ -5,6 +5,8 @@ import Modal from "../components/Modal";
 import { FormTextArea } from "../components/form";
 import { getData, patchData } from "../services/api";
 import Skeleton from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
+
 
 interface Status {
   id: number;
@@ -27,6 +29,7 @@ interface InsightsData {
 }
 
 const InsightsPage = () => {
+  const { addToast } = useToast()
   const [insights, setInsights] = useState<InsightsData>({
     currentInsights: [],
     pastInsights: [],
@@ -37,6 +40,9 @@ const InsightsPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [showAllPastInsights, setShowAllPastInsights] =
     useState<boolean>(false);
+
+
+
 
   useEffect(() => {
     const fetchInsights = async () => {
@@ -100,11 +106,21 @@ const InsightsPage = () => {
             (insight) => insight.id !== selectedInsight.id,
           ),
         ],
+
       };
 
       setInsights(updatedInsights);
       handleCloseModal();
+      addToast("Updated Insight", {
+        type: "success",
+        duration: 3000,
+      });
+
     } catch (error) {
+      addToast("There was an issue updating insight", {
+        type: "error",
+        duration: 3000,
+      });
       console.error("Error updating insight:", error);
     }
   };
@@ -216,11 +232,10 @@ const InsightsPage = () => {
 
           <div className="flex justify-between items-center mb-4">
             <div
-              className={`px-4 py-1 rounded-full ${
-                selectedInsight.status.name === "Resolved"
-                  ? "bg-green-100 text-green-800"
-                  : "bg-blue-100 text-blue-800"
-              }`}
+              className={`px-4 py-1 rounded-full ${selectedInsight.status.name === "Resolved"
+                ? "bg-green-100 text-green-800"
+                : "bg-blue-100 text-blue-800"
+                }`}
             >
               {selectedInsight.status.name}
             </div>
