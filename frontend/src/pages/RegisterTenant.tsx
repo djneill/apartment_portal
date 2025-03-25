@@ -115,6 +115,12 @@ const RegisterTenant = () => {
 
     } catch (error: any) {
       console.error("Error registering tenant:", error);
+
+      addToast("Error registering tenant", {
+        type: "error",
+        duration: 3000,
+      });
+
       const errorData = error.response?.data;
 
       if (Array.isArray(errorData)) {
