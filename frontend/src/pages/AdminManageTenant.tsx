@@ -1,11 +1,10 @@
 import { useParams } from "react-router-dom";
 import GuestProfileIcon from "../components/guests/GuestProfileIcon";
 import LeaseCountdown from "../components/LeaseCountdown";
-// import { PackageCard } from "../tenantDashboard/components";
 import IssuesList from "../components/issues/IssueList";
 import { Guest, Packages, User } from "../Types";
 import CurrentGuestTable from "../components/guests/CurrentGuestTable";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getData } from "../services/api";
 import axios from "axios";
 import PackageList from "../tenantDashboard/components/PackageList";
@@ -20,15 +19,24 @@ export default function AdminManageTenant() {
   const [packages, setPackages] = useState<Packages[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // const navigate = useNavigate();
-
-  // const goBack = () => {
-  //   navigate(-1);
-  // };
-
   useEffect(() => {
-    const fetchGuests = async () => {
+    (async () => {
       setIsLoading(true);
+
+      try {
+        const response = await getData<{ user: User; unit: User["unit"] }>(
+          `/Users/${id}`
+        );
+        const userWithUnit: User = {
+          ...response.user,
+          unit: response.unit,
+        };
+
+        setTenant(userWithUnit);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+
       try {
         const response = await getData<Guest[]>(
           `/Guest?userId=${id}&active=true`
@@ -46,43 +54,19 @@ export default function AdminManageTenant() {
           console.error("Error fetching guests:", error);
         }
       }
-    };
-    const fetchUser = async () => {
+
       try {
-        const response = await getData<{ user: User; unit: User["unit"] }>(
-          `/Users/${id}`
+        const response = await getData<Packages[]>(
+          `Package/?userId=${id}&statusId=6`
         );
-        const userWithUnit: User = {
-          ...response.user,
-          unit: response.unit,
-        };
-
-        setTenant(userWithUnit);
+        setPackages(response);
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("Error fetching package data:", error);
       }
-    };
 
-    fetchUser();
-    fetchGuests();
-  }, [id]);
-
-  const fetchPackages = useCallback(async () => {
-    try {
-      const response = await getData<Packages[]>(
-        `Package/?userId=${id}&statusId=6`
-      );
-      setPackages(response);
-    } catch (error) {
-      console.error("Error fetching package data:", error);
-    } finally {
       setIsLoading(false);
-    }
+    })();
   }, [id]);
-
-  useEffect(() => {
-    fetchPackages();
-  }, [fetchPackages]);
 
   if (isLoading) {
     return <Skeleton />;
@@ -114,7 +98,6 @@ export default function AdminManageTenant() {
           userId={Number(id)}
           unitNumber={tenant?.unit?.unitNumber}
           unitId={tenant?.unit?.id}
-          refetchPackages={fetchPackages}
         />
       )}
 
