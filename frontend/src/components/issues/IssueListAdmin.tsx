@@ -195,13 +195,15 @@ const IssuesListAdmin: React.FC = () => {
             {/* Add padding to align text with the icon */}
           </div>
 
-          <div className="flex justify-end mt-4">
-            <button
-              className="bg-green-200 text-black px-8 py-2 rounded-full"
-              onClick={fixIssue}
-            >
-              Mark as Resolved
-            </button>
+          <div className="flex justify-end mt-4 gap-2">
+            {selectedIssue.status !== "Resolved" && (
+              <button
+                className="bg-green-200 text-black px-8 py-2 rounded-full"
+                onClick={fixIssue}
+              >
+                Mark as Resolved
+              </button>
+            )}
             <button
               className="bg-gray-200 text-gray-800 px-8 py-2 rounded-full"
               onClick={handleCloseModal}
