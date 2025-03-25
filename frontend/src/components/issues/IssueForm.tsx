@@ -4,6 +4,7 @@ import MainButton from "../MainButton";
 import FormSelect from "../form/FormSelect";
 import { getData, postData } from "../../services/api";
 import useGlobalContext from "../../hooks/useGlobalContext";
+import { useToast } from "../ToastProvider";
 
 const IssueReportForm: React.FC = () => {
   const [issueType, setIssueType] = useState<string>("");
@@ -12,6 +13,7 @@ const IssueReportForm: React.FC = () => {
     { value: string; label: string }[]
   >([]);
   const { user: globalUser } = useGlobalContext();
+  const { addToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,7 +28,20 @@ const IssueReportForm: React.FC = () => {
 
       setIssueType("");
       setDescription("");
+
+      addToast("Successfully reported issue", {
+        type: "success",
+        duration: 3000,
+      });
+
+
     } catch (error) {
+      addToast("Error submitting issue", {
+        type: "error",
+        duration: 3000,
+      });
+
+
       console.error("Failed to report issue:", error);
     }
   };

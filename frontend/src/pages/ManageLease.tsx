@@ -6,6 +6,7 @@ import MainButton from "../components/MainButton";
 import Modal from "../components/Modal";
 import LeaseSignature from "../components/LeaseSignature";
 import { getData, patchData } from "../services/api";
+import { useToast } from "../components/ToastProvider";
 
 interface LeaseStatus {
   id: number;
@@ -36,6 +37,8 @@ const ManageLease: React.FC = () => {
 
   const pdfUrl = "/LEASE RENEWAL AGREEMENT.pdf";
   const imageUrl = "/lease-snapshot.jpg";
+
+  const { addToast } = useToast()
 
   const fetchLeaseAgreements = useCallback(async () => {
     if (!user?.userId) {
@@ -72,7 +75,19 @@ const ManageLease: React.FC = () => {
     try {
       await patchData(`LeaseAgreements/${leaseAgreement.id}`, payload);
       console.log("Lease agreement updated with payload:", payload);
+
+      addToast("Success signing lease", {
+        type: "success",
+        duration: 3000,
+      });
+
+
     } catch (error) {
+      addToast("Error signing lease", {
+        type: "error",
+        duration: 3000,
+      });
+
       console.error(error);
     }
   };

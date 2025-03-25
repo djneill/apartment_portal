@@ -6,8 +6,10 @@ import { getData, postData, patchData } from "../services/api";
 import { Guest, GuestRequest } from "../Types";
 import useGlobalContext from "../hooks/useGlobalContext";
 import Skeleton from "../components/Skeleton";
+import { useToast } from "../components/ToastProvider";
 
 export default function ManageGuests() {
+  const { addToast } = useToast()
   const [guests, setGuests] = useState<{
     activeGuests: Guest[];
     inactiveGuests: Guest[];
@@ -94,8 +96,17 @@ export default function ManageGuests() {
           activeGuests: [...activeGuests, newGuest],
           inactiveGuests: inactiveGuests,
         });
+
+        addToast("Guest added", {
+          type: "success",
+          duration: 3000,
+        });
       }
     } catch (error) {
+      addToast("Error adding guest", {
+        type: "error",
+        duration: 3000,
+      });
       console.error("Error submitting guest:", error);
     }
   }
