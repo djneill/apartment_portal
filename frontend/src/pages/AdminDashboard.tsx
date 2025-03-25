@@ -11,6 +11,7 @@ import { InsightLogo } from "../assets/InsightLogo";
 import useGlobalContext from "../hooks/useGlobalContext";
 import { getData } from "../services/api";
 import IssuesListAdmin from "../components/issues/IssueListAdmin.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface Notifications {
   date: string;
@@ -39,7 +40,7 @@ interface InsightResponse {
 
 export default function AdminDashboard() {
   const { user } = useGlobalContext();
-
+  const navigate = useNavigate();
   const [viewAllInsights, setViewAllInsights] = useState(false);
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
@@ -62,6 +63,13 @@ export default function AdminDashboard() {
 
     fetchData();
   }, [user?.userId]);
+
+  const handleNotificationClick = (index: number) => {
+    const notification = notifications[index];
+    if (notification.type === "Issue") {
+      navigate("/issues");
+    }
+  };
 
   const renderInsights = insights.map((insight) => (
     <div
@@ -113,7 +121,7 @@ export default function AdminDashboard() {
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
-          onActionClick={(index) => console.log("Clicked notification", index)}
+          onActionClick={handleNotificationClick}
           onViewAllClick={() => console.log("View all clicked")}
         />
 
