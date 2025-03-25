@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, PackagePlus } from "lucide-react";
 import confetti from "canvas-confetti";
 import Card from "../../components/Card";
 import Modal from "../../components/Modal";
-import { getData } from "../../services/api";
+import { getData, postData } from "../../services/api";
 import useGlobalContext from "../../hooks/useGlobalContext";
+import { Packages } from "../../Types";
 
 interface PackageData {
   id: number;
@@ -23,17 +24,28 @@ interface PackageData {
 }
 
 interface PackageCardProps {
+  hideTitle?: boolean;
   packageCount?: number;
   userId?: number;
+  unitNumber?: string;
+  unitId?: number;
+  lockerNumberProp?: number;
+  packages?: Packages[];
+  onViewAll?: () => void;
+  refetchPackages?: () => void;
 }
 
-const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
+const PackageCard = ({ packageCount = 0, userId, unitId, unitNumber, lockerNumberProp, packages, refetchPackages }: PackageCardProps) => {
   const [clicks, setClicks] = useState(0);
   const [showSbPackage, setShowSbPackage] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showViewCodeModal, setShowViewCodeModal] = useState(false);
+  const [showAddPackageModal, setShowAddPackageModal] = useState(false);
   const [packageData, setPackageData] = useState<PackageData[] | null>(null);
+  const [lockerNumber, setLockerNumber] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [codeRevealed, setCodeRevealed] = useState(false);
+  
   const { user } = useGlobalContext();
   const finalUserId = userId ?? user?.userId;
 
@@ -67,16 +79,47 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
     }
   }, [finalUserId, packageCount]);
 
-  const handleOpenModal = () => {
+  const handleAddPackage = async () => {
+    setIsSubmitting(true);
+    try {
+
+      const payload = {
+        unitId: unitId,
+        lockerNumber: Number(lockerNumber),
+        statusId: 6,
+      }
+      console.log("Submitting:", payload);
+
+      await postData("/Package", payload);
+
+      if (refetchPackages) {
+        refetchPackages();
+      }
+  
+      setLockerNumber("");
+      setShowAddPackageModal(false);
+    } catch (error) {
+      console.error("Error adding package:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+
+  const handleOpenViewCodeModal = () => {
     if (!packageData) {
       fetchPackageData();
     }
-    setShowModal(true);
+    setShowViewCodeModal(true);
     setCodeRevealed(false);
   };
 
   const handleRevealCode = () => {
     setCodeRevealed(true);
+  };
+
+  const handleOpenAddPackageModal = () => {
+    setShowAddPackageModal(true);
   };
 
   useEffect(() => {
@@ -104,22 +147,44 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
     (pkg) => pkg.status.name === "Arrived",
   );
 
-  const lockerDisplay = arrivedPackage ? arrivedPackage.lockerNumber : "OFC";
+  const arrivedPackages = packages?.filter(
+    (pkg) => pkg.status.name === "Arrived"
+  );
+
+  const lockerDisplay = lockerNumberProp ?? arrivedPackage?.lockerNumber ?? "OFC";
 
   return (
     <div>
-      <h3 className="text-sm font-semibold text-dark-gray mb-4 font-heading">
-        Packages
-      </h3>
+      {/* {!hideTitle && (
+        <div className="flex justify-between items-center mb-4 font-heading text-sm font-semibold">
+        <h2 className=" text-dark-gray">Current Guests</h2>
+        <button
+          onClick={onViewAll}
+          className="text-primary cursor-pointer hover:text-secondary/80 transition-colors"
+        >
+          View all
+        </button>
+      </div>
+      )} */}
       <Card className="bg-white rounded-xl p-4">
         <div className="flex justify-between items-center mb-2 mr-2">
           <span className="text-md font-bold">Locker #{lockerDisplay}</span>
-          <div
+          
+            {user?.roles?.includes("Admin") ? (
+              <div
+              className="bg-primary rounded-full p-[4px] cursor-pointer"
+              onClick={handleOpenAddPackageModal}
+            >
+              <PackagePlus className="text-white" />
+              </div>
+            ) : (              
+              <div
             className="bg-primary rounded-full p-[4px] cursor-pointer"
-            onClick={handleOpenModal}
+            onClick={handleOpenViewCodeModal}
           >
             <ArrowUpRight className="text-white" />
           </div>
+            )}
         </div>
         <div className="text-black text-xs py-3">
           <span
@@ -135,7 +200,7 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
         </div>
       </Card>
 
-      <Modal isOpen={showModal} onClose={() => setShowModal(false)} title="">
+      <Modal isOpen={showViewCodeModal} onClose={() => setShowViewCodeModal(false)} title="">
         {isLoading ? (
           <div className="p-4 text-center">
             <p>Loading package details...</p>
@@ -147,12 +212,21 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
             </h2>
 
             {codeRevealed ? (
-              <div className="w-full mb-4">
-                <div className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold">
-                  {arrivedPackage?.code}
-                </div>
-              </div>
-            ) : (
+  <div className="w-full mb-4 space-y-2">
+    {arrivedPackages?.length ? (
+      arrivedPackages.map((pkg) => (
+        <div
+          key={pkg.id}
+          className="bg-primary text-white py-3 px-6 rounded-4xl text-center text-xl font-heading font-semibold"
+        >
+          {pkg.code}
+        </div>
+      ))
+    ) : (
+      <p>No arrived packages in this locker.</p>
+    )}
+  </div>
+) : (
               <button
                 onClick={handleRevealCode}
                 className="w-full bg-primary cursor-pointer text-white py-3 px-6 rounded-4xl mb-4 text-xl font-heading font-semibold"
@@ -167,6 +241,49 @@ const PackageCard = ({ packageCount = 0, userId }: PackageCardProps) => {
           </div>
         )}
       </Modal>
+
+      <Modal
+  isOpen={showAddPackageModal}
+  onClose={() => setShowAddPackageModal(false)}
+  title="Add Package"
+>
+  <div>
+    <label className="block text-sm font-medium mb-1">Locker Number</label>
+    <input
+      type="text"
+      value={lockerNumber}
+      onChange={(e) => setLockerNumber(e.target.value)}
+      placeholder="e.g. #A12"
+      className="w-full mb-4 border-b-1 outline-none text-sm py-2"
+    />
+
+    <label className="block text-sm font-medium mb-1">Unit Number</label>
+    <input
+      type="text"
+      value={unitNumber ?? ""}
+      readOnly
+      placeholder="e.g. 204"
+      className="w-full mb-4 border-b-1 outline-none text-sm py-2"
+    />
+
+    <label className="block text-sm font-medium mb-1">Status</label>
+    <select
+      className="w-full mb-4 border-b-2 outline-none text-sm py-2"
+      defaultValue="Arrived"
+      disabled
+    >
+    <option value="Arrived">Arrived</option>
+    </select>
+
+    <button
+  onClick={handleAddPackage}
+  className="w-full bg-neutral-800 text-white py-3 px-6 cursor-pointer rounded-full mt-2 text-sm font-semibold"
+  disabled={isSubmitting || !lockerNumber}
+>
+  {isSubmitting ? "Adding..." : "Add Package"}
+</button>
+  </div>
+</Modal>
 
       {showSbPackage && (
         <div
