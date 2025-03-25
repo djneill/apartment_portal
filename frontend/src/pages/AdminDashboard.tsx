@@ -83,7 +83,7 @@ export default function AdminDashboard() {
       <p className="font-semibold mb-1">{insight.title}</p>
       <div className="flex flex-col">
         <p className="font-light text-sm line-clamp-2">{insight.summary}</p>
-        <div className="cursor-pointer text-sm flex items-center space-x-1">
+        <div className="cursor-pointer text-sm flex items-center space-x-1" onClick={() => navigate("/aiinsights")}>
           <p className="text-accent">Show suggestions</p>
           <ArrowRight size={12} color="#C4AEF1" />
         </div>
