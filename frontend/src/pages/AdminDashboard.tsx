@@ -45,6 +45,8 @@ export default function AdminDashboard() {
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
 
+
+
   useEffect(() => {
     if (!user?.userId) return;
 
@@ -74,9 +76,8 @@ export default function AdminDashboard() {
   const renderInsights = insights.map((insight) => (
     <div
       key={insight.id}
-      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${
-        viewAllInsights ? "w-full" : "w-72"
-      }`}
+      className={`bg-white p-4 rounded-2xl flex flex-col whitespace-nowrap ${viewAllInsights ? "w-full" : "w-72"
+        }`}
       style={{ boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
     >
       <p className="font-semibold mb-1">{insight.title}</p>
@@ -89,6 +90,8 @@ export default function AdminDashboard() {
       </div>
     </div>
   ));
+
+
 
   // Quick actions for your dashboard
   const quickActions = [
@@ -121,7 +124,7 @@ export default function AdminDashboard() {
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
-          onActionClick={handleNotificationClick}
+          onActionClick={(index: number) => handleNotificationClick(index)}
           onViewAllClick={() => console.log("View all clicked")}
         />
 
@@ -152,9 +155,8 @@ export default function AdminDashboard() {
           </div>
 
           <div
-            className={`flex w-full overflow-scroll space-x-3 py-2 ${
-              viewAllInsights ? "flex-col  space-y-2 " : ""
-            }`}
+            className={`flex w-full overflow-scroll space-x-3 py-2 ${viewAllInsights ? "flex-col  space-y-2 " : ""
+              }`}
           >
             {renderInsights}
           </div>
