@@ -9,8 +9,12 @@ import {
 import useGlobalContext from "../hooks/useGlobalContext";
 import { postData } from "../services/api";
 import { useState } from "react";
+import { useToast } from "../components/ToastProvider";
 
 const RegisterTenant = () => {
+
+  const { addToast } = useToast();
+
   const user = useGlobalContext().user as User;
   const [formData, setFormData] = useState({
     firstName: "",
@@ -90,7 +94,7 @@ const RegisterTenant = () => {
       };
 
       await postData<User>("users/register", data);
-      console.log("Submitting", data);
+
       setFormData({
         firstName: "",
         lastName: "",
@@ -102,6 +106,13 @@ const RegisterTenant = () => {
         endDate: "",
         unitNumber: "",
       });
+
+      addToast("Tenant was successfully registered!", {
+        type: "success",
+        duration: 3000,
+      });
+
+
     } catch (error: any) {
       console.error("Error registering tenant:", error);
       const errorData = error.response?.data;
@@ -144,7 +155,7 @@ const RegisterTenant = () => {
             value={formData.firstName}
             onChange={(e) => handleChange("firstName", e.target.value)}
             error={errors.firstName}
-            placeholder="Enter guest's first name"
+            placeholder="Enter tenants's first name"
             required
             className="border-b-gray-300"
           />
@@ -154,7 +165,7 @@ const RegisterTenant = () => {
             value={formData.lastName}
             onChange={(e) => handleChange("lastName", e.target.value)}
             error={errors.lastName}
-            placeholder="Enter guest's last name"
+            placeholder="Enter tenant's last name"
             required
             className="border-b-gray-300"
           />
