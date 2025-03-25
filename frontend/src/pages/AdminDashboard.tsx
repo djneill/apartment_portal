@@ -40,12 +40,11 @@ interface InsightResponse {
 
 export default function AdminDashboard() {
   const { user } = useGlobalContext();
-
+  const navigate = useNavigate();
   const [viewAllInsights, setViewAllInsights] = useState(false);
   const [notifications, setNotifications] = useState<Notifications[]>([]);
   const [insights, setInsights] = useState<Insight[]>([]);
 
-  const navigate = useNavigate()
 
 
   useEffect(() => {
@@ -57,7 +56,6 @@ export default function AdminDashboard() {
           getData<Notifications[]>(`notification/latest?userId=${user.userId}`),
           getData<InsightResponse>(`Insights`),
         ]);
-        console.log(notifsData)
         setNotifications(notifsData);
         setInsights(insightsData.currentInsights);
       } catch (error) {
@@ -67,6 +65,13 @@ export default function AdminDashboard() {
 
     fetchData();
   }, [user?.userId]);
+
+  const handleNotificationClick = (index: number) => {
+    const notification = notifications[index];
+    if (notification.type === "Issue") {
+      navigate("/issues");
+    }
+  };
 
   const renderInsights = insights.map((insight) => (
     <div
@@ -86,11 +91,7 @@ export default function AdminDashboard() {
     </div>
   ));
 
-  const handleNotificationClick = (notifications: Notifications[], index: number) => {
-    if (notifications[index].type === "Issue") {
-      navigate("/issues")
-    }
-  }
+
 
   // Quick actions for your dashboard
   const quickActions = [
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
           title="Notifications"
           count={notifications.length}
           notifications={notifications}
-          onActionClick={(index: number) => handleNotificationClick(notifications, index)}
+          onActionClick={(index: number) => handleNotificationClick(index)}
           onViewAllClick={() => console.log("View all clicked")}
         />
 
