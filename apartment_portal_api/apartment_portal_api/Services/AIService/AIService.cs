@@ -53,9 +53,9 @@ public class AIService
     }
     public async Task<ICollection<InsightPostRequest>> GenerateInsights(ICollection<IssueAIPostRequest> issues)
     {
-        if (_apiKey is null)
+        if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            throw new NullReferenceException("Missing API Key");
+            return [];
         }
 
 
