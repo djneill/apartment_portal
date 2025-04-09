@@ -1,8 +1,8 @@
-# Apartment Portal
+# aPad - Apartment Portal
 
 ## Overview
 
-Apartment Portal is a modern platform designed to improve tenant experience and streamline operations for apartment management teams. It enables administrators to manage tenants, track reported issues, and handle lease signings, while providing tenants with powerful features to enhance their living experience.
+aPad is a modern platform designed to improve tenant experience and streamline operations for apartment management teams. It enables administrators to manage tenants, track reported issues, and handle lease signings, while providing tenants with powerful features to enhance their living experience.
 
 ### Business Problems Solved
 
@@ -46,7 +46,7 @@ Follow these steps to clone and run the project locally:
 
 ```
 "ConnectionStrings": {
-  "DefaultConnection": "Host=localhost:5432;Database=ApartmentManager;Username=postgres;Password=admin"
+  "DefaultConnection": "Server=myServerAddress;Database=myDatabase;Trusted_Connection=True;"
 }
 ```
 
