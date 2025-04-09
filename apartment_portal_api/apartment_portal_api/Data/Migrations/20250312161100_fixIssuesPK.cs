@@ -15,13 +15,13 @@ namespace apartment_portal_api.Data.Migrations
                 name: "issues_pkey",
                 table: "issues");
 
-            //migrationBuilder.AddColumn<int>(
-            //    name: "id",
-            //    table: "issues",
-            //    type: "integer",
-            //    nullable: false,
-            //    defaultValue: 0)
-            //    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+            migrationBuilder.AddColumn<int>(
+                name: "id",
+                table: "issues",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             migrationBuilder.AddPrimaryKey(
                 name: "issues_pkey",
