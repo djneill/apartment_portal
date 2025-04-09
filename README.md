@@ -46,7 +46,7 @@ Follow these steps to clone and run the project locally:
 
 ```
 "ConnectionStrings": {
-  "DefaultConnection": "Server=myServerAddress;Database=myDatabase;Trusted_Connection=True;"
+  "DefaultConnection": "Server=YOUR_SERVER_ADDRESS;Database=YOUR_DATABASE_NAME;Trusted_Connection=True;"
 }
 ```
 
